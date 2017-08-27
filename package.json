@@ -5,9 +5,18 @@
   "author": "bkdev",
   "private": true,
   "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "prettier": "prettier --single-quote --print-width 80 --trailing-comma all --write 'src/**/*.js'"
+  },
   "dependencies": {
     "expo": "^20.0.0",
     "react": "16.0.0-alpha.12",
     "react-native": "https://github.com/expo/react-native/archive/sdk-20.0.0.tar.gz"
+  },
+  "devDependencies": {
+    "eslint": "^4.5.0",
+    "eslint-config-equimper": "^2.2.1",
+    "eslint-config-prettier": "^2.3.0",
+    "prettier": "^1.5.3"
   }
 }
