@@ -1,4 +1,5 @@
 import React from 'react';
+import { UIManager } from 'react-native';
 import { ThemeProvider } from 'styled-components';
 import { AppLoading } from 'expo';
 
@@ -6,6 +7,10 @@ import { colors, fonts, images } from './src/utils/constants';
 import { cacheFonts, cacheImages } from './src/utils/caches';
 
 import Welcome from './src/components/Welcome';
+
+if (UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 export default class App extends React.Component {
   state = {
