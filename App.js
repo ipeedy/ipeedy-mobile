@@ -2,9 +2,11 @@ import React from 'react';
 import { UIManager } from 'react-native';
 import { ThemeProvider } from 'styled-components';
 import { AppLoading } from 'expo';
+import { ApolloProvider } from 'react-apollo';
 
 import { colors, fonts, images } from './src/utils/constants';
 import { cacheFonts, cacheImages } from './src/utils/caches';
+import { store, client } from './src/store';
 
 import Welcome from './src/components/Welcome';
 
@@ -36,9 +38,11 @@ export default class App extends React.Component {
   render() {
     if (this.state.appIsReady) {
       return (
-        <ThemeProvider theme={colors}>
-          <Welcome />
-        </ThemeProvider>
+        <ApolloProvider client={client} store={store}>
+          <ThemeProvider theme={colors}>
+            <Welcome />
+          </ThemeProvider>
+        </ApolloProvider>
       );
     }
 
