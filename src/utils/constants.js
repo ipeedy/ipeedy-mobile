@@ -29,4 +29,9 @@ export const constants = {
 export const icons = {
   MENU: 'ios-menu-outline',
   BACK: 'ios-arrow-round-back-outline',
+  EXPLORE: 'ios-map-outline',
+  FAVORITES: 'ios-heart-outline',
+  SETTINGS: 'ios-settings-outline',
+  YOURPRODUCTS: 'ios-list-box-outline',
+  PROFILE: 'ios-contact-outline',
 };
