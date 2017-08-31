@@ -8,7 +8,7 @@ import { colors, fonts, images } from './src/utils/constants';
 import { cacheFonts, cacheImages } from './src/utils/caches';
 import { store, client } from './src/store';
 
-import Welcome from './src/components/Welcome';
+import AppNavigator from './src/navigations';
 
 if (UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -40,7 +40,7 @@ export default class App extends React.Component {
       return (
         <ApolloProvider client={client} store={store}>
           <ThemeProvider theme={colors}>
-            <Welcome />
+            <AppNavigator />
           </ThemeProvider>
         </ApolloProvider>
       );

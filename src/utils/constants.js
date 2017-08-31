@@ -25,3 +25,8 @@ export const images = [
 export const constants = {
   GRAPHQL_URL: 'http://localhost:3000/graphql',
 };
+
+export const icons = {
+  MENU: 'ios-menu-outline',
+  BACK: 'ios-arrow-round-back-outline',
+};
