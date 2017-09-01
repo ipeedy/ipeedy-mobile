@@ -10,6 +10,7 @@ const BUTTON_RADIUS = BUTTON_SIZE / 2;
 
 const Root = styled(Touchable).attrs({
   feedback: 'opacity',
+  native: false,
 })`
   position: absolute;
   bottom: 10;

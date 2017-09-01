@@ -4,6 +4,7 @@ import Touchable from '@appandflow/touchable';
 
 const Button = styled(Touchable).attrs({
   feedback: 'opacity',
+  native: false,
   hitSlop: { top: 20, bottom: 20, right: 20, left: 20 },
 })`
   marginLeft: ${props => (props.side === 'left' ? 15 : 0)};
