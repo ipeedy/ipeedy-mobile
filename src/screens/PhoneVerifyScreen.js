@@ -58,6 +58,7 @@ const Input = styled.TextInput.attrs({
   placeholder: '0',
   keyboardType: 'number-pad',
   maxLength: 1,
+  underlineColorAndroid: 'transparent',
 })`
   color: ${props => props.theme.BLACK};
   fontFamily: 'quicksand-medium';

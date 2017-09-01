@@ -53,6 +53,7 @@ const InputWrapper = styled.View`
 const Input = styled.TextInput.attrs({
   placeholderTextColor: colors.LIGHT,
   selectionColor: colors.PRIMARY,
+  underlineColorAndroid: 'transparent',
   autoCorrect: false,
 })`
   color: ${props => props.theme.BLACK};
