@@ -37,8 +37,16 @@ class CircleButton extends Component {
       );
     }
 
+    if (this.props.disabled) {
+      return (
+        <Root disabled style={{ backgroundColor: '#e7caf9' }}>
+          {this.props.children}
+        </Root>
+      );
+    }
+
     return (
-      <Root onPress={this.props.onPress}>
+      <Root onPress={this.props.onPress} disabled={this.props.disabled}>
         {this.props.children}
       </Root>
     );

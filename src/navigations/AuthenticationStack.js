@@ -22,9 +22,20 @@ const PhoneStack = StackNavigator(
     },
     VerifyPhone: {
       screen: PhoneVerifyScreen,
-      navigationOptions: {
+      navigationOptions: ({ navigation }) => ({
         title: 'Verify',
-      },
+        headerLeft: (
+          <ButtonHeader
+            side="left"
+            onPress={() => {
+              Keyboard.dismiss();
+              navigation.goBack();
+            }}
+          >
+            <Ionicons size={27} name={icons.BACK} color={colors.WHITE} />
+          </ButtonHeader>
+        ),
+      }),
     },
   },
   {
