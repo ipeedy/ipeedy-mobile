@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { StatusBar } from 'react-native';
+import styled from 'styled-components/native';
 import { addNavigationHelpers, DrawerNavigator } from 'react-navigation';
 import { connect } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,6 +15,10 @@ import FavoritesStack from './FavoritesStack';
 import YourProductsStack from './YourProductsStack';
 import ProfileStack from './ProfileStack';
 import SettingsStack from './SettingsStack';
+
+const Root = styled.View`
+  flex: 1;
+`;
 
 const AppMainNav = DrawerNavigator(
   {
@@ -78,10 +84,20 @@ class AppNavigator extends Component {
     });
 
     if (!this.props.user.isAuthenticated) {
-      return <AuthenticationStack />;
+      return (
+        <Root>
+          <StatusBar backgroundColor={colors.PRIMARY} barStyle="light-content" />
+          <AuthenticationStack />
+        </Root>
+      );
     }
 
-    return <AppMainNav navigation={nav} />;
+    return (
+      <Root>
+        <StatusBar backgroundColor={colors.PRIMARY} barStyle="light-content" />
+        <AppMainNav navigation={nav} />
+      </Root>
+    );
   }
 }
 
