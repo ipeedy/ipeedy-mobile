@@ -28,8 +28,8 @@ const LogoContainer = styled.View`
 `;
 
 const Logo = styled.Image`
-  width: 55;
-  height: 55;
+  width: 60;
+  height: 56;
   overflow: visible;
 `;
 
