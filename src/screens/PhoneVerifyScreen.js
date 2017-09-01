@@ -56,7 +56,7 @@ const Input = styled.TextInput.attrs({
   selectionColor: colors.PRIMARY,
   autoCorrect: false,
   placeholder: '0',
-  keyboardType: 'number-pad',
+  keyboardType: 'numeric',
   maxLength: 1,
   underlineColorAndroid: 'transparent',
 })`
