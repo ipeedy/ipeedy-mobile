@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StatusBar } from 'react-native';
+import { StatusBar, Platform } from 'react-native';
 import styled from 'styled-components/native';
 import { addNavigationHelpers, DrawerNavigator } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -18,6 +18,11 @@ import SettingsStack from './SettingsStack';
 
 const Root = styled.View`
   flex: 1;
+`;
+
+const StatusBarView = styled.View`
+  backgroundColor: ${props => props.theme.PRIMARY};
+  height: ${Platform.OS === 'android' ? StatusBar.currentHeight : 0};
 `;
 
 const AppMainNav = DrawerNavigator(
@@ -87,6 +92,7 @@ class AppNavigator extends Component {
       return (
         <Root>
           <StatusBar backgroundColor={colors.PRIMARY} barStyle="light-content" />
+          <StatusBarView />
           <AuthenticationStack />
         </Root>
       );
@@ -94,7 +100,8 @@ class AppNavigator extends Component {
 
     return (
       <Root>
-        <StatusBar backgroundColor={colors.PRIMARY} barStyle="light-content" />
+        <StatusBar backgroundColor={colors.PRIMARY} barStyle="light-content" translucent />
+        <StatusBarView />
         <AppMainNav navigation={nav} />
       </Root>
     );
