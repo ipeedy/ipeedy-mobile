@@ -6,6 +6,7 @@ export const colors = {
   BLACK: '#000000',
   DARK: '#282828',
   LIGHT: '#ECEFF1',
+  SILVER: '#BDC3C7',
 };
 
 export const fonts = [
@@ -29,6 +30,7 @@ export const constants = {
 export const icons = {
   MENU: 'ios-menu-outline',
   BACK: 'ios-arrow-round-back-outline',
+  NEXT: 'ios-arrow-round-forward-outline',
   EXPLORE: 'ios-map-outline',
   FAVORITES: 'ios-heart-outline',
   SETTINGS: 'ios-settings-outline',

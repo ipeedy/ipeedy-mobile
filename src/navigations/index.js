@@ -7,6 +7,7 @@ import { colors, icons } from '../utils/constants';
 
 import Drawer from '../components/Drawer';
 
+import AuthenticationStack from './AuthenticationStack';
 import ExploreStack from './ExploreStack';
 import FavoritesStack from './FavoritesStack';
 import YourProductsStack from './YourProductsStack';
@@ -76,12 +77,17 @@ class AppNavigator extends Component {
       state: this.props.nav,
     });
 
+    if (!this.props.user.isAuthenticated) {
+      return <AuthenticationStack />;
+    }
+
     return <AppMainNav navigation={nav} />;
   }
 }
 
 export default connect(state => ({
   nav: state.nav,
+  user: state.user,
 }))(AppNavigator);
 
 export const router = AppMainNav.router;
