@@ -5,6 +5,7 @@ export default gql`
     generateOTP(phone: $phone) {
       error
       message
+      diff_time
     }
   }
 `;

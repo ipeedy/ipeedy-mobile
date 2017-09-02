@@ -4,21 +4,25 @@ import styled from 'styled-components/native';
 
 const Root = styled(Animated.View)`
   position: absolute;
-  top: -20;
+  top: -25;
   width: 100%;
-  height: 20;
+  height: 25;
   justifyContent: center;
   alignItems: center;
-  backgroundColor: ${props => props.theme.SECONDARY_A};
+  backgroundColor: ${props => {
+    if (props.secondary) return props.theme.SECONDARY_A;
+    if (props.primary) return props.theme.PRIMARY;
+    return props.theme.PRIMARY;
+  }};
 `;
 
 const Message = styled.Text`
   color: ${props => props.theme.WHITE};
   fontFamily: 'quicksand-regular';
-  fontSize: 12;
+  fontSize: 14;
 `;
 
-class FloatingError extends Component {
+class Snackbar extends Component {
   state = {
     shown: false,
     animated: new Animated.Value(0),
@@ -47,10 +51,8 @@ class FloatingError extends Component {
   }
 
   _hideMessage = () => {
-    setTimeout(() => {
-      this._toggleMessage();
-      setTimeout(() => this.props.onHide(), 800);
-    }, 4000);
+    setTimeout(() => this._toggleMessage(), 4000);
+    setTimeout(() => this.props.onHide(), 4800);
   };
 
   render() {
@@ -59,7 +61,7 @@ class FloatingError extends Component {
         {
           translateY: this.state.animated.interpolate({
             inputRange: [0, 1],
-            outputRange: [0, 19],
+            outputRange: [0, 24],
           }),
         },
       ],
@@ -75,4 +77,4 @@ class FloatingError extends Component {
   }
 }
 
-export default FloatingError;
+export default Snackbar;

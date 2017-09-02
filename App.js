@@ -1,5 +1,5 @@
 import React from 'react';
-import { UIManager } from 'react-native';
+import { UIManager, AsyncStorage } from 'react-native';
 import { ThemeProvider } from 'styled-components';
 import { AppLoading } from 'expo';
 import { ApolloProvider } from 'react-apollo';
@@ -7,6 +7,7 @@ import { ApolloProvider } from 'react-apollo';
 import { colors, fonts, images } from './src/utils/constants';
 import { cacheFonts, cacheImages } from './src/utils/caches';
 import { store, client } from './src/store';
+import { login } from './src/actions/user';
 
 import AppNavigator from './src/navigations';
 
@@ -19,8 +20,20 @@ export default class App extends React.Component {
     appIsReady: false,
   }
 
-  componentWillMount() {
-    this._loadAssetsAsync();
+  async componentWillMount() {
+    await this._checkIfToken();
+    await this._loadAssetsAsync();
+  }
+
+  _checkIfToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem('@ipeedy');
+      if (token != null) {
+        store.dispatch(login());
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   async _loadAssetsAsync() {

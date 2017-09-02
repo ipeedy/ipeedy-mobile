@@ -6,7 +6,7 @@ import PhoneNumber from 'awesome-phonenumber';
 import { graphql } from 'react-apollo';
 
 import CircleButton from '../components/CircleButton';
-import FloatingError from '../components/FloatingError';
+import Snackbar from '../components/Snackbar';
 
 import { icons, colors } from '../utils/constants';
 import GENERATEOTP_MUTATION from '../graphql/mutations/generateOTP';
@@ -102,7 +102,10 @@ class PhoneAuthScreen extends Component {
     this.setState({ loading: false });
     if (!data.generateOTP.error) {
       Keyboard.dismiss();
-      this.props.navigation.navigate('VerifyPhone');
+      this.props.navigation.navigate('VerifyPhone', {
+        diffTime: data.generateOTP.diff_time,
+        phone: this.state.displayNumber,
+      });
     } else {
       this.setState({ error: data.generateOTP.message });
     }
@@ -111,7 +114,11 @@ class PhoneAuthScreen extends Component {
   render() {
     return (
       <Root>
-        <FloatingError message={this.state.error} onHide={this._clearError} />
+        <Snackbar
+          message={this.state.error}
+          secondary
+          onHide={this._clearError}
+        />
         <Wrapper>
           <Title>Enter your mobile number</Title>
           <InputContainer>
