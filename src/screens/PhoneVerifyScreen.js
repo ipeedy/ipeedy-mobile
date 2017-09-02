@@ -60,6 +60,7 @@ const Input = styled.TextInput.attrs({
   placeholder: '0',
   keyboardType: 'numeric',
   maxLength: 1,
+  selectTextOnFocus: true,
   underlineColorAndroid: 'transparent',
 })`
   color: ${props => props.theme.BLACK};
@@ -117,8 +118,14 @@ class PhoneVerifyScreen extends Component {
       default:
         break;
     }
-    nextInput && this[nextInput].focus();
+    if (nextInput && value) this[nextInput].focus();
   };
+
+  _handleBackspace(nativeEvent, input) {
+    if (!nativeEvent.key || nativeEvent.key === 'Backspace') {
+      this[input].focus();
+    }
+  }
 
   _handleNext = () => {
     this.setState({ loading: true });
@@ -141,6 +148,7 @@ class PhoneVerifyScreen extends Component {
                 value={this.state.firstInputValue}
                 onChangeText={value =>
                   this._handleChangeText(value, 'firstInputValue')}
+                innerRef={r => (this.firstInput = r)}
                 autoFocus
               />
             </InputWrapper>
@@ -148,6 +156,7 @@ class PhoneVerifyScreen extends Component {
               <Input
                 returnKeyType="next"
                 value={this.state.secondInputValue}
+                onKeyPress={({nativeEvent}) => this._handleBackspace(nativeEvent, 'firstInput')}
                 onChangeText={value =>
                   this._handleChangeText(value, 'secondInputValue')}
                 innerRef={r => (this.secondInput = r)}
@@ -157,6 +166,7 @@ class PhoneVerifyScreen extends Component {
               <Input
                 returnKeyType="next"
                 value={this.state.thirdInputValue}
+                onKeyPress={(nativeEvent) => this._handleBackspace(nativeEvent, 'secondInput')}
                 onChangeText={value =>
                   this._handleChangeText(value, 'thirdInputValue')}
                 innerRef={r => (this.thirdInput = r)}
@@ -166,6 +176,7 @@ class PhoneVerifyScreen extends Component {
               <Input
                 returnKeyType="done"
                 value={this.state.fourthInputValue}
+                onKeyPress={(nativeEvent) => this._handleBackspace(nativeEvent, 'thirdInput')}
                 onChangeText={value =>
                   this._handleChangeText(value, 'fourthInputValue')}
                 innerRef={r => (this.fourthInput = r)}
