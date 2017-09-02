@@ -16,9 +16,7 @@ import YourProductsStack from './YourProductsStack';
 import ProfileStack from './ProfileStack';
 import SettingsStack from './SettingsStack';
 
-const Root = styled.View`
-  flex: 1;
-`;
+const Root = styled.View`flex: 1;`;
 
 const StatusBarView = styled.View`
   backgroundColor: ${props => props.theme.PRIMARY};
@@ -91,7 +89,10 @@ class AppNavigator extends Component {
     if (!this.props.user.isAuthenticated) {
       return (
         <Root>
-          <StatusBar backgroundColor={colors.PRIMARY} barStyle="light-content" />
+          <StatusBar
+            backgroundColor={colors.PRIMARY}
+            barStyle="light-content"
+          />
           <StatusBarView />
           <AuthenticationStack />
         </Root>
@@ -100,7 +101,11 @@ class AppNavigator extends Component {
 
     return (
       <Root>
-        <StatusBar backgroundColor={colors.PRIMARY} barStyle="light-content" translucent />
+        <StatusBar
+          backgroundColor={colors.PRIMARY}
+          barStyle="light-content"
+          translucent
+        />
         <StatusBarView />
         <AppMainNav navigation={nav} />
       </Root>

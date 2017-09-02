@@ -3,10 +3,13 @@ import { KeyboardAvoidingView, Keyboard } from 'react-native';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import PhoneNumber from 'awesome-phonenumber';
+import { graphql } from 'react-apollo';
 
 import CircleButton from '../components/CircleButton';
+import FloatingError from '../components/FloatingError';
 
 import { icons, colors } from '../utils/constants';
+import GENERATEOTP_MUTATION from '../graphql/mutations/generateOTP';
 
 const Root = styled(KeyboardAvoidingView).attrs({
   behavior: 'padding',
@@ -66,11 +69,16 @@ class PhoneAuthScreen extends Component {
     loading: false,
     displayNumber: '',
     isPhoneValid: false,
+    error: null,
   };
 
   componentDidMount() {
     this.formattedNumber = PhoneNumber.getAsYouType('VN');
   }
+
+  _clearError = () => {
+    this.setState({ error: null });
+  };
 
   _handleChangeText = value => {
     if (value.replace(/\s/g, '').length === 0) {
@@ -85,14 +93,25 @@ class PhoneAuthScreen extends Component {
   };
 
   _handleNext = async () => {
-    this.setState({ loading: true });
-    Keyboard.dismiss();
-    this.props.navigation.navigate('VerifyPhone');
+    this.setState({ loading: true, error: false });
+    const { data } = await this.props.mutate({
+      variables: {
+        phone: this.state.displayNumber.replace(/\s/g, ''),
+      },
+    });
+    this.setState({ loading: false });
+    if (!data.generateOTP.error) {
+      Keyboard.dismiss();
+      this.props.navigation.navigate('VerifyPhone');
+    } else {
+      this.setState({ error: data.generateOTP.message });
+    }
   };
 
   render() {
     return (
       <Root>
+        <FloatingError message={this.state.error} onHide={this._clearError} />
         <Wrapper>
           <Title>Enter your mobile number</Title>
           <InputContainer>
@@ -122,4 +141,4 @@ class PhoneAuthScreen extends Component {
   }
 }
 
-export default PhoneAuthScreen;
+export default graphql(GENERATEOTP_MUTATION)(PhoneAuthScreen);

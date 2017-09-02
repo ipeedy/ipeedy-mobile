@@ -5,10 +5,12 @@ import React, { Component } from 'react';
 import { KeyboardAvoidingView, Keyboard } from 'react-native';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
+import { connect } from 'react-redux';
 
 import CircleButton from '../components/CircleButton';
 
 import { icons, colors } from '../utils/constants';
+import { login } from '../actions/user';
 
 const Root = styled(KeyboardAvoidingView).attrs({
   behavior: 'padding',
@@ -68,11 +70,60 @@ const Input = styled.TextInput.attrs({
 class PhoneVerifyScreen extends Component {
   state = {
     loading: false,
+    buttonDisabled: true,
+    firstInputValue: '',
+    secondInputValue: '',
+    thirdInputValue: '',
+    fourthInputValue: '',
+  };
+
+  _handleChangeText = (value, position) => {
+    const {
+      firstInputValue,
+      secondInputValue,
+      thirdInputValue,
+      fourthInputValue,
+    } = this.state;
+    this.setState(
+      {
+        [position]: value,
+      },
+      () => {
+        this.setState({
+          buttonDisabled: !(
+            firstInputValue &&
+            secondInputValue &&
+            thirdInputValue &&
+            fourthInputValue
+          ),
+        });
+      },
+    );
+    if (position === 'fourthInputValue') {
+      Keyboard.dismiss();
+      return this._handleNext();
+    }
+    let nextInput = null;
+    switch (position) {
+      case 'firstInputValue':
+        nextInput = 'secondInput';
+        break;
+      case 'secondInputValue':
+        nextInput = 'thirdInput';
+        break;
+      case 'thirdInputValue':
+        nextInput = 'fourthInput';
+        break;
+      default:
+        break;
+    }
+    nextInput && this[nextInput].focus();
   };
 
   _handleNext = () => {
     this.setState({ loading: true });
     Keyboard.dismiss();
+    this.props.login();
   };
 
   render() {
@@ -87,41 +138,45 @@ class PhoneVerifyScreen extends Component {
             <InputWrapper>
               <Input
                 returnKeyType="next"
-                onChangeText={event => {
-                  event && this.secondInput.focus();
-                }}
+                value={this.state.firstInputValue}
+                onChangeText={value =>
+                  this._handleChangeText(value, 'firstInputValue')}
                 autoFocus
               />
             </InputWrapper>
             <InputWrapper>
               <Input
                 returnKeyType="next"
-                onChangeText={event => {
-                  event && this.thirdInput.focus();
-                }}
+                value={this.state.secondInputValue}
+                onChangeText={value =>
+                  this._handleChangeText(value, 'secondInputValue')}
                 innerRef={r => (this.secondInput = r)}
               />
             </InputWrapper>
             <InputWrapper>
               <Input
                 returnKeyType="next"
-                onChangeText={event => {
-                  event && this.fourthInput.focus();
-                }}
+                value={this.state.thirdInputValue}
+                onChangeText={value =>
+                  this._handleChangeText(value, 'thirdInputValue')}
                 innerRef={r => (this.thirdInput = r)}
               />
             </InputWrapper>
             <InputWrapper>
               <Input
                 returnKeyType="done"
-                onChangeText={() => {
-                  this._handleNext();
-                }}
+                value={this.state.fourthInputValue}
+                onChangeText={value =>
+                  this._handleChangeText(value, 'fourthInputValue')}
                 innerRef={r => (this.fourthInput = r)}
               />
             </InputWrapper>
           </InputContainer>
-          <CircleButton loading={this.state.loading} onPress={this._handleNext}>
+          <CircleButton
+            disabled={this.state.buttonDisabled}
+            loading={this.state.loading}
+            onPress={this._handleNext}
+          >
             <Ionicons name={icons.NEXT} color={colors.WHITE} size={35} />
           </CircleButton>
         </Wrapper>
@@ -130,4 +185,4 @@ class PhoneVerifyScreen extends Component {
   }
 }
 
-export default PhoneVerifyScreen;
+export default connect(undefined, { login })(PhoneVerifyScreen);
