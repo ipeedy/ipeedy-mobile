@@ -24,7 +24,7 @@ export const images = [
 ];
 
 export const constants = {
-  GRAPHQL_URL: `http://localhost:3000/graphql`,
+  GRAPHQL_URL: `http://192.168.1.3:3000/graphql`,
 };
 
 export const icons = {
