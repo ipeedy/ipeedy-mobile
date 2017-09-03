@@ -30,6 +30,7 @@ const Root = styled.View`
 const MapContainer = styled.View`flex: 7.5;`;
 
 const Map = styled(MapView).attrs({
+  showsMyLocationButton: true,
   provider: MapView.PROVIDER_GOOGLE,
   customMapStyle: MapStyle,
 })`
@@ -44,7 +45,7 @@ const ProductContainer = styled.View`
 class ExploreScreen extends Component {
   state = {
     error: null,
-    region: INITIAL_REGION,
+    region: null,
     userRegion: null,
   };
 
@@ -55,7 +56,6 @@ class ExploreScreen extends Component {
         error: 'Not support Android emulator. Try again on your device!',
       });
     } else {
-      this._getUserPosition();
       this._watchUserPositionAsync();
     }
   }
@@ -63,20 +63,6 @@ class ExploreScreen extends Component {
   componentWillUnmount() {
     this.watchLocation.remove();
   }
-
-  _getUserPosition = async () => {
-    const { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      this.setState({
-        error: 'Permission to access location was denied!',
-      });
-    }
-
-    const { coords } = await Location.getCurrentPositionAsync();
-    this.setState({
-      region: coords,
-    });
-  };
 
   _watchUserPositionAsync = async () => {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -86,22 +72,32 @@ class ExploreScreen extends Component {
       });
     }
 
+    const { coords } = await Location.getCurrentPositionAsync({});
+    this.setState({
+      region: {
+        ...coords,
+        ...DEFAULT_DELTA,
+      },
+    });
+
     this.watchLocation = await Location.watchPositionAsync(
       {
         enableHighAccuracy: true,
         timeInterval: 15000,
         distanceInterval: 10,
       },
-      ({ coords: { longitude, latitude } }) => {
+      ({ coords: { latitude, longitude } }) => {
         this.setState({
           userRegion: {
-            longitude,
             latitude,
+            longitude,
           },
         });
       },
     );
   };
+
+  _handleRegionChange = region => this.setState({ region });
 
   _getUserInfo = async () => {
     const { data: { me } } = await this.props.client.query({ query: ME_QUERY });
@@ -113,14 +109,9 @@ class ExploreScreen extends Component {
       <Root>
         <MapContainer>
           <Map
-            initialRegion={{
-              ...INITIAL_REGION,
-              ...DEFAULT_DELTA,
-            }}
-            region={{
-              ...this.state.region,
-              ...DEFAULT_DELTA,
-            }}
+            initialRegion={{ ...INITIAL_REGION, ...DEFAULT_DELTA }}
+            region={this.state.region}
+            onRegionChange={this._handleRegionChange}
           >
             <MapView.Marker
               coordinate={this.state.userRegion || INITIAL_REGION}
