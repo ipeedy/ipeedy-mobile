@@ -16,10 +16,14 @@ class CountDown extends Component {
     this._startCountDown();
   }
 
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
   _startCountDown = () => {
-    const timer = setInterval(() => {
+    this.timer = setInterval(() => {
       if (this.state.count === 0) {
-        clearInterval(timer);
+        clearInterval(this.timer);
         this.props.onFinish();
       } else {
         this.setState({

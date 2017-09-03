@@ -9,11 +9,8 @@ const Root = styled(Animated.View)`
   height: 25;
   justifyContent: center;
   alignItems: center;
-  backgroundColor: ${props => {
-    if (props.secondary) return props.theme.SECONDARY_A;
-    if (props.primary) return props.theme.PRIMARY;
-    return props.theme.PRIMARY;
-  }};
+  backgroundColor: ${props =>
+    props.secondary ? props.theme.SECONDARY_A : props.theme.PRIMARY}
 `;
 
 const Message = styled.Text`
@@ -23,10 +20,9 @@ const Message = styled.Text`
 `;
 
 class Snackbar extends Component {
-  state = {
-    shown: false,
-    animated: new Animated.Value(0),
-  };
+  componentWillMount() {
+    this.animated = new Animated.Value(0);
+  }
 
   componentDidMount() {
     if (this.props.message) {
@@ -34,41 +30,28 @@ class Snackbar extends Component {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.message) {
-      this._toggleMessage();
-    }
-  }
-
   _toggleMessage() {
-    const newState = !this.state.shown;
-    this.setState({ shown: newState });
-    Animated.timing(this.state.animated, {
-      toValue: newState ? 1 : 0,
-      duration: 800,
+    Animated.timing(this.animated, {
+      toValue: 1,
+      duration: 4000,
       useNativeDriver: true,
-    }).start(newState ? this._hideMessage() : null);
+    }).start();
   }
-
-  _hideMessage = () => {
-    setTimeout(() => this._toggleMessage(), 4000);
-    setTimeout(() => this.props.onHide(), 4800);
-  };
 
   render() {
     const animatedStyle = {
       transform: [
         {
-          translateY: this.state.animated.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, 24],
+          translateY: this.animated.interpolate({
+            inputRange: [0, 0.1, 0.9, 1],
+            outputRange: [0, 24, 24, 0],
           }),
         },
       ],
     };
 
     return (
-      <Root style={animatedStyle}>
+      <Root style={animatedStyle} secondary={this.props.secondary}>
         <Message>
           {this.props.message}
         </Message>

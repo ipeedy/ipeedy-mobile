@@ -15,6 +15,8 @@ export default (state = initialState, action) => {
         ...state,
         info: action.info,
       };
+    case 'LOGOUT':
+      return initialState;
     default:
       return state;
   }

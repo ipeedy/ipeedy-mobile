@@ -133,8 +133,7 @@ class PhoneVerifyScreen extends Component {
         });
       },
     );
-    if (position === 'fourthInputValue') {
-      Keyboard.dismiss();
+    if (position === 'fourthInputValue' && value) {
       return this._handleNext();
     }
     let nextInput = null;
@@ -169,7 +168,6 @@ class PhoneVerifyScreen extends Component {
       thirdInputValue,
       fourthInputValue,
     } = this.state;
-    Keyboard.dismiss();
     const { data } = await this.props.verifyOTPMutation({
       variables: {
         phone: phone.replace(/\s/g, ''),
@@ -184,6 +182,7 @@ class PhoneVerifyScreen extends Component {
       this.setState({ loading: false });
       return this.setState({ error: data.verifyOTP.message });
     }
+    Keyboard.dismiss();
     await AsyncStorage.setItem('@ipeedy', data.verifyOTP.token);
     this.setState({ loading: false });
     return this.props.login();
@@ -199,21 +198,17 @@ class PhoneVerifyScreen extends Component {
     });
     this.setState({ loading: false });
     if (data.generateOTP.error) {
-      this.setState({ error: data.generateOTP.message });
+      await setTimeout(
+        this.setState({ error: data.generateOTP.message }),
+        4000,
+      );
+      this.setState({ error: null });
     } else {
       this.setState({
         message: 'Validation code have just been sent!',
         diffTime: data.generateOTP.diff_time,
       });
     }
-  };
-
-  _clearError = () => {
-    this.setState({ error: null });
-  };
-
-  _clearMessage = () => {
-    this.setState({ message: null });
   };
 
   _handleCountDownFinish = () => {
@@ -239,19 +234,17 @@ class PhoneVerifyScreen extends Component {
     );
   }
 
+  renderError = () =>
+    this.state.error && <Snackbar message={this.state.error} secondary />;
+
+  renderMessage = () =>
+    this.state.message && <Snackbar message={this.state.message} primary />;
+
   render() {
     return (
       <Root>
-        <Snackbar
-          message={this.state.error}
-          secondary
-          onHide={this._clearError}
-        />
-        <Snackbar
-          message={this.state.message}
-          primary
-          onHide={this._clearMessage}
-        />
+        {this.renderError()}
+        {this.renderMessage()}
         <Wrapper>
           <Title>
             Enter the 4-digit code sent you at{' '}
