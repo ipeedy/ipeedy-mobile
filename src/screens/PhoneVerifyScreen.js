@@ -112,30 +112,26 @@ class PhoneVerifyScreen extends Component {
   };
 
   _handleChangeText = (value, position) => {
-    const {
-      firstInputValue,
-      secondInputValue,
-      thirdInputValue,
-      fourthInputValue,
-    } = this.state;
-    this.setState(
-      {
-        [position]: value,
-      },
-      () => {
-        this.setState({
-          buttonDisabled: !(
-            firstInputValue &&
-            secondInputValue &&
-            thirdInputValue &&
-            fourthInputValue
-          ),
-        });
-      },
-    );
-    if (position === 'fourthInputValue' && value) {
-      return this._handleNext();
-    }
+    this.setState({ [position]: value }, () => {
+      const {
+        firstInputValue,
+        secondInputValue,
+        thirdInputValue,
+        fourthInputValue,
+      } = this.state;
+      if (
+        firstInputValue &&
+        secondInputValue &&
+        thirdInputValue &&
+        fourthInputValue
+      ) {
+        this.setState({ buttonDisabled: false });
+        if (position === 'fourthInputValue' && value) {
+          return this._handleNext();
+        }
+      }
+    });
+
     let nextInput = null;
     switch (position) {
       case 'firstInputValue':
@@ -168,14 +164,12 @@ class PhoneVerifyScreen extends Component {
       thirdInputValue,
       fourthInputValue,
     } = this.state;
+    const code =
+      firstInputValue + secondInputValue + thirdInputValue + fourthInputValue;
     const { data } = await this.props.verifyOTPMutation({
       variables: {
         phone: phone.replace(/\s/g, ''),
-        code:
-          firstInputValue +
-          secondInputValue +
-          thirdInputValue +
-          fourthInputValue,
+        code,
       },
     });
     if (data.verifyOTP.error) {
