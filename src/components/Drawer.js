@@ -62,28 +62,32 @@ class Drawer extends Component {
     return PhoneNumber(phone, 'VN').getNumber('international');
   }
 
+  _renderInfo = () => {
+    if (!this.props.info) return <Loading size="small" />;
+    return (
+      <InfoContainer>
+        <Avatar
+          source={{
+            uri: this.props.info.image || 'https://i.imgur.com/MnRjDje.jpg',
+          }}
+        />
+        <MetaContainer>
+          <Name>
+            {this.props.info.name || 'Alexandra User'}
+          </Name>
+          <Phone>
+            {this._formattedPhoneNumber(this.props.info.phone)}
+          </Phone>
+        </MetaContainer>
+      </InfoContainer>
+    );
+  };
+
   render() {
-    if (!this.props.info) {
-      return <Loading size="small" />;
-    }
     return (
       <Root>
         <HeaderContainer>
-          <InfoContainer>
-            <Avatar
-              source={{
-                uri: this.props.info.image || 'https://i.imgur.com/MnRjDje.jpg',
-              }}
-            />
-            <MetaContainer>
-              <Name>
-                {this.props.info.name || 'Alexandra User'}
-              </Name>
-              <Phone>
-                {this._formattedPhoneNumber(this.props.info.phone)}
-              </Phone>
-            </MetaContainer>
-          </InfoContainer>
+          {this._renderInfo()}
         </HeaderContainer>
         <MenuContainer>
           <DrawerItems {...this.props} />

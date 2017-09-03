@@ -87,6 +87,7 @@ const ListItemText = styled.Text`
 
 class SettingsScreen extends Component {
   _handleLogout = () => {
+    this.props.navigation.navigate('Explore');
     this.props.client.resetStore();
     return this.props.logout();
   };
