@@ -1,5 +1,11 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/native';
+import { graphql, withApollo, compose } from 'react-apollo';
+import { connect } from 'react-redux';
+
+import { getUserInfo } from '../actions/user';
+
+import ME_QUERY from '../graphql/queries/me';
 
 const Root = styled.View`
   flex: 1;
@@ -15,7 +21,15 @@ const Title = styled.Text`
 `;
 
 class ExploreScreen extends Component {
-  state = {};
+  componentDidMount() {
+    this._getUserInfo();
+  }
+
+  _getUserInfo = async () => {
+    const { data: { me } } = await this.props.client.query({ query: ME_QUERY });
+    this.props.getUserInfo(me);
+  };
+
   render() {
     return (
       <Root>
@@ -25,4 +39,8 @@ class ExploreScreen extends Component {
   }
 }
 
-export default ExploreScreen;
+export default withApollo(
+  compose(connect(undefined, { getUserInfo }), graphql(ME_QUERY))(
+    ExploreScreen,
+  ),
+);

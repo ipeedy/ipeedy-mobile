@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/native';
 import { DrawerItems } from 'react-navigation';
+import { connect } from 'react-redux';
+import PhoneNumber from 'awesome-phonenumber';
+
+import Loading from '../components/Loading';
 
 const AVATAR_SIZE = 70;
 const AVATAR_RADIUS = AVATAR_SIZE / 2;
@@ -53,24 +57,30 @@ const MenuContainer = styled.View`
   backgroundColor: ${props => props.theme.WHITE};
 `;
 
-const name = 'Quốc Khánh';
-const phone = '0917679524';
-const image =
-  'https://pbs.twimg.com/profile_images/820791841284993024/Z4Y14Iw5_400x400.jpg';
-
 class Drawer extends Component {
+  _formattedPhoneNumber(phone) {
+    return PhoneNumber(phone, 'VN').getNumber('international');
+  }
+
   render() {
+    if (!this.props.info) {
+      return <Loading size="small" />;
+    }
     return (
       <Root>
         <HeaderContainer>
           <InfoContainer>
-            <Avatar source={{ uri: image }} />
+            <Avatar
+              source={{
+                uri: this.props.info.image || 'https://i.imgur.com/MnRjDje.jpg',
+              }}
+            />
             <MetaContainer>
               <Name>
-                {name}
+                {this.props.info.name || 'Alexandra User'}
               </Name>
               <Phone>
-                {phone}
+                {this._formattedPhoneNumber(this.props.info.phone)}
               </Phone>
             </MetaContainer>
           </InfoContainer>
@@ -83,4 +93,4 @@ class Drawer extends Component {
   }
 }
 
-export default Drawer;
+export default connect(state => ({ info: state.user.info }))(Drawer);
