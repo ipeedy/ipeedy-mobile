@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import { Platform } from 'react-native';
 import styled from 'styled-components/native';
-import { graphql, withApollo, compose } from 'react-apollo';
-import { connect } from 'react-redux';
 import { MapView, Location, Permissions, Constants } from 'expo';
 
-import { getUserInfo } from '../actions/user';
 import MapStyle from '../utils/mapstyle';
-
-import ME_QUERY from '../graphql/queries/me';
 
 import UserMarker from '../components/UserMarker';
 
@@ -50,7 +45,6 @@ class ExploreScreen extends Component {
   };
 
   componentDidMount() {
-    this._getUserInfo();
     if (Platform.OS === 'android' && !Constants.isDevice) {
       this.setState({
         error: 'Not support Android emulator. Try again on your device!',
@@ -99,11 +93,6 @@ class ExploreScreen extends Component {
 
   _handleRegionChange = region => this.setState({ region });
 
-  _getUserInfo = async () => {
-    const { data: { me } } = await this.props.client.query({ query: ME_QUERY });
-    this.props.getUserInfo(me);
-  };
-
   render() {
     return (
       <Root>
@@ -127,8 +116,4 @@ class ExploreScreen extends Component {
   }
 }
 
-export default withApollo(
-  compose(connect(undefined, { getUserInfo }), graphql(ME_QUERY))(
-    ExploreScreen,
-  ),
-);
+export default ExploreScreen;

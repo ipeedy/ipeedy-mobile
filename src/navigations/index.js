@@ -81,25 +81,16 @@ const AppMainNav = DrawerNavigator(
 );
 
 class AppNavigator extends Component {
-  render() {
+  _renderApp = () => {
+    if (!this.props.user.isAuthenticated) return <AuthenticationStack />;
     const nav = addNavigationHelpers({
       dispatch: this.props.dispatch,
       state: this.props.nav,
     });
+    return <AppMainNav navigation={nav} />;
+  };
 
-    if (!this.props.user.isAuthenticated) {
-      return (
-        <Root>
-          <StatusBar
-            backgroundColor={colors.PRIMARY}
-            barStyle="light-content"
-          />
-          <StatusBarView />
-          <AuthenticationStack />
-        </Root>
-      );
-    }
-
+  render() {
     return (
       <Root>
         <StatusBar
@@ -108,7 +99,7 @@ class AppNavigator extends Component {
           translucent
         />
         <StatusBarView />
-        <AppMainNav navigation={nav} />
+        {this._renderApp()}
       </Root>
     );
   }

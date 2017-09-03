@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import styled from 'styled-components/native';
 import { DrawerItems } from 'react-navigation';
 import { connect } from 'react-redux';
+import { graphql, withApollo, compose } from 'react-apollo';
 import PhoneNumber from 'awesome-phonenumber';
+
+import { getUserInfo } from '../actions/user';
+import ME_QUERY from '../graphql/queries/me';
 
 import Loading from '../components/Loading';
 
@@ -58,9 +62,18 @@ const MenuContainer = styled.View`
 `;
 
 class Drawer extends Component {
+  componentDidMount() {
+    this._getUserInfo();
+  }
+
   _formattedPhoneNumber(phone) {
     return PhoneNumber(phone, 'VN').getNumber('international');
   }
+
+  _getUserInfo = async () => {
+    const { data: { me } } = await this.props.client.query({ query: ME_QUERY });
+    this.props.getUserInfo(me);
+  };
 
   _renderInfo = () => {
     if (!this.props.info) return <Loading size="small" />;
@@ -97,4 +110,9 @@ class Drawer extends Component {
   }
 }
 
-export default connect(state => ({ info: state.user.info }))(Drawer);
+export default withApollo(
+  compose(
+    connect(state => ({ info: state.user.info }), { getUserInfo }),
+    graphql(ME_QUERY),
+  )(Drawer),
+);

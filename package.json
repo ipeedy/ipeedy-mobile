@@ -6,7 +6,7 @@
   "private": true,
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "debug": "open 'rndebugger://set-debugger-loc?host=localhost&port=19002'",
+    "debug": "open 'rndebugger://set-debugger-loc?host=localhost&port=19001'",
     "prettier": "prettier --single-quote --print-width 80 --trailing-comma all --write 'src/**/*.js'"
   },
   "dependencies": {
