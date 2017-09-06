@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import { Platform } from 'react-native';
+import { Platform, FlatList, Animated, LayoutAnimation } from 'react-native';
 import styled from 'styled-components/native';
 import { MapView, Location, Permissions, Constants } from 'expo';
+import { graphql, withApollo } from 'react-apollo';
+
+import GET_PRODUCTS_QUERY from '../graphql/queries/products';
 
 import MapStyle from '../utils/mapstyle';
+import { colors } from '../utils/constants';
 
 import UserMarker from '../components/UserMarker';
+import ProductCard from '../components/ProductCard';
+import Loading from '../components/Loading';
 
 const INITIAL_REGION = {
   latitude: 37.78825,
@@ -32,9 +38,28 @@ const Map = styled(MapView).attrs({
   flex: 1;
 `;
 
-const ProductContainer = styled.View`
-  flex: 2.5;
+const ProductsContainer = styled.View`
+  flex: 3;
   backgroundColor: ${props => props.theme.WHITE};
+  justifyContent: center;
+  alignItems: center;
+`;
+
+const ProductList = styled(FlatList).attrs({
+  horizontal: true,
+  contentContainerStyle: {
+    left: 4,
+  },
+  snapToInterval: 175,
+  showsHorizontalScrollIndicator: false,
+  scrollEventThrottle: 1,
+})`
+  flex: 1;
+`;
+
+const ProductListSpace = styled.View`
+  width: 8;
+  height: 100%;
 `;
 
 class ExploreScreen extends Component {
@@ -42,6 +67,9 @@ class ExploreScreen extends Component {
     error: null,
     region: null,
     userRegion: null,
+    fetchingProducts: true,
+    products: [],
+    selectedProduct: 0,
   };
 
   componentDidMount() {
@@ -67,12 +95,15 @@ class ExploreScreen extends Component {
     }
 
     const { coords } = await Location.getCurrentPositionAsync({});
-    this.setState({
-      region: {
-        ...coords,
-        ...DEFAULT_DELTA,
+    this.setState(
+      {
+        region: {
+          ...coords,
+          ...DEFAULT_DELTA,
+        },
       },
-    });
+      () => this._getProducts(),
+    );
 
     this.watchLocation = await Location.watchPositionAsync(
       {
@@ -91,7 +122,58 @@ class ExploreScreen extends Component {
     );
   };
 
+  _getProducts = async () => {
+    const { data: { getProducts } } = await this.props.client.query({
+      query: GET_PRODUCTS_QUERY,
+    });
+    this.setState({
+      fetchingProducts: false,
+      products: getProducts,
+    });
+  };
+
   _handleRegionChange = region => this.setState({ region });
+
+  _handleScroll = event => {
+    LayoutAnimation.spring();
+    this.setState({
+      selectedProduct: Math.trunc(event.nativeEvent.contentOffset.x / 175),
+    });
+  };
+
+  _renderProductsList = () => {
+    if (this.state.fetchingProducts) {
+      return <Loading size="large" color={colors.PRIMARY} />;
+    }
+
+    return (
+      <ProductList
+        data={this.state.products}
+        keyExtractor={product => product._id}
+        onScroll={Animated.event(
+          [
+            {
+              nativeEvent: {
+                contentOffset: {
+                  x: this.props.animation,
+                },
+              },
+            },
+          ],
+          {
+            listener: this._handleScroll,
+          },
+        )}
+        renderItem={({ item, index }) =>
+          <ProductCard
+            product={item}
+            selected={this.state.selectedProduct === index}
+          />}
+        ListFooterComponent={() => <ProductListSpace />}
+        ListHeaderComponent={() => <ProductListSpace />}
+      />
+    );
+  };
 
   render() {
     return (
@@ -110,10 +192,12 @@ class ExploreScreen extends Component {
             </MapView.Marker>
           </Map>
         </MapContainer>
-        <ProductContainer />
+        <ProductsContainer>
+          {this._renderProductsList()}
+        </ProductsContainer>
       </Root>
     );
   }
 }
 
-export default ExploreScreen;
+export default withApollo(graphql(GET_PRODUCTS_QUERY)(ExploreScreen));
