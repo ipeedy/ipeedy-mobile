@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/native';
+import { connect } from 'react-redux';
 
 const Root = styled.View`
   flex: 1;
@@ -25,4 +26,4 @@ class ProfileScreen extends Component {
   }
 }
 
-export default ProfileScreen;
+export default connect(state => ({ user: state.user.info }))(ProfileScreen);

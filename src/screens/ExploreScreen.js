@@ -109,7 +109,7 @@ class ExploreScreen extends Component {
     this.watchLocation = await Location.watchPositionAsync(
       {
         enableHighAccuracy: true,
-        timeInterval: 15000,
+        timeInterval: 36000,
         distanceInterval: 10,
       },
       ({ coords: { latitude, longitude } }) => {

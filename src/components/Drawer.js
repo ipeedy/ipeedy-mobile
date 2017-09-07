@@ -73,6 +73,7 @@ class Drawer extends Component {
   _getUserInfo = async () => {
     const { data: { me } } = await this.props.client.query({ query: ME_QUERY });
     this.props.getUserInfo(me);
+    if (!me.email || !me.name) this.props.navigation.navigate('Profile');
   };
 
   _renderInfo = () => {
