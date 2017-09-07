@@ -81,7 +81,7 @@ class Drawer extends Component {
       <InfoContainer>
         <Avatar
           source={{
-            uri: this.props.info.image || 'https://i.imgur.com/MnRjDje.jpg',
+            uri: this.props.info.avatar || 'https://i.imgur.com/MnRjDje.jpg',
           }}
         />
         <MetaContainer>

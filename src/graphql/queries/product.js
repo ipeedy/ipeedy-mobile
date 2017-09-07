@@ -1,8 +1,8 @@
 import { gql } from 'react-apollo';
 
 export default gql`
-  {
-    getProducts {
+  query getProduct($_id: ID!) {
+    getProduct(_id: $_id) {
       _id
       name
       slug

@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/native';
 import Touchable from '@appandflow/touchable';
+import { EvilIcons } from '@expo/vector-icons';
+import StarRating from 'react-native-star-rating';
 
 import { getPrice } from '../utils/helpers';
-
-import Rating from './Rating';
+import { colors, icons } from '../utils/constants';
 
 const Container = styled.View`
   width: 175;
@@ -15,7 +16,7 @@ const Container = styled.View`
   justifyContent: center;
 `;
 
-const Button = styled(Touchable).attrs({
+const ProductTouchable = styled(Touchable).attrs({
   feedback: 'none',
 })`
   width: 100%;
@@ -30,12 +31,31 @@ const Image = styled.Image`
   backgroundColor: ${props => props.theme.LIGHT};
 `;
 
+const HeartButton = styled(Touchable).attrs({
+  feedback: 'opacity',
+})`
+  position: absolute;
+  width: 35;
+  height: 35;
+  justifyContent: center;
+  alignItems: center;
+  backgroundColor: transparent;
+  top: 0;
+  right: 0;
+`;
+
 const MetaContainer = styled.View`
   flex: 2.5;
   alignSelf: stretch;
   paddingTop: 8px;
   paddingHorizontal: 8px;
   alignItems: flex-start;
+`;
+
+const FooterMetaContainer = styled.View`
+  flexDirection: row;
+  justifyContent: center;
+  top: 3;
 `;
 
 const SeletedBar = styled.View`
@@ -66,6 +86,12 @@ const MetaText = styled.Text.attrs({
   fontSize: 13;
 `;
 
+const Review = styled.Text`
+  fontSize: 10;
+  fontFamily: 'quicksand-medium';
+  paddingLeft: 8;
+  color: ${props => props.theme.DARK};
+`;
 const Price = styled(MetaText)`
   fontFamily: 'quicksand-medium';
   color: ${props => props.theme.WHITE};
@@ -74,15 +100,21 @@ const Price = styled(MetaText)`
 
 class ProductCard extends Component {
   render() {
-    const {
-      product: { images, name, totalRating, ratedTimes, price },
-      selected,
-    } = this.props;
+    const { product: { images, name, reviews, price }, selected } = this.props;
+
+    let totalRating = 0;
+
+    reviews.map(review => (totalRating += review.rating)); // eslint-disable-line
 
     return (
       <Container>
-        <Button>
+        <ProductTouchable
+          onPress={() => this.props.onPress(this.props.product)}
+        >
           <Image source={{ uri: images[0] }} />
+          <HeartButton>
+            <EvilIcons size={28} color={colors.WHITE} name={icons.HEART} />
+          </HeartButton>
           <PriceContainer>
             <Price>
               {getPrice(price)}
@@ -92,13 +124,20 @@ class ProductCard extends Component {
             <MetaText>
               {name}
             </MetaText>
-            <Rating
-              rating={totalRating / ratedTimes || 0}
-              reviews={totalRating || 0}
-            />
+            <FooterMetaContainer>
+              <StarRating
+                disabled
+                rating={totalRating / reviews.length || 0}
+                starSize={11}
+                starColor={colors.SECONDARY_A}
+              />
+              <Review>
+                {reviews.length} Reviews
+              </Review>
+            </FooterMetaContainer>
           </MetaContainer>
           {selected && <SeletedBar />}
-        </Button>
+        </ProductTouchable>
       </Container>
     );
   }

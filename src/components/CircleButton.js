@@ -18,7 +18,8 @@ const Root = styled(Touchable).attrs({
   width: ${BUTTON_SIZE};
   minHeight: ${BUTTON_SIZE};
   borderRadius: ${BUTTON_RADIUS};
-  backgroundColor: ${props => props.theme.PRIMARY};
+  backgroundColor: ${props =>
+    props.secondary ? props.theme.SECONDARY_A : props.theme.PRIMARY};
   justifyContent: center;
   alignItems: center;
   shadowColor: ${props => props.theme.BLACK};
@@ -32,7 +33,7 @@ class CircleButton extends Component {
   render() {
     if (this.props.loading) {
       return (
-        <Root disabled>
+        <Root disabled secondary={this.props.secondary}>
           <Loading size="small" />
         </Root>
       );
@@ -40,14 +41,22 @@ class CircleButton extends Component {
 
     if (this.props.disabled) {
       return (
-        <Root disabled style={{ backgroundColor: '#e7caf9' }}>
+        <Root
+          disabled
+          style={{ backgroundColor: '#e7caf9' }}
+          secondary={this.props.secondary}
+        >
           {this.props.children}
         </Root>
       );
     }
 
     return (
-      <Root onPress={this.props.onPress} disabled={this.props.disabled}>
+      <Root
+        onPress={this.props.onPress}
+        disabled={this.props.disabled}
+        secondary={this.props.secondary}
+      >
         {this.props.children}
       </Root>
     );

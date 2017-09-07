@@ -141,6 +141,10 @@ class ExploreScreen extends Component {
     });
   };
 
+  _handleProductPressed = product => {
+    this.props.navigation.navigate('ProductDetail', { product });
+  };
+
   _renderProductsList = () => {
     if (this.state.fetchingProducts) {
       return <Loading size="large" color={colors.PRIMARY} />;
@@ -168,6 +172,7 @@ class ExploreScreen extends Component {
           <ProductCard
             product={item}
             selected={this.state.selectedProduct === index}
+            onPress={this._handleProductPressed}
           />}
         ListFooterComponent={() => <ProductListSpace />}
         ListHeaderComponent={() => <ProductListSpace />}
