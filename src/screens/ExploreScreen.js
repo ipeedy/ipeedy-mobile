@@ -12,6 +12,7 @@ import { colors } from '../utils/constants';
 import UserMarker from '../components/UserMarker';
 import ProductCard from '../components/ProductCard';
 import Loading from '../components/Loading';
+import Snackbar from '../components/Snackbar';
 
 const INITIAL_REGION = {
   latitude: 37.78825,
@@ -83,7 +84,7 @@ class ExploreScreen extends Component {
   }
 
   componentWillUnmount() {
-    this.watchLocation.remove();
+    if (this.watchLocation) this.watchLocation.remove();
   }
 
   _watchUserPositionAsync = async () => {
@@ -183,6 +184,7 @@ class ExploreScreen extends Component {
   render() {
     return (
       <Root>
+        {this.state.error && <Snackbar message={this.state.error} secondary />}
         <MapContainer>
           <Map
             initialRegion={{ ...INITIAL_REGION, ...DEFAULT_DELTA }}

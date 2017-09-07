@@ -142,8 +142,8 @@ class ProductDetailScreen extends Component {
   };
 
   _renderImages = images =>
-    images.map((image, idx) =>
-      <Image key={idx} source={{ uri: image }} />, // eslint-disable-line
+    images.map(
+      (image, idx) => <Image key={idx} source={{ uri: image }} />, // eslint-disable-line
     );
 
   _onRefresh = async () => {
