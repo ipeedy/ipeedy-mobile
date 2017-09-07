@@ -31,14 +31,6 @@ const Root = styled.View`
 
 const MapContainer = styled.View`flex: 7.5;`;
 
-const Map = styled(MapView).attrs({
-  showsMyLocationButton: true,
-  provider: MapView.PROVIDER_GOOGLE,
-  customMapStyle: MapStyle,
-})`
-  flex: 1;
-`;
-
 const ProductsContainer = styled.View`
   flex: 3;
   backgroundColor: ${props => props.theme.WHITE};
@@ -79,15 +71,15 @@ class ExploreScreen extends Component {
         error: 'Not support Android emulator. Try again on your device!',
       });
     } else {
-      this._watchUserPositionAsync();
+      this._getUserPositionAsync();
     }
   }
 
-  componentWillUnmount() {
-    if (this.watchLocation) this.watchLocation.remove();
-  }
+  // componentWillUnmount() {
+  //   if (this.watchLocation) this.watchLocation.remove();
+  // }
 
-  _watchUserPositionAsync = async () => {
+  _getUserPositionAsync = async () => {
     const { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== 'granted') {
       this.setState({
@@ -102,25 +94,31 @@ class ExploreScreen extends Component {
           ...coords,
           ...DEFAULT_DELTA,
         },
+        userRegion: {
+          ...coords,
+        },
       },
-      () => this._getProducts(),
+      () => {
+        this._map.animateToCoordinate(coords, 1);
+        this._getProducts();
+      },
     );
 
-    this.watchLocation = await Location.watchPositionAsync(
-      {
-        enableHighAccuracy: true,
-        timeInterval: 36000,
-        distanceInterval: 10,
-      },
-      ({ coords: { latitude, longitude } }) => {
-        this.setState({
-          userRegion: {
-            latitude,
-            longitude,
-          },
-        });
-      },
-    );
+    // this.watchLocation = await Location.watchPositionAsync(
+    //   {
+    //     enableHighAccuracy: true,
+    //     timeInterval: 36000,
+    //     distanceInterval: 10,
+    //   },
+    //   ({ coords: { latitude, longitude } }) => {
+    //     this.setState({
+    //       userRegion: {
+    //         latitude,
+    //         longitude,
+    //       },
+    //     });
+    //   },
+    // );
   };
 
   _getProducts = async () => {
@@ -186,10 +184,15 @@ class ExploreScreen extends Component {
       <Root>
         {this.state.error && <Snackbar message={this.state.error} secondary />}
         <MapContainer>
-          <Map
+          <MapView
+            ref={component => this._map = component} // eslint-disable-line
             initialRegion={{ ...INITIAL_REGION, ...DEFAULT_DELTA }}
             region={this.state.region}
             onRegionChange={this._handleRegionChange}
+            showsMyLocationButton
+            provider={MapView.PROVIDER_GOOGLE}
+            customMapStyle={MapStyle}
+            style={{ flex: 1 }}
           >
             <MapView.Marker
               coordinate={this.state.userRegion || INITIAL_REGION}
@@ -197,7 +200,7 @@ class ExploreScreen extends Component {
             >
               <UserMarker />
             </MapView.Marker>
-          </Map>
+          </MapView>
         </MapContainer>
         <ProductsContainer>
           {this._renderProductsList()}
