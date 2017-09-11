@@ -90,7 +90,9 @@ class Drawer extends Component {
             {this.props.info.name || 'Alexandra User'}
           </Name>
           <Phone>
-            {this._formattedPhoneNumber(this.props.info.phone)}
+            {this.props.info.phone
+              ? this._formattedPhoneNumber(this.props.info.phone)
+              : '0912 345 678'}
           </Phone>
         </MetaContainer>
       </InfoContainer>
