@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Platform, FlatList, Animated, LayoutAnimation } from 'react-native';
 import styled from 'styled-components/native';
 import { MapView, Location, Permissions, Constants } from 'expo';
-import { graphql, withApollo, compose } from 'react-apollo';
+import { withApollo } from 'react-apollo';
 import { connect } from 'react-redux';
 
-import GET_PRODUCTS_QUERY from '../graphql/queries/products';
+import GET_NEARBY_PRODUCTS_QUERY from '../graphql/queries/nearbyProducts';
 import { updateUserLocation } from '../actions/user';
 
 import MapStyle from '../utils/mapstyle';
@@ -125,12 +125,20 @@ class ExploreScreen extends Component {
   };
 
   _getProducts = async () => {
-    const { data: { getProducts } } = await this.props.client.query({
-      query: GET_PRODUCTS_QUERY,
+    const { userRegion: { latitude, longitude } } = this.state;
+    const { data: { getNearbyProducts } } = await this.props.client.query({
+      query: GET_NEARBY_PRODUCTS_QUERY,
+      variables: {
+        latitude,
+        longitude,
+        distance: 10000000,
+      },
     });
+    const products = [];
+    getNearbyProducts.map(pro => products.push({ ...pro.obj, dis: pro.dis }));
     this.setState({
       fetchingProducts: false,
-      products: getProducts,
+      products,
     });
   };
 
@@ -214,8 +222,5 @@ class ExploreScreen extends Component {
 }
 
 export default withApollo(
-  compose(
-    graphql(GET_PRODUCTS_QUERY),
-    connect(undefined, { updateUserLocation }),
-  )(ExploreScreen),
+  connect(undefined, { updateUserLocation })(ExploreScreen),
 );

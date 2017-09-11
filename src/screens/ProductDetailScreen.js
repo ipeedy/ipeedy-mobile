@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/native';
 import { RefreshControl, View } from 'react-native';
+import { MapView } from 'expo';
 import Swiper from 'react-native-swiper';
 import { Ionicons } from '@expo/vector-icons';
 import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
@@ -10,8 +11,14 @@ import { withApollo } from 'react-apollo';
 import GET_PRODUCT_QUERY from '../graphql/queries/product';
 import { colors, icons } from '../utils/constants';
 import { getPrice } from '../utils/helpers';
+import MapStyle from '../utils/mapstyle';
 
 import CircleButton from '../components/CircleButton';
+
+const DEFAULT_DELTA = {
+  latitudeDelta: 0.0922 / 3,
+  longitudeDelta: 0.0421 / 3,
+};
 
 const Root = styled.View`
   flex: 1;
@@ -42,7 +49,7 @@ const Image = styled.Image`
 
 const ContentWrapper = styled.View`
   width: 100%;
-  height: 600;
+  minHeight: 700;
   paddingHorizontal: 20;
   paddingVertical: 20;
 `;
@@ -112,9 +119,22 @@ const ReviewContainer = styled.View`
   maxHeight: 200;
 `;
 
+const LocationContainer = styled.View`
+  width: 100%;
+  maxHeight: 200;
+`;
+
 const Description = styled(MetaItemText)`
   top: 10;
   paddingBottom: 20;
+`;
+
+const Distance = styled(Description)`
+  position: absolute;
+  top: 85%;
+  color: ${props => props.theme.PRIMARY};
+  backgroundColor: transparent;
+  fontFamily: 'quicksand-medium';
 `;
 
 const CircleButtonContainer = styled.View`
@@ -283,6 +303,41 @@ class ProductDetailScreen extends Component {
                 />
               </ReviewFooterContainer>
             </ReviewContainer>
+
+            <Divider />
+
+            <LocationContainer>
+              <MetaTitle>Location</MetaTitle>
+              <MapView
+                style={{
+                  height: 180,
+                  top: 10,
+                  marginBottom: 10,
+                  alignItems: 'center',
+                }}
+                provider={MapView.PROVIDER_GOOGLE}
+                region={{
+                  longitude: product.geometry.coordinates[0],
+                  latitude: product.geometry.coordinates[1],
+                  ...DEFAULT_DELTA,
+                }}
+                customMapStyle={MapStyle}
+                scrollEnabled={false}
+              >
+                <MapView.Circle
+                  center={{
+                    longitude: product.geometry.coordinates[0],
+                    latitude: product.geometry.coordinates[1],
+                  }}
+                  radius={1000}
+                  strokeColor="rgba(130,4,150, 0.4)"
+                  fillColor="rgba(130,4,150, 0.1)"
+                />
+                <Distance>
+                  {parseInt(product.dis, 10)}km from here
+                </Distance>
+              </MapView>
+            </LocationContainer>
 
             <Divider />
           </ContentWrapper>

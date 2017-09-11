@@ -20,6 +20,9 @@ export default gql`
         createdAt
         updatedAt
       }
+      geometry {
+        coordinates
+      }
       availableCount
       favoriteCount
       user {
