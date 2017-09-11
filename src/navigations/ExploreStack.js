@@ -8,7 +8,7 @@ import { colors, icons } from '../utils/constants';
 import ButtonHeader from '../components/ButtonHeader';
 
 import ExploreScreen from '../screens/ExploreScreen';
-import CreateProductScreen from '../screens/CreateProductScreen';
+import CreateProductStack from './CreateProductStack';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
 
 const View = styled.View`flexDirection: row;`;
@@ -22,7 +22,7 @@ export default StackNavigator(
       },
     },
     CreateProduct: {
-      screen: CreateProductScreen,
+      screen: CreateProductStack,
       navigationOptions: ({ navigation }) => ({
         title: 'Create Product',
         headerLeft: (

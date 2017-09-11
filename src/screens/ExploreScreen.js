@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { Platform, FlatList, Animated, LayoutAnimation } from 'react-native';
 import styled from 'styled-components/native';
 import { MapView, Location, Permissions, Constants } from 'expo';
-import { graphql, withApollo } from 'react-apollo';
+import { graphql, withApollo, compose } from 'react-apollo';
+import { connect } from 'react-redux';
 
 import GET_PRODUCTS_QUERY from '../graphql/queries/products';
+import { updateUserLocation } from '../actions/user';
 
 import MapStyle from '../utils/mapstyle';
 import { colors } from '../utils/constants';
@@ -100,6 +102,7 @@ class ExploreScreen extends Component {
       },
       () => {
         this._map.animateToCoordinate(coords, 1);
+        this.props.updateUserLocation(coords);
         this._getProducts();
       },
     );
@@ -185,7 +188,7 @@ class ExploreScreen extends Component {
         {this.state.error && <Snackbar message={this.state.error} secondary />}
         <MapContainer>
           <MapView
-            ref={component => this._map = component} // eslint-disable-line
+            ref={component => (this._map = component)} // eslint-disable-line
             initialRegion={{ ...INITIAL_REGION, ...DEFAULT_DELTA }}
             region={this.state.region}
             onRegionChange={this._handleRegionChange}
@@ -210,4 +213,9 @@ class ExploreScreen extends Component {
   }
 }
 
-export default withApollo(graphql(GET_PRODUCTS_QUERY)(ExploreScreen));
+export default withApollo(
+  compose(
+    graphql(GET_PRODUCTS_QUERY),
+    connect(undefined, { updateUserLocation }),
+  )(ExploreScreen),
+);

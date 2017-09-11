@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/native';
-import { RefreshControl } from 'react-native';
+import { RefreshControl, View } from 'react-native';
 import Swiper from 'react-native-swiper';
 import { Ionicons } from '@expo/vector-icons';
 import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
@@ -141,10 +141,36 @@ class ProductDetailScreen extends Component {
     refreshing: false,
   };
 
-  _renderImages = images =>
-    images.map(
-      (image, idx) => <Image key={idx} source={{ uri: image }} />, // eslint-disable-line
-    );
+  _renderImages = images => {
+    if (images.length > 0)
+      return images.map(
+        (image, idx) => <Image key={idx} source={{ uri: image }} />, // eslint-disable-line
+      );
+    return <View />;
+  };
+
+  _renderReview = reviews => {
+    if (reviews.length > 0)
+      return (
+        <View>
+          <ReviewMetaContainer>
+            <OwnerAvatar source={{ uri: reviews[0].user.avatar }} />
+            <OwnerInfoContainer style={{ left: 20 }}>
+              <MetaTitle>
+                {reviews[0].user.name}
+              </MetaTitle>
+              <MetaItemText>{`${distanceInWordsToNow(
+                reviews[0].createdAt,
+              )} ago`}</MetaItemText>
+            </OwnerInfoContainer>
+          </ReviewMetaContainer>
+          <Description>
+            {reviews[0].text}
+          </Description>
+        </View>
+      );
+    return <View />;
+  };
 
   _onRefresh = async () => {
     const { data: { getProduct } } = await this.props.client.query({
@@ -243,20 +269,7 @@ class ProductDetailScreen extends Component {
 
             <ReviewContainer>
               <MetaTitle>Reviews</MetaTitle>
-              <ReviewMetaContainer>
-                <OwnerAvatar source={{ uri: product.reviews[0].user.avatar }} />
-                <OwnerInfoContainer style={{ left: 20 }}>
-                  <MetaTitle>
-                    {product.reviews[0].user.name}
-                  </MetaTitle>
-                  <MetaItemText>{`${distanceInWordsToNow(
-                    product.reviews[0].createdAt,
-                  )} ago`}</MetaItemText>
-                </OwnerInfoContainer>
-              </ReviewMetaContainer>
-              <Description>
-                {product.reviews[0].text}
-              </Description>
+              {this._renderReview(product.reviews)}
               <ReviewFooterContainer>
                 <MetaButtonText>
                   Read all {product.reviews.length} reviews

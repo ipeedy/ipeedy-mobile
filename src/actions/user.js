@@ -13,6 +13,13 @@ export function getUserInfo(info) {
   };
 }
 
+export function updateUserLocation(coordinates) {
+  return {
+    type: 'UPDATE_USER_LOCATION',
+    coordinates,
+  };
+}
+
 export function logout() {
   return async dispatch => {
     try {

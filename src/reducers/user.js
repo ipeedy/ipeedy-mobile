@@ -15,6 +15,14 @@ export default (state = initialState, action) => {
         ...state,
         info: action.info,
       };
+    case 'UPDATE_USER_LOCATION':
+      return {
+        ...state,
+        info: {
+          ...state.info,
+          location: action.coordinates,
+        },
+      };
     case 'LOGOUT':
       return initialState;
     default:
