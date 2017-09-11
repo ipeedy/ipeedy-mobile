@@ -10,6 +10,9 @@ export default gql`
       images
       price
       soldCount
+      geometry {
+        coordinates
+      }
       reviews {
         user {
           name
