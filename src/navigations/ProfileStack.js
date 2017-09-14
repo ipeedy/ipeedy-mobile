@@ -1,40 +1,25 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { StackNavigator } from 'react-navigation';
 import { Ionicons } from '@expo/vector-icons';
-import { connect } from 'react-redux';
 
 import { colors, icons } from '../utils/constants';
 
 import ButtonHeader from '../components/ButtonHeader';
 
+import UpdateInfoStack from '../navigations/UpdateInfoStack';
 import ProfileScreen from '../screens/ProfileScreen';
-import UpdateNameScreen from '../screens/UpdateUserInfo/UpdateNameScreen';
-import UpdateEmailScreen from '../screens/UpdateUserInfo/UpdateEmailScreen';
 
-const ProfileDetail = StackNavigator(
-  {
-    Profile: {
-      screen: ProfileScreen,
-      navigationOptions: {
-        title: 'Profile',
-      },
-    },
-  },
-  {
-    cardStyle: {
-      backgroundColor: colors.WHITE,
-    },
-    headerMode: 'float',
+const ProfileStack = StackNavigator({
+  Profile: {
+    screen: ProfileScreen,
     navigationOptions: ({ navigation }) => ({
+      title: 'Profile',
       headerStyle: {
         backgroundColor: colors.PRIMARY,
       },
       headerLeft: (
-        <ButtonHeader
-          side="left"
-          onPress={() => navigation.navigate('DrawerOpen')}
-        >
-          <Ionicons size={27} name={icons.MENU} color={colors.WHITE} />
+        <ButtonHeader side="left" onPress={() => navigation.goBack(null)}>
+          <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
         </ButtonHeader>
       ),
       headerTitleStyle: {
@@ -45,28 +30,18 @@ const ProfileDetail = StackNavigator(
       },
     }),
   },
-);
-
-const UpdateInfo = StackNavigator(
-  {
-    UpdateName: {
-      screen: UpdateNameScreen,
-    },
-    UpdateEmail: {
-      screen: UpdateEmailScreen,
-    },
-  },
-  {
-    cardStyle: {
-      backgroundColor: colors.WHITE,
-    },
-    headerMode: 'float',
-    navigationOptions: () => ({
+  UpdateInfo: {
+    screen: UpdateInfoStack,
+    navigationOptions: ({ navigation }) => ({
       title: 'Update Info',
       headerStyle: {
         backgroundColor: colors.PRIMARY,
       },
-      headerLeft: null,
+      headerLeft: (
+        <ButtonHeader side="left" onPress={() => navigation.goBack(null)}>
+          <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
+        </ButtonHeader>
+      ),
       headerTitleStyle: {
         color: colors.WHITE,
         fontFamily: 'quicksand-regular',
@@ -75,14 +50,6 @@ const UpdateInfo = StackNavigator(
       },
     }),
   },
-);
+});
 
-class ProfileStack extends Component {
-  render() {
-    const { user } = this.props;
-    if (!user.name || !user.email) return <UpdateInfo screenProps={user} />;
-    return <ProfileDetail />;
-  }
-}
-
-export default connect(state => ({ user: state.user.info }))(ProfileStack);
+export default ProfileStack;

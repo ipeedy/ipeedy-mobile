@@ -2,28 +2,26 @@ import React, { Component } from 'react';
 import styled from 'styled-components/native';
 import { DrawerItems } from 'react-navigation';
 import { connect } from 'react-redux';
-import { graphql, withApollo, compose } from 'react-apollo';
 import PhoneNumber from 'awesome-phonenumber';
-
-import { getUserInfo } from '../actions/user';
-import ME_QUERY from '../graphql/queries/me';
+import Touchable from '@appandflow/touchable';
 
 import Loading from '../components/Loading';
 
-const AVATAR_SIZE = 70;
+const AVATAR_SIZE = 60;
 const AVATAR_RADIUS = AVATAR_SIZE / 2;
 
 const Root = styled.View`flex: 1;`;
 
-const HeaderContainer = styled.View`
-  flex: 3.5;
+const HeaderContainer = styled(Touchable).attrs({
+  feedback: 'none',
+})`
+  flex: 2;
   backgroundColor: ${props => props.theme.PRIMARY};
   justifyContent: flex-end;
 `;
 
 const InfoContainer = styled.View`
   width: 100%;
-  height: 50%;
   paddingHorizontal: 8%;
   paddingVertical: 8%;
   flexDirection: row;
@@ -57,24 +55,24 @@ const Phone = styled.Text`
 `;
 
 const MenuContainer = styled.View`
-  flex: 6.5;
+  flex: 8;
   backgroundColor: ${props => props.theme.WHITE};
 `;
 
 class Drawer extends Component {
   componentDidMount() {
-    this._getUserInfo();
+    // this._getUserInfo();
   }
 
   _formattedPhoneNumber(phone) {
     return PhoneNumber(phone, 'VN').getNumber('international');
   }
 
-  _getUserInfo = async () => {
-    const { data: { me } } = await this.props.client.query({ query: ME_QUERY });
-    this.props.getUserInfo(me);
-    if (!me.email || !me.name) this.props.navigation.navigate('Profile');
-  };
+  // _getUserInfo = async () => {
+  //   const { data: { me } } = await this.props.client.query({ query: ME_QUERY });
+  //   this.props.getUserInfo(me);
+  //   if (!me.email || !me.name) this.props.navigation.navigate('UpdateInfo');
+  // };
 
   _renderInfo = () => {
     if (!this.props.info) return <Loading size="small" />;
@@ -102,7 +100,9 @@ class Drawer extends Component {
   render() {
     return (
       <Root>
-        <HeaderContainer>
+        <HeaderContainer
+          onPress={() => this.props.navigation.navigate('Profile')}
+        >
           {this._renderInfo()}
         </HeaderContainer>
         <MenuContainer>
@@ -113,9 +113,4 @@ class Drawer extends Component {
   }
 }
 
-export default withApollo(
-  compose(
-    connect(state => ({ info: state.user.info }), { getUserInfo }),
-    graphql(ME_QUERY),
-  )(Drawer),
-);
+export default connect(state => ({ info: state.user.info }))(Drawer);

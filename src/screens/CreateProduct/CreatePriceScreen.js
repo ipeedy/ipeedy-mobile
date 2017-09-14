@@ -14,7 +14,7 @@ import Snackbar from '../../components/Snackbar';
 import CircleButton from '../../components/CircleButton';
 
 import CREATE_PRODUCT_MUTATION from '../../graphql/mutations/createProduct';
-import GET_PRODUCTS_QUERY from '../../graphql/queries/products';
+import GET_NEARBY_PRODUCTS_QUERY from '../../graphql/queries/nearbyProducts';
 
 const Root = styled(KeyboardAvoidingView).attrs({
   behavior: 'padding',
@@ -93,36 +93,52 @@ class CreatePriceScreen extends Component {
         __typename: 'Mutation',
         createProduct: {
           __typename: 'Product',
-          name,
-          description,
-          price,
-          availableCount,
-          images: [],
-          favoriteCount: 0,
-          reviews: [],
-          slug: slug(`${name.toLowerCase()}${shortid.generate()}`),
-          geometry: {
-            __typename: 'Geometry',
-            coordinates: [user.location.longitude, user.location.latitude],
-          },
           _id: Math.round(Math.random() * -1000000),
+          name,
+          slug: slug(`${name.toLowerCase()}${shortid.generate()}`),
+          description,
+          availableCount,
+          reviews: [],
+          soldCount: 0,
+          images: [],
           user: {
             __typename: 'User',
             _id: user._id,
             name: user.name,
-            avatar: user.avatar,
             phone: user.phone,
             email: user.email,
+            avatar: user.avatar,
+          },
+          price,
+          geometry: {
+            __typename: 'Geometry',
+            coordinates: [user.location.longitude, user.location.latitude],
           },
           createdAt: new Date(),
+          favoriteCount: 0,
         },
       },
       update: (store, { data: { createProduct } }) => {
-        const data = store.readQuery({ query: GET_PRODUCTS_QUERY });
-        if (!data.getProducts.find(t => t._id === createProduct._id)) {
+        const data = store.readQuery({
+          query: GET_NEARBY_PRODUCTS_QUERY,
+          variables: {
+            latitude: user.location.latitude,
+            longitude: user.location.longitude,
+            distance: 10000000,
+          },
+        });
+        if (!data.getNearbyProducts.find(t => t._id === createProduct._id)) {
           store.writeQuery({
-            query: GET_PRODUCTS_QUERY,
-            data: { getProducts: [{ ...createProduct }, ...data.getProducts] },
+            query: GET_NEARBY_PRODUCTS_QUERY,
+            data: {
+              getNearbyProducts: [
+                {
+                  __typename: 'ProductWithDistance',
+                  obj: createProduct,
+                  dis: 0,
+                },
+              ],
+            },
           });
         }
       },

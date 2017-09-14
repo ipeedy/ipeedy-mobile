@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import { Platform, FlatList, Animated, LayoutAnimation } from 'react-native';
+import { Platform } from 'react-native';
 import styled from 'styled-components/native';
 import { MapView, Location, Permissions, Constants } from 'expo';
 import { withApollo } from 'react-apollo';
 import { connect } from 'react-redux';
 
-import GET_NEARBY_PRODUCTS_QUERY from '../graphql/queries/nearbyProducts';
 import { updateUserLocation } from '../actions/user';
 
 import MapStyle from '../utils/mapstyle';
 import { colors } from '../utils/constants';
 
 import UserMarker from '../components/UserMarker';
-import ProductCard from '../components/ProductCard';
+import ProductList from '../components/ProductList';
 import Loading from '../components/Loading';
 import Snackbar from '../components/Snackbar';
 
@@ -40,29 +39,12 @@ const ProductsContainer = styled.View`
   alignItems: center;
 `;
 
-const ProductList = styled(FlatList).attrs({
-  horizontal: true,
-  contentContainerStyle: {
-    left: 4,
-  },
-  snapToInterval: 175,
-  showsHorizontalScrollIndicator: false,
-  scrollEventThrottle: 1,
-})`
-  flex: 1;
-`;
-
-const ProductListSpace = styled.View`
-  width: 8;
-  height: 100%;
-`;
-
 class ExploreScreen extends Component {
   state = {
     error: null,
     region: null,
     userRegion: null,
-    fetchingProducts: true,
+    fetchingUserRegion: true,
     products: [],
     selectedProduct: 0,
   };
@@ -99,11 +81,12 @@ class ExploreScreen extends Component {
         userRegion: {
           ...coords,
         },
+        fetchingUserRegion: false,
       },
       () => {
         this._map.animateToCoordinate(coords, 1);
         this.props.updateUserLocation(coords);
-        this._getProducts();
+        // this._getProducts();
       },
     );
 
@@ -124,68 +107,23 @@ class ExploreScreen extends Component {
     // );
   };
 
-  _getProducts = async () => {
-    const { userRegion: { latitude, longitude } } = this.state;
-    const { data: { getNearbyProducts } } = await this.props.client.query({
-      query: GET_NEARBY_PRODUCTS_QUERY,
-      variables: {
-        latitude,
-        longitude,
-        distance: 10000000,
-      },
-    });
-    const products = [];
-    getNearbyProducts.map(pro => products.push({ ...pro.obj, dis: pro.dis }));
-    this.setState({
-      fetchingProducts: false,
-      products,
-    });
-  };
-
   _handleRegionChange = region => this.setState({ region });
-
-  _handleScroll = event => {
-    LayoutAnimation.spring();
-    this.setState({
-      selectedProduct: Math.trunc(event.nativeEvent.contentOffset.x / 175),
-    });
-  };
 
   _handleProductPressed = product => {
     this.props.navigation.navigate('ProductDetail', { product });
   };
 
   _renderProductsList = () => {
-    if (this.state.fetchingProducts) {
+    if (this.state.fetchingUserRegion) {
       return <Loading size="large" color={colors.PRIMARY} />;
     }
 
     return (
       <ProductList
-        data={this.state.products}
-        keyExtractor={product => product._id}
-        onScroll={Animated.event(
-          [
-            {
-              nativeEvent: {
-                contentOffset: {
-                  x: this.props.animation,
-                },
-              },
-            },
-          ],
-          {
-            listener: this._handleScroll,
-          },
-        )}
-        renderItem={({ item, index }) =>
-          <ProductCard
-            product={item}
-            selected={this.state.selectedProduct === index}
-            onPress={this._handleProductPressed}
-          />}
-        ListFooterComponent={() => <ProductListSpace />}
-        ListHeaderComponent={() => <ProductListSpace />}
+        latitude={this.state.userRegion.latitude}
+        longitude={this.state.userRegion.longitude}
+        distance={10000000}
+        productPressed={this._handleProductPressed}
       />
     );
   };

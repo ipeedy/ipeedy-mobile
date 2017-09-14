@@ -1,20 +1,30 @@
 import React, { Component } from 'react';
 import { StatusBar, Platform } from 'react-native';
 import styled from 'styled-components/native';
-import { addNavigationHelpers, DrawerNavigator } from 'react-navigation';
+import {
+  addNavigationHelpers,
+  DrawerNavigator,
+  StackNavigator,
+} from 'react-navigation';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { graphql, withApollo, compose } from 'react-apollo';
 import { Ionicons } from '@expo/vector-icons';
 
 import { colors, icons } from '../utils/constants';
+import ME_QUERY from '../graphql/queries/me';
+import { getUserInfo } from '../actions/user';
 
 import Drawer from '../components/Drawer';
+import Loading from '../components/Loading';
 
 import AuthenticationStack from './AuthenticationStack';
 import ExploreStack from './ExploreStack';
 import FavoritesStack from './FavoritesStack';
 import YourProductsStack from './YourProductsStack';
-import ProfileStack from './ProfileStack';
 import SettingsStack from './SettingsStack';
+import ProfileStack from './ProfileStack';
+import UpdateInfoStack from './UpdateInfoStack';
 
 const Root = styled.View`flex: 1;`;
 
@@ -46,13 +56,6 @@ const AppMainNav = DrawerNavigator(
           <Ionicons color={tintColor} name={icons.YOURPRODUCTS} size={24} />,
       },
     },
-    Profile: {
-      screen: ProfileStack,
-      navigationOptions: {
-        drawerIcon: ({ tintColor }) =>
-          <Ionicons color={tintColor} name={icons.PROFILE} size={24} />,
-      },
-    },
     Settings: {
       screen: SettingsStack,
       navigationOptions: {
@@ -80,14 +83,54 @@ const AppMainNav = DrawerNavigator(
   },
 );
 
+const AppMainNavWithProfile = StackNavigator(
+  {
+    Main: {
+      screen: AppMainNav,
+    },
+    Profile: {
+      screen: ProfileStack,
+    },
+    UpdateInfo: {
+      screen: UpdateInfoStack,
+    },
+  },
+  {
+    navigationOptions: {
+      header: null,
+    },
+  },
+);
+
 class AppNavigator extends Component {
+  state = {
+    fetchingInfo: true,
+  };
+
+  componentDidMount() {
+    this._fetchUserInfo();
+  }
+
+  _fetchUserInfo = async () => {
+    if (this.props.user.isAuthenticated) {
+      const { data: { me } } = await this.props.client.query({
+        query: ME_QUERY,
+      });
+      if (me) this.props.getUserInfo(me);
+    }
+    this.setState({ fetchingInfo: false });
+  };
+
   _renderApp = () => {
-    if (!this.props.user.isAuthenticated) return <AuthenticationStack />;
+    if (this.state.fetchingInfo) return <Loading color={colors.PRIMARY} />;
+    const { user } = this.props;
+    if (!user.isAuthenticated) return <AuthenticationStack />;
+    if (!user.info.name) return <UpdateInfoStack />;
     const nav = addNavigationHelpers({
       dispatch: this.props.dispatch,
       state: this.props.nav,
     });
-    return <AppMainNav navigation={nav} />;
+    return <AppMainNavWithProfile navigation={nav} />;
   };
 
   render() {
@@ -105,9 +148,21 @@ class AppNavigator extends Component {
   }
 }
 
-export default connect(state => ({
-  nav: state.nav,
-  user: state.user,
-}))(AppNavigator);
+export default withApollo(
+  compose(
+    connect(
+      state => ({
+        nav: state.nav,
+        user: state.user,
+      }),
+      dispatch =>
+        Object.assign(
+          { dispatch },
+          bindActionCreators({ getUserInfo }, dispatch),
+        ),
+    ),
+    graphql(ME_QUERY),
+  )(AppNavigator),
+);
 
-export const router = AppMainNav.router;
+export const router = AppMainNavWithProfile.router;

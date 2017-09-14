@@ -6,7 +6,7 @@ const Root = styled.View`
   flex: 1;
   justifyContent: center;
   alignItems: center;
-  backgroundColor: ${props => props.theme.LIGHT};
+  backgroundColor: ${props => props.theme.WHITE};
 `;
 
 const Title = styled.Text`

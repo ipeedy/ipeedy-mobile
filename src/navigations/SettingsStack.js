@@ -12,34 +12,31 @@ export default StackNavigator(
   {
     Setting: {
       screen: SettingsScreen,
-      navigationOptions: {
+      navigationOptions: ({ navigation }) => ({
         title: 'Settings',
-      },
+        headerStyle: {
+          backgroundColor: colors.PRIMARY,
+        },
+        headerLeft: (
+          <ButtonHeader
+            side="left"
+            onPress={() => navigation.navigate('DrawerOpen')}
+          >
+            <Ionicons size={27} name={icons.MENU} color={colors.WHITE} />
+          </ButtonHeader>
+        ),
+        headerTitleStyle: {
+          color: colors.WHITE,
+          fontFamily: 'quicksand-regular',
+          fontSize: 18,
+          fontWeight: '200',
+        },
+      }),
     },
   },
   {
     cardStyle: {
       backgroundColor: colors.WHITE,
     },
-    headerMode: 'float',
-    navigationOptions: ({ navigation }) => ({
-      headerStyle: {
-        backgroundColor: colors.PRIMARY,
-      },
-      headerLeft: (
-        <ButtonHeader
-          side="left"
-          onPress={() => navigation.navigate('DrawerOpen')}
-        >
-          <Ionicons size={27} name={icons.MENU} color={colors.WHITE} />
-        </ButtonHeader>
-      ),
-      headerTitleStyle: {
-        color: colors.WHITE,
-        fontFamily: 'quicksand-regular',
-        fontSize: 18,
-        fontWeight: '200',
-      },
-    }),
   },
 );

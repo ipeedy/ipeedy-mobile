@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@appandflow/touchable": "^1.2.1",
+    "apollo-upload-client": "^5.1.1",
     "awesome-phonenumber": "^1.5.0",
     "date-fns": "^1.28.5",
     "expo": "^20.0.0",

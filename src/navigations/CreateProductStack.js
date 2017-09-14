@@ -26,7 +26,7 @@ export default StackNavigator(
               navigation.goBack();
             }}
           >
-            <Ionicons size={27} name={icons.BACK} color={colors.WHITE} />
+            <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
           </ButtonHeader>
         ),
       }),
@@ -43,7 +43,7 @@ export default StackNavigator(
               navigation.navigate('CreateName');
             }}
           >
-            <Ionicons size={27} name={icons.BACK} color={colors.WHITE} />
+            <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
           </ButtonHeader>
         ),
       }),
@@ -60,7 +60,7 @@ export default StackNavigator(
               navigation.navigate('CreateDescription');
             }}
           >
-            <Ionicons size={27} name={icons.BACK} color={colors.WHITE} />
+            <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
           </ButtonHeader>
         ),
       }),
@@ -77,7 +77,7 @@ export default StackNavigator(
               navigation.navigate('CreateAmount');
             }}
           >
-            <Ionicons size={27} name={icons.BACK} color={colors.WHITE} />
+            <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
           </ButtonHeader>
         ),
       }),

@@ -21,15 +21,26 @@ export default gql`
       description
       availableCount
       images
+      soldCount
       user {
         _id
         name
         phone
         email
+        avatar
       }
       price
       geometry {
         coordinates
+      }
+      reviews {
+        user {
+          _id
+          name
+          avatar
+        }
+        text
+        rating
       }
       createdAt
       favoriteCount

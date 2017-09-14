@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { KeyboardAvoidingView, Keyboard } from 'react-native';
 import styled from 'styled-components/native';
-import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import { Ionicons } from '@expo/vector-icons';
+import { connect } from 'react-redux';
 
 import UPDATE_INFO_MUTATION from '../../graphql/mutations/updateInfo';
 import { icons, colors } from '../../utils/constants';
@@ -59,8 +60,7 @@ class UpdateNameScreen extends Component {
   };
 
   componentWillMount() {
-    if (this.props.screenProps.name)
-      this.props.navigation.navigate('UpdateEmail');
+    if (this.props.user.name) this.props.navigation.navigate('UpdateEmail');
   }
 
   _handleNext = async () => {
@@ -109,4 +109,7 @@ class UpdateNameScreen extends Component {
   }
 }
 
-export default graphql(UPDATE_INFO_MUTATION)(UpdateNameScreen);
+export default compose(
+  connect(state => ({ user: state.user.info })),
+  graphql(UPDATE_INFO_MUTATION),
+)(UpdateNameScreen);
