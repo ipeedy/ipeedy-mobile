@@ -15,11 +15,6 @@ import ProductList from '../components/ProductList';
 import Loading from '../components/Loading';
 import Snackbar from '../components/Snackbar';
 
-const INITIAL_REGION = {
-  latitude: 37.78825,
-  longitude: -122.4324,
-};
-
 const DEFAULT_DELTA = {
   latitudeDelta: 0.0922 / 2,
   longitudeDelta: 0.0421 / 2,
@@ -43,7 +38,7 @@ class ExploreScreen extends Component {
   state = {
     error: null,
     region: null,
-    userRegion: null,
+    userRegion: this.props.user.location,
     fetchingUserRegion: true,
     products: [],
     selectedProduct: 0,
@@ -86,7 +81,6 @@ class ExploreScreen extends Component {
       () => {
         this._map.animateToCoordinate(coords, 1);
         this.props.updateUserLocation(coords);
-        // this._getProducts();
       },
     );
 
@@ -114,7 +108,7 @@ class ExploreScreen extends Component {
   };
 
   _renderProductsList = () => {
-    if (this.state.fetchingUserRegion) {
+    if (!this.state.userRegion) {
       return <Loading size="large" color={colors.PRIMARY} />;
     }
 
@@ -129,6 +123,11 @@ class ExploreScreen extends Component {
   };
 
   render() {
+    const INITIAL_REGION = this.props.user.location || {
+      latitude: 37.78825,
+      longitude: -122.4324,
+    };
+
     return (
       <Root>
         {this.state.error && <Snackbar message={this.state.error} secondary />}
@@ -144,7 +143,11 @@ class ExploreScreen extends Component {
             style={{ flex: 1 }}
           >
             <MapView.Marker
-              coordinate={this.state.userRegion || INITIAL_REGION}
+              coordinate={
+                this.state.userRegion ||
+                this.props.user.location ||
+                INITIAL_REGION
+              }
               anchor={{ x: 0.5, y: 0.5 }}
             >
               <UserMarker />
@@ -160,5 +163,7 @@ class ExploreScreen extends Component {
 }
 
 export default withApollo(
-  connect(undefined, { updateUserLocation })(ExploreScreen),
+  connect(state => ({ user: state.user.info }), { updateUserLocation })(
+    ExploreScreen,
+  ),
 );
