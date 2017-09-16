@@ -28,6 +28,7 @@ const ProductTouchable = styled(Touchable).attrs({
 const Image = styled.Image`
   flex: 7.5;
   alignSelf: stretch;
+  width: 100%;
   backgroundColor: ${props => props.theme.LIGHT};
 `;
 
@@ -111,7 +112,9 @@ class ProductCard extends Component {
         <ProductTouchable
           onPress={() => this.props.onPress(this.props.product)}
         >
-          <Image source={{ uri: images[0] }} />
+          {images.length > 0
+            ? <Image source={{ uri: images[0] }} />
+            : <Image source={require('../../assets/images/no-image.png')} />}
           <HeartButton>
             <EvilIcons size={28} color={colors.WHITE} name={icons.HEART} />
           </HeartButton>

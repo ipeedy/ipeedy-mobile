@@ -21,6 +21,7 @@ export const fonts = [
 export const images = [
   require('../../assets/images/ipeedy-mark.png'),
   require('../../assets/images/ipeedy-text.png'),
+  require('../../assets/images/no-image.png'),
 ];
 
 export const constants = {

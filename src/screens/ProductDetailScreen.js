@@ -218,7 +218,9 @@ class ProductDetailScreen extends Component {
           }
         >
           <Swiper autoplay style={{ height: 200 }} showsPagination={false}>
-            {this._renderImages(product.images)}
+            {product.images.length > 0
+              ? this._renderImages(product.images)
+              : <Image source={require('../../assets/images/no-image.png')} />}
           </Swiper>
 
           <ContentWrapper>
