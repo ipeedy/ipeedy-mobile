@@ -31,21 +31,10 @@ const Separator = styled.View`
 class ProductList extends Component {
   state = {
     selectedProduct: 0,
-    refreshing: false,
   };
 
   componentDidMount() {
     this.props.onRefresh(this);
-  }
-
-  shouldComponentUpdate(nextProps) {
-    if (
-      (nextProps.longitude || nextProps.latitude) &&
-      this.props.data.getNearbyProducts
-    ) {
-      return false;
-    }
-    return true;
   }
 
   componentWillUnmount() {
@@ -53,17 +42,15 @@ class ProductList extends Component {
   }
 
   _onRefresh = ({ latitude, longitude }) => {
-    this.setState({ refreshing: true });
     this.props.data.refetch({
       latitude,
       longitude,
       distance: this.props.distance,
     });
-    this.setState({ refreshing: false });
   };
 
   _handleScroll = event => {
-    LayoutAnimation.spring();
+    LayoutAnimation.linear();
     this.setState({
       selectedProduct: Math.trunc(event.nativeEvent.contentOffset.x / 175),
     });
@@ -72,8 +59,7 @@ class ProductList extends Component {
   render() {
     const { data, productPressed } = this.props;
 
-    if (data.loading || this.state.refreshing)
-      return <Loading size="large" color={colors.PRIMARY} />;
+    if (data.loading) return <Loading size="large" color={colors.PRIMARY} />;
 
     if (data.error) return <Snackbar secondary message={data.error.message} />;
 
@@ -81,6 +67,7 @@ class ProductList extends Component {
       <List
         data={data.getNearbyProducts}
         keyExtractor={item => item.obj._id}
+        extraData={this.state.selectedProduct}
         onScroll={Animated.event(
           [
             {
@@ -108,8 +95,4 @@ class ProductList extends Component {
   }
 }
 
-export default graphql(GET_NEARBY_PRODUCTS_QUERY, {
-  options: {
-    notifyOnNetworkStatusChange: true,
-  },
-})(ProductList);
+export default graphql(GET_NEARBY_PRODUCTS_QUERY)(ProductList);

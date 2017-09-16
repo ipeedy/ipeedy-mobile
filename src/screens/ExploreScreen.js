@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Platform } from 'react-native';
+import { Platform, Animated } from 'react-native';
 import styled from 'styled-components/native';
 import { MapView, Location, Permissions, Constants } from 'expo';
 import { withApollo } from 'react-apollo';
@@ -57,6 +57,11 @@ class ExploreScreen extends Component {
     selectedProduct: 0,
     showRefreshButton: false,
   };
+
+  componentWillMount() {
+    this.animation = new Animated.Value(0);
+    this.index = 0;
+  }
 
   componentDidMount() {
     if (Platform.OS === 'android' && !Constants.isDevice) {
@@ -132,7 +137,8 @@ class ExploreScreen extends Component {
       <ProductList
         latitude={this.state.userRegion.latitude}
         longitude={this.state.userRegion.longitude}
-        distance={10000000}
+        distance={7000000}
+        animation={this.animation}
         productPressed={this._handleProductPressed}
         onRefresh={ref => (this.productList = ref)}
       />

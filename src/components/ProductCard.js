@@ -102,7 +102,6 @@ const Price = styled(MetaText)`
 class ProductCard extends Component {
   render() {
     const { product: { images, name, reviews, price }, selected } = this.props;
-
     let totalRating = 0;
 
     reviews.map(review => (totalRating += review.rating)); // eslint-disable-line
