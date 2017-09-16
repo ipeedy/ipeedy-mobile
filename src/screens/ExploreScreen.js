@@ -8,12 +8,13 @@ import { connect } from 'react-redux';
 import { updateUserLocation } from '../actions/user';
 
 import MapStyle from '../utils/mapstyle';
-import { colors } from '../utils/constants';
+import { colors, icons } from '../utils/constants';
 
 import UserMarker from '../components/UserMarker';
 import ProductList from '../components/ProductList';
 import Loading from '../components/Loading';
 import Snackbar from '../components/Snackbar';
+import FuncButton from '../components/FuncButton';
 
 const DEFAULT_DELTA = {
   latitudeDelta: 0.0922 / 2,
@@ -25,11 +26,23 @@ const Root = styled.View`
   backgroundColor: ${props => props.theme.WHITE};
 `;
 
-const MapContainer = styled.View`flex: 7.5;`;
+const MapContainer = styled.View`
+  flex: 7.5;
+  position: relative;
+`;
 
 const ProductsContainer = styled.View`
   flex: 3;
   backgroundColor: ${props => props.theme.WHITE};
+  justifyContent: center;
+  alignItems: center;
+`;
+
+const FuncContainer = styled.View`
+  position: absolute;
+  height: 50px;
+  bottom: 0px;
+  width: 100%;
   justifyContent: center;
   alignItems: center;
 `;
@@ -42,6 +55,7 @@ class ExploreScreen extends Component {
     fetchingUserRegion: true,
     products: [],
     selectedProduct: 0,
+    showRefreshButton: false,
   };
 
   componentDidMount() {
@@ -81,6 +95,7 @@ class ExploreScreen extends Component {
       () => {
         this._map.animateToCoordinate(coords, 1);
         this.props.updateUserLocation(coords);
+        this.setState({ showRefreshButton: false });
       },
     );
 
@@ -101,7 +116,8 @@ class ExploreScreen extends Component {
     // );
   };
 
-  _handleRegionChange = region => this.setState({ region });
+  _handleRegionChange = region =>
+    this.setState({ region, showRefreshButton: true });
 
   _handleProductPressed = product => {
     this.props.navigation.navigate('ProductDetail', { product });
@@ -118,8 +134,14 @@ class ExploreScreen extends Component {
         longitude={this.state.userRegion.longitude}
         distance={10000000}
         productPressed={this._handleProductPressed}
+        onRefresh={ref => (this.productList = ref)}
       />
     );
+  };
+
+  _handleRefreshProduct = () => {
+    this.productList._onRefresh(this.state.region);
+    this.setState({ showRefreshButton: false });
   };
 
   render() {
@@ -137,6 +159,7 @@ class ExploreScreen extends Component {
             initialRegion={{ ...INITIAL_REGION, ...DEFAULT_DELTA }}
             region={this.state.region}
             onRegionChange={this._handleRegionChange}
+            onRegionChangeComplete={this._handleRegionChangeComplete}
             showsMyLocationButton
             provider={MapView.PROVIDER_GOOGLE}
             customMapStyle={MapStyle}
@@ -153,6 +176,14 @@ class ExploreScreen extends Component {
               <UserMarker />
             </MapView.Marker>
           </MapView>
+
+          <FuncContainer>
+            {this.state.showRefreshButton &&
+              <FuncButton
+                title="Refresh"
+                onPress={this._handleRefreshProduct}
+              />}
+          </FuncContainer>
         </MapContainer>
         <ProductsContainer>
           {this._renderProductsList()}
@@ -163,7 +194,7 @@ class ExploreScreen extends Component {
 }
 
 export default withApollo(
-  connect(state => ({ user: state.user.info }), { updateUserLocation })(
-    ExploreScreen,
-  ),
+  connect(state => ({ user: state.user.info }), {
+    updateUserLocation,
+  })(ExploreScreen),
 );

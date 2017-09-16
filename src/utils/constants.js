@@ -45,4 +45,5 @@ export const icons = {
   ADD: 'ios-add',
   SHARE: 'share-google',
   CASH: 'ios-cash-outline',
+  REFRESH: 'ios-refresh-circle-outline',
 };

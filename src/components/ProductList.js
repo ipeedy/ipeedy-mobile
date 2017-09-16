@@ -5,6 +5,7 @@ import { graphql } from 'react-apollo';
 
 import ProductCard from './ProductCard';
 import Loading from './Loading';
+import Snackbar from './Snackbar';
 
 import { colors } from '../utils/constants';
 
@@ -22,7 +23,7 @@ const List = styled(FlatList).attrs({
   flex: 1;
 `;
 
-const ListSpace = styled.View`
+const Separator = styled.View`
   width: 8;
   height: 100%;
 `;
@@ -30,6 +31,35 @@ const ListSpace = styled.View`
 class ProductList extends Component {
   state = {
     selectedProduct: 0,
+    refreshing: false,
+  };
+
+  componentDidMount() {
+    this.props.onRefresh(this);
+  }
+
+  shouldComponentUpdate(nextProps) {
+    if (
+      (nextProps.longitude || nextProps.latitude) &&
+      this.props.data.getNearbyProducts
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  componentWillUnmount() {
+    this.props.onRefresh(undefined);
+  }
+
+  _onRefresh = ({ latitude, longitude }) => {
+    this.setState({ refreshing: true });
+    this.props.data.refetch({
+      latitude,
+      longitude,
+      distance: this.props.distance,
+    });
+    this.setState({ refreshing: false });
   };
 
   _handleScroll = event => {
@@ -42,7 +72,10 @@ class ProductList extends Component {
   render() {
     const { data, productPressed } = this.props;
 
-    if (data.loading) return <Loading size="large" color={colors.PRIMARY} />;
+    if (data.loading || this.state.refreshing)
+      return <Loading size="large" color={colors.PRIMARY} />;
+
+    if (data.error) return <Snackbar secondary message={data.error.message} />;
 
     return (
       <List
@@ -68,11 +101,15 @@ class ProductList extends Component {
             selected={this.state.selectedProduct === index}
             onPress={productPressed}
           />}
-        ListFooterComponent={() => <ListSpace />}
-        ListHeaderComponent={() => <ListSpace />}
+        ListFooterComponent={() => <Separator />}
+        ListHeaderComponent={() => <Separator />}
       />
     );
   }
 }
 
-export default graphql(GET_NEARBY_PRODUCTS_QUERY)(ProductList);
+export default graphql(GET_NEARBY_PRODUCTS_QUERY, {
+  options: {
+    notifyOnNetworkStatusChange: true,
+  },
+})(ProductList);
