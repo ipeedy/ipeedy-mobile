@@ -9,17 +9,18 @@ import { fetchProducts } from '../actions/product';
 import GET_NEARBY_PRODUCTS_QUERY from '../graphql/queries/nearbyProducts';
 
 import MapStyle from '../utils/mapstyle';
-import { colors, icons } from '../utils/constants';
+import { colors } from '../utils/constants';
 
 import UserMarker from '../components/UserMarker';
 import ProductList from '../components/ProductList';
 import Loading from '../components/Loading';
 import Snackbar from '../components/Snackbar';
 import FuncButton from '../components/FuncButton';
+import { CARD_WIDTH } from '../components/ProductCard';
 
 const DEFAULT_DELTA = {
-  latitudeDelta: 0.0922 / 2,
-  longitudeDelta: 0.0421 / 2,
+  latitudeDelta: 0.016,
+  longitudeDelta: 0.008,
 };
 
 const DISTANCE = 10000;
@@ -37,6 +38,8 @@ const MapContainer = styled.View`
 const MarkerWrap = styled(Animated.View)`
   alignItems: center;
   justifyContent: center;
+  width: 60;
+  height: 60;
 `;
 
 const MarkerRing = styled(Animated.View)`
@@ -45,8 +48,6 @@ const MarkerRing = styled(Animated.View)`
   borderRadius: 12;
   backgroundColor: rgba(130,4,150, 0.3);
   position: absolute;
-  borderWidth: 1;
-  borderColor: rgba(130,4,150, 0.5);
 `;
 
 const Marker = styled.View`
@@ -113,6 +114,46 @@ class ExploreScreen extends Component {
     });
     this.props.fetchProducts(data);
     this.setState({ productFetched: true });
+    this._addMapViewEventListener();
+  };
+
+  _addMapViewEventListener = () => {
+    const { products } = this.props;
+
+    if (products.length)
+      this.map.animateToRegion({
+        longitude: products[0].obj.geometry.coordinates[0],
+        latitude: products[0].obj.geometry.coordinates[1],
+        ...DEFAULT_DELTA,
+      });
+
+    this.animation.addListener(({ value }) => {
+      let index = Math.floor(value / CARD_WIDTH + 0.3);
+      if (index >= products.length) {
+        index = products.length - 1;
+      }
+      if (index <= 0) {
+        index = 0;
+      }
+
+      clearTimeout(this.regionTimeout);
+      this.regionTimeout = setTimeout(() => {
+        if (this.index !== index) {
+          this.index = index;
+          const coordinate = {
+            longitude: products[index].obj.geometry.coordinates[0],
+            latitude: products[index].obj.geometry.coordinates[1],
+          };
+          this.map.animateToRegion(
+            {
+              ...coordinate,
+              ...DEFAULT_DELTA,
+            },
+            250,
+          );
+        }
+      }, 10);
+    });
   };
 
   _renderProductsList = () => {
@@ -144,7 +185,56 @@ class ExploreScreen extends Component {
     }
   };
 
-  _renderProductMarkers = () => {};
+  _renderProductMarkers = () => {
+    if (this.state.productFetched) {
+      const markers = [];
+      this.props.products.map((product, index) => {
+        const inputRange = [
+          (index - 1) * CARD_WIDTH,
+          index * CARD_WIDTH,
+          (index + 1) * CARD_WIDTH,
+        ];
+        const sizeInterpolate = this.animation.interpolate({
+          inputRange,
+          outputRange: [1, 2.25, 1],
+          extrapolate: 'clamp',
+        });
+        const scaleStyle = {
+          transform: [
+            {
+              scale: sizeInterpolate,
+            },
+          ],
+        };
+        const opacityStyle = {
+          opacity: this.animation.interpolate({
+            inputRange,
+            outputRange: [0.35, 1, 0.35],
+            extrapolate: 'clamp',
+          }),
+        };
+        const longitude = product.obj.geometry.coordinates[0];
+        const latitude = product.obj.geometry.coordinates[1];
+        return markers.push(
+          <MapView.Marker
+            key={product.obj._id}
+            coordinate={{
+              longitude,
+              latitude,
+            }}
+            anchor={{ x: 0.5, y: 0.5 }}
+          >
+            <MarkerWrap style={opacityStyle}>
+              <MarkerRing style={scaleStyle} />
+              <Marker />
+            </MarkerWrap>
+          </MapView.Marker>,
+        );
+      });
+
+      return markers;
+    }
+  };
 
   _handleRefreshProduct = () => {
     const { longitude, latitude } = this.state.region;
@@ -160,7 +250,7 @@ class ExploreScreen extends Component {
         {user.error && <Snackbar message={user.error} secondary />}
         <MapContainer>
           <MapView
-            ref={component => (this._map = component)} // eslint-disable-line
+            ref={map => (this.map = map)} // eslint-disable-line
             initialRegion={{ ...user.info.location, ...DEFAULT_DELTA }}
             region={this.state.region}
             onRegionChange={this._handleRegionChange}
@@ -169,8 +259,8 @@ class ExploreScreen extends Component {
             customMapStyle={MapStyle}
             style={{ flex: 1 }}
           >
-            {this._renderUserMarker()}
             {this._renderProductMarkers()}
+            {this._renderUserMarker()}
           </MapView>
 
           <FuncContainer>

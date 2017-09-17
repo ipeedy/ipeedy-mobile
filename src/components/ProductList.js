@@ -3,16 +3,16 @@ import { Animated, FlatList, LayoutAnimation, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 import { connect } from 'react-redux';
 
-import ProductCard from './ProductCard';
+import ProductCard, { CARD_WIDTH } from './ProductCard';
 
 const { width } = Dimensions.get('window');
 
-const List = styled(FlatList).attrs({
+const List = styled(Animated.createAnimatedComponent(FlatList)).attrs({
   horizontal: true,
   contentContainerStyle: {
     left: 4,
   },
-  snapToInterval: 175,
+  snapToInterval: CARD_WIDTH,
   showsHorizontalScrollIndicator: false,
   scrollEventThrottle: 1,
 })`
@@ -25,7 +25,7 @@ const ListSeparator = styled.View`
 `;
 
 const ListFooter = styled.View`
-  width: ${width - 175};
+  width: ${width - CARD_WIDTH};
   height: 100%;
 `;
 
@@ -37,7 +37,9 @@ class ProductList extends Component {
   _handleScroll = event => {
     LayoutAnimation.linear();
     this.setState({
-      selectedProduct: Math.trunc(event.nativeEvent.contentOffset.x / 175),
+      selectedProduct: Math.trunc(
+        event.nativeEvent.contentOffset.x / CARD_WIDTH,
+      ),
     });
   };
 
@@ -49,6 +51,7 @@ class ProductList extends Component {
         data={products}
         keyExtractor={item => item.obj._id}
         extraData={this.state.selectedProduct}
+        snapToInterval={CARD_WIDTH}
         onScroll={Animated.event(
           [
             {
@@ -60,6 +63,7 @@ class ProductList extends Component {
             },
           ],
           {
+            useNativeDriver: true,
             listener: this._handleScroll,
           },
         )}

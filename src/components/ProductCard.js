@@ -7,8 +7,10 @@ import StarRating from 'react-native-star-rating';
 import { getPrice } from '../utils/helpers';
 import { colors, icons } from '../utils/constants';
 
+export const CARD_WIDTH = 175;
+
 const Container = styled.View`
-  width: 175;
+  width: ${CARD_WIDTH};
   height: 100%;
   paddingHorizontal: 4px;
   paddingVertical: 8px;
