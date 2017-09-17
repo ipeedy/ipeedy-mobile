@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { Animated, FlatList, LayoutAnimation } from 'react-native';
+import { Animated, FlatList, LayoutAnimation, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 import { connect } from 'react-redux';
 
 import ProductCard from './ProductCard';
+
+const { width } = Dimensions.get('window');
 
 const List = styled(FlatList).attrs({
   horizontal: true,
@@ -17,8 +19,13 @@ const List = styled(FlatList).attrs({
   flex: 1;
 `;
 
-const Separator = styled.View`
+const ListSeparator = styled.View`
   width: 8;
+  height: 100%;
+`;
+
+const ListFooter = styled.View`
+  width: ${width - 175};
   height: 100%;
 `;
 
@@ -62,8 +69,8 @@ class ProductList extends Component {
             selected={this.state.selectedProduct === index}
             onPress={productPressed}
           />}
-        ListFooterComponent={() => <Separator />}
-        ListHeaderComponent={() => <Separator />}
+        ListFooterComponent={() => <ListFooter />}
+        ListHeaderComponent={() => <ListSeparator />}
       />
     );
   }
