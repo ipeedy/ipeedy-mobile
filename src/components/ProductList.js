@@ -7,17 +7,7 @@ import ProductCard, { CARD_WIDTH } from './ProductCard';
 
 const { width } = Dimensions.get('window');
 
-const List = styled(Animated.createAnimatedComponent(FlatList)).attrs({
-  horizontal: true,
-  contentContainerStyle: {
-    left: 4,
-  },
-  snapToInterval: CARD_WIDTH,
-  showsHorizontalScrollIndicator: false,
-  scrollEventThrottle: 1,
-})`
-  flex: 1;
-`;
+const List = Animated.createAnimatedComponent(FlatList);
 
 const ListSeparator = styled.View`
   width: 8;
@@ -34,6 +24,10 @@ class ProductList extends Component {
     selectedProduct: 0,
   };
 
+  componentDidMount() {
+    this.props._ref(this);
+  }
+
   _handleScroll = event => {
     LayoutAnimation.linear();
     this.setState({
@@ -43,15 +37,31 @@ class ProductList extends Component {
     });
   };
 
+  _triggerScrollTo = x => {
+    this._flatlist._component._listRef._scrollRef.scrollTo({
+      x,
+      animated: false,
+    });
+  };
+
   render() {
     const { products, productPressed } = this.props;
 
     return (
       <List
+        horizontal
+        contentContainerStyle={{
+          left: 4,
+        }}
+        snapToInterval={CARD_WIDTH}
+        showsHorizontalScrollIndicator={false}
+        scrollEventThrottle={1}
         data={products}
+        ref={c => {
+          this._flatlist = c;
+        }} // eslint-disable-line
         keyExtractor={item => item.obj._id}
         extraData={this.state.selectedProduct}
-        snapToInterval={CARD_WIDTH}
         onScroll={Animated.event(
           [
             {

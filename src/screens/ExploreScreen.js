@@ -156,6 +156,10 @@ class ExploreScreen extends Component {
     });
   };
 
+  _handleMarkerPress = index => {
+    this.list._triggerScrollTo(index * CARD_WIDTH);
+  };
+
   _renderProductsList = () => {
     if (!this.state.productFetched) {
       return <Loading size="large" color={colors.PRIMARY} />;
@@ -163,10 +167,12 @@ class ExploreScreen extends Component {
 
     return (
       <ProductList
+        _ref={c => {
+          this.list = c;
+        }} // eslint-disable-line
         distance={10000000}
         animation={this.animation}
         productPressed={this._handleProductPressed}
-        onRefresh={ref => (this.productList = ref)}
       />
     );
   };
@@ -223,6 +229,7 @@ class ExploreScreen extends Component {
               latitude,
             }}
             anchor={{ x: 0.5, y: 0.5 }}
+            onPress={() => this._handleMarkerPress(index)}
           >
             <MarkerWrap style={opacityStyle}>
               <MarkerRing style={scaleStyle} />
