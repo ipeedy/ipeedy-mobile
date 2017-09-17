@@ -92,6 +92,6 @@ class CreateNameScreen extends Component {
   }
 }
 
-export default connect(state => ({ input: state.productForm }), { getInput })(
+export default connect(state => ({ input: state.product.form }), { getInput })(
   CreateNameScreen,
 );

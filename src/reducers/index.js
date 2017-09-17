@@ -2,8 +2,8 @@ import { combineReducers } from 'redux';
 
 import nav from './navigation';
 import user from './user';
-import productForm from './productForm';
 import map from './map';
+import product from './product';
 
 export default client =>
   combineReducers({
@@ -11,5 +11,5 @@ export default client =>
     nav,
     user,
     map,
-    productForm,
+    product,
   });

@@ -1,4 +1,5 @@
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Platform } from 'react-native';
+import { Location, Permissions, Constants } from 'expo';
 
 export function login() {
   return {
@@ -13,10 +14,32 @@ export function getUserInfo(info) {
   };
 }
 
-export function updateUserLocation(coordinates) {
-  return {
-    type: 'UPDATE_USER_LOCATION',
-    coordinates,
+export function updateUserLocation() {
+  return async dispatch => {
+    dispatch({ type: 'UPDATE_USER_LOCATION' });
+    try {
+      if (Platform.OS === 'android' && !Constants.isDevice)
+        throw new Error(
+          'Not support Android emulator. Try again on your device!',
+        );
+      const { status } = await Permissions.askAsync(Permissions.LOCATION);
+      if (status !== 'granted')
+        throw new Error('Permission to access location was denied');
+      const { coords } = await Location.getCurrentPositionAsync({});
+      return dispatch({
+        type: 'UPDATE_USER_LOCATION_SUCCESSED',
+        payload: {
+          location: coords,
+        },
+      });
+    } catch (error) {
+      return dispatch({
+        type: 'UPDATE_USER_LOCATION_FAILED',
+        payload: {
+          error: error.message,
+        },
+      });
+    }
   };
 }
 

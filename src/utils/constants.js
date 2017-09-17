@@ -47,4 +47,5 @@ export const icons = {
   SHARE: 'share-google',
   CASH: 'ios-cash-outline',
   REFRESH: 'ios-refresh-circle-outline',
+  BEER: 'ios-beer-outline',
 };

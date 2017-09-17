@@ -13,7 +13,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { colors, icons } from '../utils/constants';
 import ME_QUERY from '../graphql/queries/me';
-import { getUserInfo } from '../actions/user';
+import { getUserInfo, updateUserLocation } from '../actions/user';
 
 import Drawer from '../components/Drawer';
 import Loading from '../components/Loading';
@@ -104,14 +104,16 @@ const AppMainNavWithProfile = StackNavigator(
 
 class AppNavigator extends Component {
   state = {
-    fetchingInfo: true,
+    fetchingInfo: false,
   };
 
   componentDidMount() {
     this._fetchUserInfo();
+    this.props.updateUserLocation();
   }
 
   _fetchUserInfo = async () => {
+    this.setState({ fetchingInfo: true });
     if (this.props.user.isAuthenticated) {
       const { data: { me } } = await this.props.client.query({
         query: ME_QUERY,
@@ -122,7 +124,8 @@ class AppNavigator extends Component {
   };
 
   _renderApp = () => {
-    if (this.state.fetchingInfo) return <Loading color={colors.PRIMARY} />;
+    if (this.state.fetchingInfo || this.props.user.fetchingLocation)
+      return <Loading color={colors.PRIMARY} />;
     const { user } = this.props;
     if (!user.isAuthenticated) return <AuthenticationStack />;
     if (!user.info.name) return <UpdateInfoStack />;
@@ -158,7 +161,7 @@ export default withApollo(
       dispatch =>
         Object.assign(
           { dispatch },
-          bindActionCreators({ getUserInfo }, dispatch),
+          bindActionCreators({ getUserInfo, updateUserLocation }, dispatch),
         ),
     ),
     graphql(ME_QUERY),

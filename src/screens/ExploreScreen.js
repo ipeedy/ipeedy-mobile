@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Platform, Animated } from 'react-native';
+import { Animated } from 'react-native';
 import styled from 'styled-components/native';
-import { MapView, Location, Permissions, Constants } from 'expo';
+import { MapView } from 'expo';
 import { withApollo } from 'react-apollo';
 import { connect } from 'react-redux';
 
-import { updateUserLocation } from '../actions/user';
+import { fetchProducts } from '../actions/product';
+import GET_NEARBY_PRODUCTS_QUERY from '../graphql/queries/nearbyProducts';
 
 import MapStyle from '../utils/mapstyle';
 import { colors, icons } from '../utils/constants';
@@ -21,6 +22,8 @@ const DEFAULT_DELTA = {
   longitudeDelta: 0.0421 / 2,
 };
 
+const DISTANCE = 10000;
+
 const Root = styled.View`
   flex: 1;
   backgroundColor: ${props => props.theme.WHITE};
@@ -29,6 +32,28 @@ const Root = styled.View`
 const MapContainer = styled.View`
   flex: 7.5;
   position: relative;
+`;
+
+const MarkerWrap = styled(Animated.View)`
+  alignItems: center;
+  justifyContent: center;
+`;
+
+const MarkerRing = styled(Animated.View)`
+  width: 24;
+  height: 24;
+  borderRadius: 12;
+  backgroundColor: rgba(130,4,150, 0.3);
+  position: absolute;
+  borderWidth: 1;
+  borderColor: rgba(130,4,150, 0.5);
+`;
+
+const Marker = styled.View`
+  width: 8;
+  height: 8;
+  borderRadius: 4;
+  backgroundColor: rgba(130, 4, 150, 0.9);
 `;
 
 const ProductsContainer = styled.View`
@@ -52,8 +77,7 @@ class ExploreScreen extends Component {
     error: null,
     region: null,
     userRegion: this.props.user.location,
-    fetchingUserRegion: true,
-    products: [],
+    productFetched: false,
     selectedProduct: 0,
     showRefreshButton: false,
   };
@@ -64,62 +88,11 @@ class ExploreScreen extends Component {
   }
 
   componentDidMount() {
-    if (Platform.OS === 'android' && !Constants.isDevice) {
-      this.setState({
-        error: 'Not support Android emulator. Try again on your device!',
-      });
-    } else {
-      this._getUserPositionAsync();
-    }
+    const {
+      user: { info: { location: { longitude, latitude } } },
+    } = this.props;
+    this._getNearbyProduct(latitude, longitude, DISTANCE);
   }
-
-  // componentWillUnmount() {
-  //   if (this.watchLocation) this.watchLocation.remove();
-  // }
-
-  _getUserPositionAsync = async () => {
-    const { status } = await Permissions.askAsync(Permissions.LOCATION);
-    if (status !== 'granted') {
-      this.setState({
-        error: 'Permission to access location was denied!',
-      });
-    }
-
-    const { coords } = await Location.getCurrentPositionAsync({});
-    this.setState(
-      {
-        region: {
-          ...coords,
-          ...DEFAULT_DELTA,
-        },
-        userRegion: {
-          ...coords,
-        },
-        fetchingUserRegion: false,
-      },
-      () => {
-        this._map.animateToCoordinate(coords, 1);
-        this.props.updateUserLocation(coords);
-        this.setState({ showRefreshButton: false });
-      },
-    );
-
-    // this.watchLocation = await Location.watchPositionAsync(
-    //   {
-    //     enableHighAccuracy: true,
-    //     timeInterval: 36000,
-    //     distanceInterval: 10,
-    //   },
-    //   ({ coords: { latitude, longitude } }) => {
-    //     this.setState({
-    //       userRegion: {
-    //         latitude,
-    //         longitude,
-    //       },
-    //     });
-    //   },
-    // );
-  };
 
   _handleRegionChange = region =>
     this.setState({ region, showRefreshButton: true });
@@ -128,16 +101,28 @@ class ExploreScreen extends Component {
     this.props.navigation.navigate('ProductDetail', { product });
   };
 
+  _getNearbyProduct = async (latitude, longitude, distance) => {
+    this.setState({ productFetched: false });
+    const { data } = await this.props.client.query({
+      query: GET_NEARBY_PRODUCTS_QUERY,
+      variables: {
+        latitude,
+        longitude,
+        distance,
+      },
+    });
+    this.props.fetchProducts(data);
+    this.setState({ productFetched: true });
+  };
+
   _renderProductsList = () => {
-    if (!this.state.userRegion) {
+    if (!this.state.productFetched) {
       return <Loading size="large" color={colors.PRIMARY} />;
     }
 
     return (
       <ProductList
-        latitude={this.state.userRegion.latitude}
-        longitude={this.state.userRegion.longitude}
-        distance={7000000}
+        distance={10000000}
         animation={this.animation}
         productPressed={this._handleProductPressed}
         onRefresh={ref => (this.productList = ref)}
@@ -145,42 +130,47 @@ class ExploreScreen extends Component {
     );
   };
 
+  _renderUserMarker = () => {
+    const { user } = this.props;
+    if (!user.fetchingLocation && !user.error) {
+      return (
+        <MapView.Marker
+          coordinate={user.info.location}
+          anchor={{ x: 0.5, y: 0.5 }}
+        >
+          <UserMarker />
+        </MapView.Marker>
+      );
+    }
+  };
+
+  _renderProductMarkers = () => {};
+
   _handleRefreshProduct = () => {
-    this.productList._onRefresh(this.state.region);
+    const { longitude, latitude } = this.state.region;
+    this._getNearbyProduct(latitude, longitude, DISTANCE);
     this.setState({ showRefreshButton: false });
   };
 
   render() {
-    const INITIAL_REGION = this.props.user.location || {
-      latitude: 37.78825,
-      longitude: -122.4324,
-    };
+    const { user } = this.props;
 
     return (
       <Root>
-        {this.state.error && <Snackbar message={this.state.error} secondary />}
+        {user.error && <Snackbar message={user.error} secondary />}
         <MapContainer>
           <MapView
             ref={component => (this._map = component)} // eslint-disable-line
-            initialRegion={{ ...INITIAL_REGION, ...DEFAULT_DELTA }}
+            initialRegion={{ ...user.info.location, ...DEFAULT_DELTA }}
             region={this.state.region}
             onRegionChange={this._handleRegionChange}
-            onRegionChangeComplete={this._handleRegionChangeComplete}
             showsMyLocationButton
             provider={MapView.PROVIDER_GOOGLE}
             customMapStyle={MapStyle}
             style={{ flex: 1 }}
           >
-            <MapView.Marker
-              coordinate={
-                this.state.userRegion ||
-                this.props.user.location ||
-                INITIAL_REGION
-              }
-              anchor={{ x: 0.5, y: 0.5 }}
-            >
-              <UserMarker />
-            </MapView.Marker>
+            {this._renderUserMarker()}
+            {this._renderProductMarkers()}
           </MapView>
 
           <FuncContainer>
@@ -200,7 +190,7 @@ class ExploreScreen extends Component {
 }
 
 export default withApollo(
-  connect(state => ({ user: state.user.info }), {
-    updateUserLocation,
+  connect(state => ({ user: state.user, products: state.product.products }), {
+    fetchProducts,
   })(ExploreScreen),
 );

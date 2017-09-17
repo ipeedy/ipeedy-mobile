@@ -1,15 +1,9 @@
 import React, { Component } from 'react';
 import { Animated, FlatList, LayoutAnimation } from 'react-native';
 import styled from 'styled-components/native';
-import { graphql } from 'react-apollo';
+import { connect } from 'react-redux';
 
 import ProductCard from './ProductCard';
-import Loading from './Loading';
-import Snackbar from './Snackbar';
-
-import { colors } from '../utils/constants';
-
-import GET_NEARBY_PRODUCTS_QUERY from '../graphql/queries/nearbyProducts';
 
 const List = styled(FlatList).attrs({
   horizontal: true,
@@ -33,22 +27,6 @@ class ProductList extends Component {
     selectedProduct: 0,
   };
 
-  componentDidMount() {
-    this.props.onRefresh(this);
-  }
-
-  componentWillUnmount() {
-    this.props.onRefresh(undefined);
-  }
-
-  _onRefresh = ({ latitude, longitude }) => {
-    this.props.data.refetch({
-      latitude,
-      longitude,
-      distance: this.props.distance,
-    });
-  };
-
   _handleScroll = event => {
     LayoutAnimation.linear();
     this.setState({
@@ -57,15 +35,11 @@ class ProductList extends Component {
   };
 
   render() {
-    const { data, productPressed } = this.props;
-
-    if (data.loading) return <Loading size="large" color={colors.PRIMARY} />;
-
-    if (data.error) return <Snackbar secondary message={data.error.message} />;
+    const { products, productPressed } = this.props;
 
     return (
       <List
-        data={data.getNearbyProducts}
+        data={products}
         keyExtractor={item => item.obj._id}
         extraData={this.state.selectedProduct}
         onScroll={Animated.event(
@@ -95,4 +69,6 @@ class ProductList extends Component {
   }
 }
 
-export default graphql(GET_NEARBY_PRODUCTS_QUERY)(ProductList);
+export default connect(state => ({ products: state.product.products }))(
+  ProductList,
+);

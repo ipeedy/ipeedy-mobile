@@ -181,7 +181,7 @@ class CreatePriceScreen extends Component {
 export default compose(
   connect(
     state => ({
-      input: state.productForm,
+      input: state.product.form,
       user: state.user.info,
     }),
     { getInput, clearInput },
