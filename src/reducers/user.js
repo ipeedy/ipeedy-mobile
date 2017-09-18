@@ -1,7 +1,7 @@
 const initialState = {
   isAuthenticated: false,
   info: null,
-  fetchingLocation: true,
+  fetchingLocation: false,
   error: null,
 };
 

@@ -93,7 +93,7 @@ class PhoneAuthScreen extends Component {
   };
 
   _handleNext = async () => {
-    this.setState({ loading: true, error: false });
+    this.setState({ loading: true, error: null });
     const { data } = await this.props.mutate({
       variables: {
         phone: this.state.displayNumber.replace(/\s/g, ''),
@@ -114,11 +114,7 @@ class PhoneAuthScreen extends Component {
   render() {
     return (
       <Root>
-        <Snackbar
-          message={this.state.error}
-          secondary
-          onHide={this._clearError}
-        />
+        {this.state.error && <Snackbar message={this.state.error} secondary />}
         <Wrapper>
           <Title>Enter your mobile number</Title>
           <InputContainer>

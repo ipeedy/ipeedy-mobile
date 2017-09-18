@@ -101,7 +101,10 @@ class SettingsScreen extends Component {
     }
 
     return (
-      <InfoContainer onPress={() => this.props.navigation.navigate('Profile')}>
+      <InfoContainer
+        onPress={() =>
+          this.props.screenProps.rootNavigation.navigate('Profile')}
+      >
         <Avatar
           source={{
             uri: this.props.info.avatar || 'https://i.imgur.com/MnRjDje.jpg',
