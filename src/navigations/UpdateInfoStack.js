@@ -1,11 +1,15 @@
+import React from 'react';
 import { StackNavigator } from 'react-navigation';
+import { Ionicons } from '@expo/vector-icons';
 
-import { colors } from '../utils/constants';
+import { colors, icons } from '../utils/constants';
+
+import ButtonHeader from '../components/ButtonHeader';
 
 import UpdateNameScreen from '../screens/UpdateUserInfo/UpdateNameScreen';
 import UpdateEmailScreen from '../screens/UpdateUserInfo/UpdateEmailScreen';
 
-const UpdateInfo = StackNavigator(
+const UpdateInfoStack = StackNavigator(
   {
     UpdateName: {
       screen: UpdateNameScreen,
@@ -19,12 +23,16 @@ const UpdateInfo = StackNavigator(
       backgroundColor: colors.WHITE,
     },
     headerMode: 'float',
-    navigationOptions: () => ({
+    navigationOptions: ({ navigation }) => ({
       title: 'Update Info',
       headerStyle: {
         backgroundColor: colors.PRIMARY,
       },
-      headerLeft: null,
+      headerLeft: (
+        <ButtonHeader side="left" onPress={() => navigation.goBack(null)}>
+          <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
+        </ButtonHeader>
+      ),
       headerTitleStyle: {
         color: colors.WHITE,
         fontFamily: 'quicksand-regular',
@@ -35,4 +43,4 @@ const UpdateInfo = StackNavigator(
   },
 );
 
-export default UpdateInfo;
+export default UpdateInfoStack;

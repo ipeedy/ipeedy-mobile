@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { KeyboardAvoidingView, Keyboard } from 'react-native';
 import styled from 'styled-components/native';
-import { graphql } from 'react-apollo';
+import { withApollo } from 'react-apollo';
 import { Ionicons } from '@expo/vector-icons';
+import { connect } from 'react-redux';
 
 import UPDATE_INFO_MUTATION from '../../graphql/mutations/updateInfo';
+import { getUserInfo } from '../../actions/user';
 import { icons, colors } from '../../utils/constants';
 
 import Snackbar from '../../components/Snackbar';
@@ -54,7 +56,7 @@ const Input = styled.TextInput.attrs({
 class UpdateNameScreen extends Component {
   state = {
     loading: false,
-    value: '',
+    value: this.props.user.email || '',
     error: null,
   };
 
@@ -62,7 +64,8 @@ class UpdateNameScreen extends Component {
     this.setState({ loading: true });
     const {
       data: { updateInfo: { error, message } },
-    } = await this.props.mutate({
+    } = await this.props.client.mutate({
+      mutation: UPDATE_INFO_MUTATION,
       variables: {
         email: this.state.value,
       },
@@ -72,6 +75,9 @@ class UpdateNameScreen extends Component {
       return this.setState({ error: message });
     }
     Keyboard.dismiss();
+    this.props.getUserInfo({
+      email: this.state.value,
+    });
     this.props.navigation.navigate('Profile');
   };
 
@@ -83,13 +89,13 @@ class UpdateNameScreen extends Component {
           <Title>What's your email?</Title>
           <InputWrapper>
             <Input
-              placeholder="Alexandra User"
+              placeholder="alexandra@user.com"
               returnKeyType="next"
               maxLength={25}
               autoFocus
               keyboardType="email-address"
               autoCapitalize="none"
-              value={this.state.displayNumber}
+              value={this.state.value}
               onChangeText={value => this.setState({ value })}
             />
           </InputWrapper>
@@ -106,4 +112,8 @@ class UpdateNameScreen extends Component {
   }
 }
 
-export default graphql(UPDATE_INFO_MUTATION)(UpdateNameScreen);
+export default withApollo(
+  connect(state => ({ user: state.user.info }), { getUserInfo })(
+    UpdateNameScreen,
+  ),
+);

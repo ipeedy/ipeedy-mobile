@@ -101,7 +101,8 @@ class Drawer extends Component {
     return (
       <Root>
         <HeaderContainer
-          onPress={() => this.props.navigation.navigate('Profile')}
+          onPress={() =>
+            this.props.screenProps.rootNavigation.navigate('Profile')}
         >
           {this._renderInfo()}
         </HeaderContainer>

@@ -13,7 +13,9 @@ const Root = styled(Animated.View)`
     props.secondary ? props.theme.SECONDARY_A : props.theme.PRIMARY}
 `;
 
-const Message = styled.Text`
+const Message = styled.Text.attrs({
+  numberOfLines: 1,
+})`
   color: ${props => props.theme.WHITE};
   fontFamily: 'quicksand-regular';
   fontSize: 14;

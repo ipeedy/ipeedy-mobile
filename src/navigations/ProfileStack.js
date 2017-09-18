@@ -18,8 +18,16 @@ const ProfileStack = StackNavigator({
         backgroundColor: colors.PRIMARY,
       },
       headerLeft: (
-        <ButtonHeader side="left" onPress={() => navigation.goBack(null)}>
+        <ButtonHeader side="left" onPress={() => navigation.navigate('Main')}>
           <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
+        </ButtonHeader>
+      ),
+      headerRight: (
+        <ButtonHeader
+          side="right"
+          onPress={() => navigation.navigate('UpdateInfo')}
+        >
+          <Ionicons size={27} name={icons.EDIT} color={colors.WHITE} />
         </ButtonHeader>
       ),
       headerTitleStyle: {
@@ -32,23 +40,9 @@ const ProfileStack = StackNavigator({
   },
   UpdateInfo: {
     screen: UpdateInfoStack,
-    navigationOptions: ({ navigation }) => ({
-      title: 'Update Info',
-      headerStyle: {
-        backgroundColor: colors.PRIMARY,
-      },
-      headerLeft: (
-        <ButtonHeader side="left" onPress={() => navigation.goBack(null)}>
-          <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
-        </ButtonHeader>
-      ),
-      headerTitleStyle: {
-        color: colors.WHITE,
-        fontFamily: 'quicksand-regular',
-        fontSize: 18,
-        fontWeight: '200',
-      },
-    }),
+    navigationOptions: {
+      header: null,
+    },
   },
 });
 

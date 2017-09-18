@@ -48,4 +48,5 @@ export const icons = {
   CASH: 'ios-cash-outline',
   REFRESH: 'ios-refresh-circle-outline',
   BEER: 'ios-beer-outline',
+  EDIT: 'ios-create-outline',
 };

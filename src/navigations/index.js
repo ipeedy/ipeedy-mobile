@@ -8,7 +8,7 @@ import {
 } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { graphql, withApollo, compose } from 'react-apollo';
+import { withApollo, compose } from 'react-apollo';
 import { Ionicons } from '@expo/vector-icons';
 
 import { colors, icons } from '../utils/constants';
@@ -86,7 +86,8 @@ const AppMainNav = DrawerNavigator(
 const AppMainNavWithProfile = StackNavigator(
   {
     Main: {
-      screen: AppMainNav,
+      screen: ({ navigation }) =>
+        <AppMainNav screenProps={{ rootNavigation: navigation }} />,
     },
     Profile: {
       screen: ProfileStack,
@@ -120,7 +121,9 @@ class AppNavigator extends Component {
       });
       if (me) this.props.getUserInfo(me);
     }
-    this.setState({ fetchingInfo: false });
+    this.setState({
+      fetchingInfo: false,
+    });
   };
 
   _renderApp = () => {
@@ -128,7 +131,6 @@ class AppNavigator extends Component {
       return <Loading color={colors.PRIMARY} />;
     const { user } = this.props;
     if (!user.isAuthenticated) return <AuthenticationStack />;
-    if (!user.info.name) return <UpdateInfoStack />;
     const nav = addNavigationHelpers({
       dispatch: this.props.dispatch,
       state: this.props.nav,
@@ -164,7 +166,6 @@ export default withApollo(
           bindActionCreators({ getUserInfo, updateUserLocation }, dispatch),
         ),
     ),
-    graphql(ME_QUERY),
   )(AppNavigator),
 );
 

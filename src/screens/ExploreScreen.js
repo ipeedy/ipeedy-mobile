@@ -86,6 +86,9 @@ class ExploreScreen extends Component {
   componentWillMount() {
     this.animation = new Animated.Value(0);
     this.index = 0;
+    if (!this.props.user.info.name || !this.props.user.info.email) {
+      this.props.screenProps.rootNavigation.navigate('UpdateInfo');
+    }
   }
 
   componentDidMount() {
@@ -114,12 +117,10 @@ class ExploreScreen extends Component {
     });
     this.props.fetchProducts(data);
     this.setState({ productFetched: true });
-    this._addMapViewEventListener();
+    this._addMapViewEventListener(data);
   };
 
-  _addMapViewEventListener = () => {
-    const { products } = this.props;
-
+  _addMapViewEventListener = ({ getNearbyProducts: products }) => {
     if (products.length)
       this.map.animateToRegion({
         longitude: products[0].obj.geometry.coordinates[0],
