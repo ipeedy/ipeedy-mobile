@@ -53,7 +53,7 @@ const Input = styled.TextInput.attrs({
   fontSize: 20;
 `;
 
-class UpdateNameScreen extends Component {
+class UpdateEmailScreen extends Component {
   state = {
     loading: false,
     value: this.props.user.email || '',
@@ -78,7 +78,7 @@ class UpdateNameScreen extends Component {
     this.props.getUserInfo({
       email: this.state.value,
     });
-    this.props.navigation.navigate('Profile');
+    this.props.navigation.navigate('UpdateAvatar');
   };
 
   render() {
@@ -114,6 +114,6 @@ class UpdateNameScreen extends Component {
 
 export default withApollo(
   connect(state => ({ user: state.user.info }), { getUserInfo })(
-    UpdateNameScreen,
+    UpdateEmailScreen,
   ),
 );

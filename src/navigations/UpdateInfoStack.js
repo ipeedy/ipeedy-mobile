@@ -8,6 +8,7 @@ import ButtonHeader from '../components/ButtonHeader';
 
 import UpdateNameScreen from '../screens/UpdateUserInfo/UpdateNameScreen';
 import UpdateEmailScreen from '../screens/UpdateUserInfo/UpdateEmailScreen';
+import UpdateAvatarScreen from '../screens/UpdateUserInfo/UpdateAvatarScreen';
 
 const UpdateInfoStack = StackNavigator(
   {
@@ -16,6 +17,9 @@ const UpdateInfoStack = StackNavigator(
     },
     UpdateEmail: {
       screen: UpdateEmailScreen,
+    },
+    UpdateAvatar: {
+      screen: UpdateAvatarScreen,
     },
   },
   {

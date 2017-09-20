@@ -60,19 +60,9 @@ const MenuContainer = styled.View`
 `;
 
 class Drawer extends Component {
-  componentDidMount() {
-    // this._getUserInfo();
-  }
-
   _formattedPhoneNumber(phone) {
     return PhoneNumber(phone, 'VN').getNumber('international');
   }
-
-  // _getUserInfo = async () => {
-  //   const { data: { me } } = await this.props.client.query({ query: ME_QUERY });
-  //   this.props.getUserInfo(me);
-  //   if (!me.email || !me.name) this.props.navigation.navigate('UpdateInfo');
-  // };
 
   _renderInfo = () => {
     if (!this.props.info) return <Loading size="small" />;

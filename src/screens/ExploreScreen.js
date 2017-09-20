@@ -86,9 +86,6 @@ class ExploreScreen extends Component {
   componentWillMount() {
     this.animation = new Animated.Value(0);
     this.index = 0;
-    console.log('====================================');
-    console.log(this.props.user.info);
-    console.log('====================================');
     if (
       this.props.user.info &&
       (!this.props.user.info.name || !this.props.user.info.email)

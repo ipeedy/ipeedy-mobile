@@ -1,3 +1,5 @@
+import AWS3_CREDENTIALS from './aws3-credentials.json';
+
 export const colors = {
   PRIMARY: '#AD6CD3',
   SECONDARY_A: '#EF59BA',
@@ -49,4 +51,14 @@ export const icons = {
   REFRESH: 'ios-refresh-circle-outline',
   BEER: 'ios-beer-outline',
   EDIT: 'ios-create-outline',
+  PENCIL: 'pencil',
+};
+
+export const aws3Options = {
+  keyPrefix: 'uploads/',
+  bucket: 'ipeedy',
+  region: 'ap-southeast-1',
+  accessKey: AWS3_CREDENTIALS.ACCESS_KEY,
+  secretKey: AWS3_CREDENTIALS.SECRET_KEY,
+  successActionStatus: 201,
 };
