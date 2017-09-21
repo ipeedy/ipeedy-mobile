@@ -14,6 +14,7 @@ import { colors } from '../utils/constants';
 
 import UserMarker from '../components/UserMarker';
 import ProductList from '../components/ProductList';
+import ProductListPlaceholder from '../components/ProductListPlaceholder';
 import Loading from '../components/Loading';
 import Snackbar from '../components/Snackbar';
 import FuncButton from '../components/FuncButton';
@@ -167,9 +168,8 @@ class ExploreScreen extends Component {
 
   _renderProductsList = () => {
     if (!this.state.productFetched) {
-      return <Loading size="large" color={colors.PRIMARY} />;
+      return <ProductListPlaceholder />;
     }
-
     return (
       <ProductList
         _ref={c => {
