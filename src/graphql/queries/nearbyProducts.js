@@ -19,6 +19,7 @@ export default gql`
         description
         images
         price
+        orderRange
         soldCount
         reviews {
           user {

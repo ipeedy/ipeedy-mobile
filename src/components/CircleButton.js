@@ -43,7 +43,7 @@ class CircleButton extends Component {
       return (
         <Root
           disabled
-          style={{ backgroundColor: '#e7caf9' }}
+          style={[{ backgroundColor: '#e7caf9' }, this.props.containerStyle]}
           secondary={this.props.secondary}
         >
           {this.props.children}
@@ -56,6 +56,7 @@ class CircleButton extends Component {
         onPress={this.props.onPress}
         disabled={this.props.disabled}
         secondary={this.props.secondary}
+        style={this.props.containerStyle}
       >
         {this.props.children}
       </Root>

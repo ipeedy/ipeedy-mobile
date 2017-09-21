@@ -7,11 +7,13 @@ export default gql`
     $price: Float!
     $geometry: GeometryInput!
     $availableCount: Int!
+    $orderRange: [Int]!
   ) {
     createProduct(
       name: $name
       description: $description
       price: $price
+      orderRange: $orderRange
       geometry: $geometry
       availableCount: $availableCount
     ) {
@@ -22,6 +24,7 @@ export default gql`
       availableCount
       images
       soldCount
+      orderRange
       user {
         _id
         name

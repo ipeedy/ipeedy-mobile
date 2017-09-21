@@ -6,6 +6,7 @@ import { withApollo } from 'react-apollo';
 import { connect } from 'react-redux';
 
 import { fetchProducts } from '../actions/product';
+import { clearCart } from '../actions/cart';
 import GET_NEARBY_PRODUCTS_QUERY from '../graphql/queries/nearbyProducts';
 
 import MapStyle from '../utils/mapstyle';
@@ -291,7 +292,15 @@ class ExploreScreen extends Component {
 }
 
 export default withApollo(
-  connect(state => ({ user: state.user, products: state.product.products }), {
-    fetchProducts,
-  })(ExploreScreen),
+  connect(
+    state => ({
+      user: state.user,
+      products: state.product.products,
+      cart: state.cart,
+    }),
+    {
+      fetchProducts,
+      clearCart,
+    },
+  )(ExploreScreen),
 );

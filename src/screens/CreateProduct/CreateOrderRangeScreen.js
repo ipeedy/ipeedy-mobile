@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Slider } from 'react-native';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
 
 import { icons, colors } from '../../utils/constants';
 import { getInput } from '../../actions/product';
@@ -36,7 +36,6 @@ const InputWrapper = styled.View`
 `;
 
 const AmountWrapper = styled.View`
-  width: 50;
   height: 50;
   justifyContent: center;
   alignItems: center;
@@ -50,35 +49,42 @@ const Amount = styled(Title)`
   fontSize: 25;
 `;
 
-class CreateAmountScreen extends Component {
+class CreateOrderRangeScreen extends Component {
   state = {
     loading: false,
     error: null,
   };
 
   _handleNext = () => {
-    this.props.navigation.navigate('CreateOrderRange');
+    this.props.navigation.navigate('CreatePrice');
   };
 
   render() {
+    const { input } = this.props;
+
     return (
       <Root>
         <Wrapper>
-          <Title>How many products do you currently have?</Title>
+          <Title>How many products do your customer can buy each time?</Title>
           <InputWrapper>
-            <Slider
-              maximumValue={200}
-              step={10}
-              minimumValue={30}
-              maximumTrackTintColor={colors.SILVER}
-              minimumTrackTintColor={colors.PRIMARY}
-              value={this.props.input.availableCount}
-              onValueChange={value =>
-                this.props.getInput('availableCount', value)}
+            <MultiSlider
+              max={input.availableCount}
+              step={1}
+              min={1}
+              unselectedStyle={{
+                backgroundColor: colors.SILVER,
+              }}
+              selectedStyle={{
+                backgroundColor: colors.PRIMARY,
+              }}
+              snapped
+              allowOverlap
+              values={[input.orderRange[0], input.orderRange[1]]}
+              onValuesChange={value => this.props.getInput('orderRange', value)}
             />
             <AmountWrapper>
               <Amount>
-                {this.props.input.availableCount}
+                {`${input.orderRange[0]} - ${input.orderRange[1]}/order`}
               </Amount>
             </AmountWrapper>
           </InputWrapper>
@@ -92,5 +98,5 @@ class CreateAmountScreen extends Component {
 }
 
 export default connect(state => ({ input: state.product.form }), { getInput })(
-  CreateAmountScreen,
+  CreateOrderRangeScreen,
 );

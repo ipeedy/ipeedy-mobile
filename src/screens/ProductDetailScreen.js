@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 import StarRating from 'react-native-star-rating';
 import { withApollo } from 'react-apollo';
+import { connect } from 'react-redux';
 
 import GET_PRODUCT_QUERY from '../graphql/queries/product';
 import { colors, icons } from '../utils/constants';
@@ -14,6 +15,7 @@ import { getPrice } from '../utils/helpers';
 import MapStyle from '../utils/mapstyle';
 
 import CircleButton from '../components/CircleButton';
+import DirectionMap from '../components/DirectionMap';
 
 const DEFAULT_DELTA = {
   latitudeDelta: 0.0922 / 3,
@@ -63,7 +65,7 @@ const Name = styled.Text`
 const MetaContainer = styled.View`
   flexDirection: row;
   width: 100%;
-  height: 70;
+  height: 60;
   alignSelf: stretch;
   alignItems: center;
   justifyContent: space-between;
@@ -122,6 +124,12 @@ const ReviewContainer = styled.View`
 const LocationContainer = styled.View`
   width: 100%;
   maxHeight: 200;
+`;
+
+const MapContainer = styled.View`
+  height: 180;
+  top: 10;
+  marginBottom: 10;
 `;
 
 const Description = styled(MetaItemText)`
@@ -200,6 +208,10 @@ class ProductDetailScreen extends Component {
     this.setState({ product: getProduct });
   };
 
+  _handleCheckout = async () => {
+    this.props.navigation.navigate('Checkout', { product: this.state.product });
+  };
+
   render() {
     const { product } = this.state;
 
@@ -251,11 +263,32 @@ class ProductDetailScreen extends Component {
 
             <MetaContainer>
               <MetaItem>
-                <Ionicons size={30} color={colors.DARK} name={icons.CASH} />
+                <Ionicons size={28} color={colors.DARK} name={icons.PRICE} />
                 <MetaItemText>
                   {getPrice(product.price)}
                 </MetaItemText>
               </MetaItem>
+              <MetaItem>
+                <Ionicons
+                  size={28}
+                  color={colors.DARK}
+                  name={icons.FAVORITES}
+                />
+                <MetaItemText>
+                  {product.favoriteCount
+                    ? `${product.favoriteCount} love`
+                    : 'no love'}
+                </MetaItemText>
+              </MetaItem>
+              <MetaItem>
+                <Ionicons size={30} color={colors.DARK} name={icons.CART} />
+                <MetaItemText>
+                  {`${product.orderRange[0]} - ${product.orderRange[1]}/order`}
+                </MetaItemText>
+              </MetaItem>
+            </MetaContainer>
+
+            <MetaContainer>
               <MetaItem>
                 <Ionicons size={30} color={colors.DARK} name={icons.TIME} />
                 <MetaItemText>8h - 19h</MetaItemText>
@@ -310,42 +343,29 @@ class ProductDetailScreen extends Component {
 
             <LocationContainer>
               <MetaTitle>Location</MetaTitle>
-              <MapView
-                style={{
-                  height: 180,
-                  top: 10,
-                  marginBottom: 10,
-                  alignItems: 'center',
-                }}
-                provider={MapView.PROVIDER_GOOGLE}
-                region={{
-                  longitude: product.geometry.coordinates[0],
-                  latitude: product.geometry.coordinates[1],
-                  ...DEFAULT_DELTA,
-                }}
-                customMapStyle={MapStyle}
-                scrollEnabled={false}
-              >
-                <MapView.Circle
-                  center={{
+              <MapContainer>
+                <DirectionMap
+                  startLoc={this.props.user.location}
+                  destinationLoc={{
                     longitude: product.geometry.coordinates[0],
                     latitude: product.geometry.coordinates[1],
                   }}
-                  radius={1000}
-                  strokeColor="rgba(130,4,150, 0.4)"
-                  fillColor="rgba(130,4,150, 0.1)"
-                />
-                <Distance>
-                  {parseInt(product.dis, 10)}km from here
-                </Distance>
-              </MapView>
+                  style={{
+                    alignItems: 'center',
+                  }}
+                >
+                  <Distance>
+                    {parseInt(product.dis, 10)}m from here
+                  </Distance>
+                </DirectionMap>
+              </MapContainer>
             </LocationContainer>
 
             <Divider />
           </ContentWrapper>
         </Container>
         <CircleButtonContainer>
-          <CircleButton secondary>
+          <CircleButton secondary onPress={this._handleCheckout}>
             <Ionicons name={icons.CART} size={27} color={colors.WHITE} />
           </CircleButton>
         </CircleButtonContainer>
@@ -354,4 +374,6 @@ class ProductDetailScreen extends Component {
   }
 }
 
-export default withApollo(ProductDetailScreen);
+export default withApollo(
+  connect(state => ({ user: state.user.info }))(ProductDetailScreen),
+);

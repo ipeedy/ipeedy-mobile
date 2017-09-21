@@ -10,6 +10,7 @@ import ButtonHeader from '../components/ButtonHeader';
 import ExploreScreen from '../screens/ExploreScreen';
 import CreateProductStack from './CreateProductStack';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
+import CheckoutScreen from '../screens/CheckoutScreen';
 
 const View = styled.View`flexDirection: row;`;
 
@@ -17,9 +18,36 @@ export default StackNavigator(
   {
     Explore: {
       screen: ExploreScreen,
-      navigationOptions: {
+      navigationOptions: ({ navigation, screenProps }) => ({
         title: 'Explore',
-      },
+        headerLeft: (
+          <ButtonHeader
+            side="left"
+            onPress={() => navigation.navigate('DrawerOpen')}
+          >
+            <Ionicons size={27} name={icons.MENU} color={colors.WHITE} />
+          </ButtonHeader>
+        ),
+        headerRight: (
+          <View>
+            {screenProps.cart &&
+              screenProps.cart.product &&
+              <ButtonHeader
+                side="right"
+                onPress={() =>
+                  navigation.navigate('Checkout', screenProps.cart)}
+              >
+                <Ionicons size={33} name={icons.CART} color={colors.WHITE} />
+              </ButtonHeader>}
+            <ButtonHeader
+              side="right"
+              onPress={() => navigation.navigate('CreateProduct')}
+            >
+              <Ionicons size={33} name={icons.ADD} color={colors.WHITE} />
+            </ButtonHeader>
+          </View>
+        ),
+      }),
     },
     CreateProduct: {
       screen: CreateProductStack,
@@ -54,38 +82,33 @@ export default StackNavigator(
         ),
       }),
     },
+    Checkout: {
+      screen: CheckoutScreen,
+      navigationOptions: ({ navigation }) => ({
+        title: 'Checkout',
+        headerLeft: (
+          <ButtonHeader side="left" onPress={() => navigation.goBack()}>
+            <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
+          </ButtonHeader>
+        ),
+      }),
+    },
   },
   {
     cardStyle: {
       backgroundColor: colors.WHITE,
     },
     headerMode: 'float',
-    navigationOptions: ({ navigation }) => ({
+    navigationOptions: {
       headerStyle: {
         backgroundColor: colors.PRIMARY,
       },
-      headerLeft: (
-        <ButtonHeader
-          side="left"
-          onPress={() => navigation.navigate('DrawerOpen')}
-        >
-          <Ionicons size={27} name={icons.MENU} color={colors.WHITE} />
-        </ButtonHeader>
-      ),
-      headerRight: (
-        <ButtonHeader
-          side="right"
-          onPress={() => navigation.navigate('CreateProduct')}
-        >
-          <Ionicons size={33} name={icons.ADD} color={colors.WHITE} />
-        </ButtonHeader>
-      ),
       headerTitleStyle: {
         color: colors.WHITE,
         fontFamily: 'quicksand-regular',
         fontSize: 19,
         fontWeight: '200',
       },
-    }),
+    },
   },
 );

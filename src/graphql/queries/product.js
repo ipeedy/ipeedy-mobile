@@ -10,6 +10,7 @@ export default gql`
       images
       price
       soldCount
+      orderRange
       geometry {
         coordinates
       }

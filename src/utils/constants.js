@@ -28,6 +28,8 @@ export const images = [
 
 export const constants = {
   GRAPHQL_URL: `http://localhost:3000/graphql`,
+  DIRECTION_API_URL: 'https://maps.googleapis.com/maps/api/directions/json?',
+  DIRECTION_API_KEY: 'AIzaSyDnZjKlct29gM6xqgYqH-ITNw2CpsIOyig',
 };
 
 export const icons = {
@@ -51,7 +53,10 @@ export const icons = {
   REFRESH: 'ios-refresh-circle-outline',
   BEER: 'ios-beer-outline',
   EDIT: 'ios-create-outline',
+  DONE: 'ios-checkmark',
+  PRICE: 'ios-pricetags-outline',
   PENCIL: 'pencil',
+  CLOSE: 'ios-close-outline',
 };
 
 export const aws3Options = {

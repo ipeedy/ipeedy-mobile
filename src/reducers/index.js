@@ -4,6 +4,7 @@ import nav from './navigation';
 import user from './user';
 import map from './map';
 import product from './product';
+import cart from './cart';
 
 export default client =>
   combineReducers({
@@ -12,4 +13,5 @@ export default client =>
     user,
     map,
     product,
+    cart,
   });

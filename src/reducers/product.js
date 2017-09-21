@@ -5,6 +5,7 @@ const initialState = {
     description: '',
     price: '',
     availableCount: 30,
+    orderRange: [1, 10],
   },
 };
 

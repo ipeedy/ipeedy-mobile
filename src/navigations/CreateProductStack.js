@@ -10,6 +10,7 @@ import ButtonHeader from '../components/ButtonHeader';
 import CreateNameScreen from '../screens/CreateProduct/CreateNameScreen';
 import CreateDescriptionScreen from '../screens/CreateProduct/CreateDescriptionScreen';
 import CreateAmountScreen from '../screens/CreateProduct/CreateAmountScreen';
+import CreateOrderRangeScreen from '../screens/CreateProduct/CreateOrderRangeScreen';
 import CreatePriceScreen from '../screens/CreateProduct/CreatePriceScreen';
 
 export default StackNavigator(
@@ -65,6 +66,23 @@ export default StackNavigator(
         ),
       }),
     },
+    CreateOrderRange: {
+      screen: CreateOrderRangeScreen,
+      navigationOptions: ({ navigation }) => ({
+        title: 'Create Product',
+        headerLeft: (
+          <ButtonHeader
+            side="left"
+            onPress={() => {
+              Keyboard.dismiss();
+              navigation.navigate('CreateDescription');
+            }}
+          >
+            <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
+          </ButtonHeader>
+        ),
+      }),
+    },
     CreatePrice: {
       screen: CreatePriceScreen,
       navigationOptions: ({ navigation }) => ({
@@ -74,7 +92,7 @@ export default StackNavigator(
             side="left"
             onPress={() => {
               Keyboard.dismiss();
-              navigation.navigate('CreateAmount');
+              navigation.navigate('CreateOrderRange');
             }}
           >
             <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
@@ -89,7 +107,6 @@ export default StackNavigator(
     },
     headerMode: 'none',
     navigationOptions: {
-      title: 'Login',
       headerStyle: {
         backgroundColor: colors.PRIMARY,
       },

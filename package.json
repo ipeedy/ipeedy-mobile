@@ -12,7 +12,10 @@
   "dependencies": {
     "@appandflow/touchable": "^1.2.1",
     "@expo/react-native-action-sheet": "^1.0.1",
+    "@mapbox/polyline": "^0.2.0",
+    "@ptomasroos/react-native-multi-slider": "^0.0.11",
     "awesome-phonenumber": "^1.5.0",
+    "axios": "^0.16.2",
     "date-fns": "^1.28.5",
     "expo": "^20.0.0",
     "react": "16.0.0-alpha.12",
