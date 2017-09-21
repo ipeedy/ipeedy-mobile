@@ -73,13 +73,14 @@ class CreatePriceScreen extends Component {
     this.setState({ loading: true });
     Keyboard.dismiss();
     const {
-      input: { name, description, price, availableCount, orderRange },
+      input: { name, description, price, availableCount, orderRange, images },
       user,
     } = this.props;
     await this.props.mutate({
       variables: {
         name,
         description,
+        images,
         price,
         availableCount,
         orderRange,

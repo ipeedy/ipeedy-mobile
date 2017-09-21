@@ -6,6 +6,7 @@ const initialState = {
     price: '',
     availableCount: 30,
     orderRange: [1, 10],
+    images: [],
   },
 };
 

@@ -8,12 +8,14 @@ export default gql`
     $geometry: GeometryInput!
     $availableCount: Int!
     $orderRange: [Int]!
+    $images: [String]
   ) {
     createProduct(
       name: $name
       description: $description
       price: $price
       orderRange: $orderRange
+      images: $images
       geometry: $geometry
       availableCount: $availableCount
     ) {

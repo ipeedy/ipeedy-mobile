@@ -63,7 +63,7 @@ class CreateDescriptionScreen extends Component {
   _handleNext = async () => {
     this.setState({ loading: true });
     Keyboard.dismiss();
-    this.props.navigation.navigate('CreateAmount');
+    this.props.navigation.navigate('CreateImages');
   };
 
   render() {

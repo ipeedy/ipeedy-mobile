@@ -57,6 +57,7 @@ export const icons = {
   PRICE: 'ios-pricetags-outline',
   PENCIL: 'pencil',
   CLOSE: 'ios-close-outline',
+  IMAGES: 'ios-images-outline',
 };
 
 export const aws3Options = {

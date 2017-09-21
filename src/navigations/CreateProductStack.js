@@ -9,6 +9,7 @@ import ButtonHeader from '../components/ButtonHeader';
 
 import CreateNameScreen from '../screens/CreateProduct/CreateNameScreen';
 import CreateDescriptionScreen from '../screens/CreateProduct/CreateDescriptionScreen';
+import CreateImagesScreen from '../screens/CreateProduct/CreateImagesScreen';
 import CreateAmountScreen from '../screens/CreateProduct/CreateAmountScreen';
 import CreateOrderRangeScreen from '../screens/CreateProduct/CreateOrderRangeScreen';
 import CreatePriceScreen from '../screens/CreateProduct/CreatePriceScreen';
@@ -49,6 +50,23 @@ export default StackNavigator(
         ),
       }),
     },
+    CreateImages: {
+      screen: CreateImagesScreen,
+      navigationOptions: ({ navigation }) => ({
+        title: 'Create Product',
+        headerLeft: (
+          <ButtonHeader
+            side="left"
+            onPress={() => {
+              Keyboard.dismiss();
+              navigation.navigate('CreateDescription');
+            }}
+          >
+            <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
+          </ButtonHeader>
+        ),
+      }),
+    },
     CreateAmount: {
       screen: CreateAmountScreen,
       navigationOptions: ({ navigation }) => ({
@@ -58,7 +76,7 @@ export default StackNavigator(
             side="left"
             onPress={() => {
               Keyboard.dismiss();
-              navigation.navigate('CreateDescription');
+              navigation.navigate('CreateImages');
             }}
           >
             <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
