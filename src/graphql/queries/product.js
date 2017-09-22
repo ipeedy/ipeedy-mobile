@@ -9,6 +9,12 @@ export default gql`
       description
       images
       price
+      category {
+        name
+        image
+        icon
+        _id
+      }
       soldCount
       orderRange
       geometry {

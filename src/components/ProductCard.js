@@ -24,7 +24,7 @@ const ProductTouchable = styled(Touchable).attrs({
   width: 100%;
   position: relative;
   height: 100%;
-  backgroundColor: ${props => props.theme.WHITE}
+  backgroundColor: ${props => props.theme.WHITE};
 `;
 
 const Image = styled.Image`

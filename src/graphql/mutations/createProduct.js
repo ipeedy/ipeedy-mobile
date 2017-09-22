@@ -9,6 +9,7 @@ export default gql`
     $availableCount: Int!
     $orderRange: [Int]!
     $images: [String]
+    $category: ID!
   ) {
     createProduct(
       name: $name
@@ -17,6 +18,7 @@ export default gql`
       orderRange: $orderRange
       images: $images
       geometry: $geometry
+      category: $category
       availableCount: $availableCount
     ) {
       _id
@@ -24,6 +26,11 @@ export default gql`
       slug
       description
       availableCount
+      category {
+        name
+        image
+        icon
+      }
       images
       soldCount
       orderRange

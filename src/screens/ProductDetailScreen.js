@@ -243,7 +243,7 @@ class ProductDetailScreen extends Component {
             <MetaContainer>
               <OwnerInfoContainer>
                 <MetaTitle>
-                  {product.category || 'Fast food'}
+                  {product.category.name || 'Undefined'}
                 </MetaTitle>
                 <MetaText>
                   by

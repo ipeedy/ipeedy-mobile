@@ -73,7 +73,15 @@ class CreatePriceScreen extends Component {
     this.setState({ loading: true });
     Keyboard.dismiss();
     const {
-      input: { name, description, price, availableCount, orderRange, images },
+      input: {
+        name,
+        description,
+        price,
+        availableCount,
+        orderRange,
+        images,
+        category,
+      },
       user,
     } = this.props;
     await this.props.mutate({
@@ -81,6 +89,7 @@ class CreatePriceScreen extends Component {
         name,
         description,
         images,
+        category,
         price,
         availableCount,
         orderRange,

@@ -7,6 +7,7 @@ const initialState = {
     availableCount: 30,
     orderRange: [1, 10],
     images: [],
+    category: '',
   },
 };
 

@@ -8,6 +8,12 @@ export default gql`
       slug
       description
       images
+      category {
+        name
+        image
+        icon
+        _id
+      }
       price
       soldCount
       orderRange

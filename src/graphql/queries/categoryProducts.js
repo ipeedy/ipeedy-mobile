@@ -1,32 +1,23 @@
 import { gql } from 'react-apollo';
 
 export default gql`
-  query getNearbyProducts(
-    $longitude: Float!
-    $latitude: Float!
-    $distance: Float
-  ) {
-    getNearbyProducts(
-      longitude: $longitude
-      latitude: $latitude
-      distance: $distance
-    ) {
-      dis
-      obj {
+  query getCategory($_id: ID!) {
+    getCategory(_id: $_id) {
+      _id
+      name
+      image
+      products {
         _id
         name
         slug
         description
         images
         price
-        orderRange
-        category {
-          name
-          image
-          icon
-          _id
-        }
         soldCount
+        orderRange
+        geometry {
+          coordinates
+        }
         reviews {
           user {
             name
@@ -37,9 +28,6 @@ export default gql`
           createdAt
           updatedAt
         }
-        geometry {
-          coordinates
-        }
         availableCount
         favoriteCount
         user {
@@ -49,6 +37,14 @@ export default gql`
           avatar
           email
         }
+      }
+      icon
+      user {
+        _id
+        phone
+        name
+        avatar
+        email
       }
     }
   }
