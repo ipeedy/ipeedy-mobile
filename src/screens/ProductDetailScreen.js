@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/native';
 import { RefreshControl, View } from 'react-native';
-import { MapView } from 'expo';
 import Swiper from 'react-native-swiper';
 import { Ionicons } from '@expo/vector-icons';
 import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
@@ -12,15 +11,10 @@ import { connect } from 'react-redux';
 import GET_PRODUCT_QUERY from '../graphql/queries/product';
 import { colors, icons } from '../utils/constants';
 import { getPrice } from '../utils/helpers';
-import MapStyle from '../utils/mapstyle';
 
 import CircleButton from '../components/CircleButton';
+import ActionButton from '../components/ActionButton';
 import DirectionMap from '../components/DirectionMap';
-
-const DEFAULT_DELTA = {
-  latitudeDelta: 0.0922 / 3,
-  longitudeDelta: 0.0421 / 3,
-};
 
 const Root = styled.View`
   flex: 1;
@@ -212,6 +206,23 @@ class ProductDetailScreen extends Component {
     this.props.navigation.navigate('Checkout', { product: this.state.product });
   };
 
+  _renderActionButton = () => {
+    if (this.state.product.user._id !== this.props.user._id) {
+      return (
+        <CircleButtonContainer>
+          <CircleButton secondary onPress={this._handleCheckout}>
+            <Ionicons name={icons.CART} size={27} color={colors.WHITE} />
+          </CircleButton>
+        </CircleButtonContainer>
+      );
+    }
+    return (
+      <CircleButtonContainer>
+        <ActionButton actionIcons={[icons.TRASH, icons.PAUSE, icons.EDIT]} />
+      </CircleButtonContainer>
+    );
+  };
+
   render() {
     const { product } = this.state;
 
@@ -364,11 +375,7 @@ class ProductDetailScreen extends Component {
             <Divider />
           </ContentWrapper>
         </Container>
-        <CircleButtonContainer>
-          <CircleButton secondary onPress={this._handleCheckout}>
-            <Ionicons name={icons.CART} size={27} color={colors.WHITE} />
-          </CircleButton>
-        </CircleButtonContainer>
+        {this._renderActionButton()}
       </Root>
     );
   }

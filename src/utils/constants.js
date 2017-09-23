@@ -27,7 +27,7 @@ export const images = [
 ];
 
 export const constants = {
-  GRAPHQL_URL: `http://localhost:3000/graphql`,
+  GRAPHQL_URL: `http://192.168.31.99:3000/graphql`,
   DIRECTION_API_URL: 'https://maps.googleapis.com/maps/api/directions/json?',
   DIRECTION_API_KEY: 'AIzaSyDnZjKlct29gM6xqgYqH-ITNw2CpsIOyig',
 };
@@ -43,7 +43,10 @@ export const icons = {
   PIN: 'ios-pin-outline',
   BASKET: 'ios-basket-outline',
   CHECKMARK: 'ios-checkmark-circle-outline',
+  OPTIONS: 'ios-options-outline',
   SETTINGS: 'ios-settings-outline',
+  TRASH: 'ios-trash-outline',
+  PAUSE: 'ios-pause-outline',
   YOURPRODUCTS: 'ios-list-box-outline',
   PROFILE: 'ios-contact-outline',
   CART: 'ios-cart-outline',
