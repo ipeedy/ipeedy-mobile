@@ -5,7 +5,6 @@ import { MapView } from 'expo';
 import { compose, graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 
-import { fetchProducts } from '../actions/product';
 import { clearCart } from '../actions/cart';
 import GET_NEARBY_PRODUCTS_QUERY from '../graphql/queries/nearbyProducts';
 
@@ -14,7 +13,6 @@ import MapStyle from '../utils/mapstyle';
 import UserMarker from '../components/UserMarker';
 import Loading from '../components/Loading';
 import ProductList from '../components/ProductList';
-import ProductListPlaceholder from '../components/ProductListPlaceholder';
 import Snackbar from '../components/Snackbar';
 import FuncButton from '../components/FuncButton';
 import { CARD_WIDTH } from '../components/ProductCard';
@@ -74,7 +72,7 @@ const FuncContainer = styled.View`
   alignItems: center;
 `;
 
-class ExploreScreen extends Component {
+class ExploreMapScreen extends Component {
   state = {
     error: null,
     region: null,
@@ -156,23 +154,6 @@ class ExploreScreen extends Component {
 
   _handleMarkerPress = index => {
     this.list._triggerScrollTo(index * CARD_WIDTH);
-  };
-
-  _renderProductsList = () => {
-    if (this.props.data.loading) {
-      return <ProductListPlaceholder />;
-    }
-    return (
-      <ProductList
-        _ref={c => {
-          this.list = c;
-        }} // eslint-disable-line
-        distance={10000000}
-        animation={this.animation}
-        productPressed={this._handleProductPressed}
-        products={this.props.data.getNearbyProducts}
-      />
-    );
   };
 
   _renderUserMarker = () => {
@@ -283,7 +264,18 @@ class ExploreScreen extends Component {
         {user.error && <Snackbar message={user.error} secondary />}
         {this._renderMapView()}
         <ProductsContainer>
-          {this._renderProductsList()}
+          <ProductList
+            _ref={c => {
+              this.list = c;
+            }} // eslint-disable-line
+            animation={this.animation}
+            showSelected
+            data={{
+              products: this.props.data.getNearbyProducts,
+              loading: this.props.data.loading,
+            }}
+            productPressed={this._handleProductPressed}
+          />
         </ProductsContainer>
       </Root>
     );
@@ -294,11 +286,9 @@ export default compose(
   connect(
     state => ({
       user: state.user,
-      products: state.product.products,
       cart: state.cart,
     }),
     {
-      fetchProducts,
       clearCart,
     },
   ),
@@ -311,4 +301,4 @@ export default compose(
       },
     }),
   }),
-)(ExploreScreen);
+)(ExploreMapScreen);

@@ -7,10 +7,9 @@ import { colors, icons } from '../utils/constants';
 
 import ButtonHeader from '../components/ButtonHeader';
 
-import ExploreScreen from '../screens/ExploreScreen';
+import ExploreMapScreen from '../screens/ExploreMapScreen';
 import SearchScreen from '../screens/SearchScreen';
 import ExploreProductsScreen from '../screens/ExploreProductsScreen';
-import ExploreCategoriesScreen from '../screens/ExploreCategoriesScreen';
 import CreateProductStack from './CreateProductStack';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
@@ -20,8 +19,16 @@ const View = styled.View`flexDirection: row;`;
 
 const ExploreTab = TabNavigator(
   {
-    Explore: {
-      screen: ExploreScreen,
+    ExploreProducts: {
+      screen: ExploreProductsScreen,
+      navigationOptions: {
+        tabBarLabel: 'Products',
+        tabBarIcon: ({ tintColor }) =>
+          <Ionicons color={tintColor} name={icons.CART} size={22} />,
+      },
+    },
+    ExploreMap: {
+      screen: ExploreMapScreen,
       navigationOptions: {
         tabBarLabel: 'Explore',
         tabBarIcon: ({ tintColor }) =>
@@ -34,22 +41,6 @@ const ExploreTab = TabNavigator(
         tabBarLabel: 'Search',
         tabBarIcon: ({ tintColor }) =>
           <Ionicons color={tintColor} name={icons.SEARCH} size={22} />,
-      },
-    },
-    ExploreProducts: {
-      screen: ExploreProductsScreen,
-      navigationOptions: {
-        tabBarLabel: 'Products',
-        tabBarIcon: ({ tintColor }) =>
-          <Ionicons color={tintColor} name={icons.LIST} size={28} />,
-      },
-    },
-    ExploreCategories: {
-      screen: ExploreCategoriesScreen,
-      navigationOptions: {
-        tabBarLabel: 'Categories',
-        tabBarIcon: ({ tintColor }) =>
-          <Ionicons color={tintColor} name={icons.CATEGORY} size={26} />,
       },
     },
   },

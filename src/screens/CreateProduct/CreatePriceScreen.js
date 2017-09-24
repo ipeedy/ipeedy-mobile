@@ -100,7 +100,7 @@ class CreatePriceScreen extends Component {
     });
     this.props.clearInput();
     this.setState({ loading: false });
-    this.props.navigation.navigate('Explore');
+    this.props.navigation.navigate('ExploreProducts');
   };
 
   render() {

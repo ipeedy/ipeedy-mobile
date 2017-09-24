@@ -45,7 +45,6 @@ export const AppMainNav = DrawerNavigator(
     },
   },
   {
-    initialRouteName: 'Explore',
     contentComponent: props => <Drawer {...props} />,
     contentOptions: {
       labelStyle: {

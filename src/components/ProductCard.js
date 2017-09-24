@@ -10,7 +10,7 @@ import { colors, icons } from '../utils/constants';
 export const CARD_WIDTH = 175;
 
 const Container = styled.View`
-  width: ${CARD_WIDTH};
+  width: ${props => (props.big ? CARD_WIDTH * 2 : CARD_WIDTH)};
   height: 100%;
   paddingHorizontal: 4px;
   paddingVertical: 8px;
@@ -39,8 +39,8 @@ const HeartButton = styled(Touchable).attrs({
   feedback: 'opacity',
 })`
   position: absolute;
-  width: 35;
-  height: 35;
+  width: ${props => (props.large ? 50 : 35)};
+  height: ${props => (props.large ? 50 : 35)};
   justifyContent: center;
   alignItems: center;
   backgroundColor: transparent;
@@ -86,16 +86,24 @@ const MetaText = styled.Text.attrs({
   numberOfLines: 1,
 })`
   color: ${props => props.theme.BLACK};
-  fontFamily: 'quicksand-regular';
-  fontSize: 13;
+  fontFamily: ${props =>
+    props.bold ? 'quicksand-medium' : 'quicksand-regular'};
+  fontSize: ${props => (props.large ? 16 : 13)};
+`;
+
+const Category = styled(MetaText)`
+  fontSize: ${props => (props.large ? 12 : 10)};
+  fontFamily: 'quicksand-medium';
+  color: ${props => props.theme.PRIMARY};
 `;
 
 const Review = styled.Text`
-  fontSize: 10;
+  fontSize: ${props => (props.large ? 13 : 10)};
   fontFamily: 'quicksand-medium';
   paddingLeft: 8;
   color: ${props => props.theme.DARK};
 `;
+
 const Price = styled(MetaText)`
   fontFamily: 'quicksand-medium';
   color: ${props => props.theme.WHITE};
@@ -104,44 +112,59 @@ const Price = styled(MetaText)`
 
 class ProductCard extends Component {
   render() {
-    const { product: { images, name, reviews, price }, selected } = this.props;
+    const {
+      product: { images, name, reviews, price, category },
+      selected,
+      showSelected,
+      showCategory,
+      featured,
+    } = this.props;
     let totalRating = 0;
 
     reviews.map(review => (totalRating += review.rating)); // eslint-disable-line
 
     return (
-      <Container>
+      <Container big={featured}>
         <ProductTouchable
           onPress={() => this.props.onPress(this.props.product)}
         >
           {images.length > 0
             ? <Image source={{ uri: images[0] }} />
             : <Image source={require('../../assets/images/no-image.png')} />}
-          <HeartButton>
-            <EvilIcons size={28} color={colors.WHITE} name={icons.HEART} />
+          <HeartButton large={featured}>
+            <EvilIcons
+              size={featured ? 32 : 28}
+              color={colors.WHITE}
+              name={icons.HEART}
+            />
           </HeartButton>
-          <PriceContainer>
-            <Price>
-              {getPrice(price)}
-            </Price>
-          </PriceContainer>
+          {!featured &&
+            <PriceContainer>
+              <Price>
+                {getPrice(price)}
+              </Price>
+            </PriceContainer>}
           <MetaContainer>
-            <MetaText>
+            {showCategory &&
+              <Category large={featured}>
+                {category.name.toUpperCase()}
+              </Category>}
+            <MetaText large={featured} bold={showCategory}>
               {name}
             </MetaText>
             <FooterMetaContainer>
               <StarRating
                 disabled
                 rating={totalRating / reviews.length || 0}
-                starSize={11}
+                starSize={featured ? 15 : 11}
                 starColor={colors.SECONDARY_A}
               />
-              <Review>
+              <Review large={featured}>
                 {reviews.length} Reviews
               </Review>
             </FooterMetaContainer>
           </MetaContainer>
-          {selected && <SeletedBar />}
+          {showSelected && selected && <SeletedBar />}
         </ProductTouchable>
       </Container>
     );

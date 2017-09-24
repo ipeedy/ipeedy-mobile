@@ -63,7 +63,6 @@ export const icons = {
   IMAGES: 'ios-images-outline',
   MESSAGE: 'ios-chatbubbles-outline',
   CALL: 'ios-call-outline',
-  LIST: 'ios-list',
   CATEGORY: 'ios-archive-outline',
   SEARCH: 'ios-search-outline',
 };

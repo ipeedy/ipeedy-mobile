@@ -6,7 +6,7 @@ import styled from 'styled-components/native';
 export const CARD_WIDTH = 175;
 
 const Card = styled.View`
-  width: ${CARD_WIDTH};
+  width: ${props => (props.large ? CARD_WIDTH * 2 : CARD_WIDTH)};
   height: 100%;
   paddingHorizontal: 4px;
   paddingVertical: 8px;
@@ -33,30 +33,33 @@ const ListSeparator = styled.View`
   height: 100%;
 `;
 
-const ProductListPlaceholder = () =>
+const ProductListPlaceholder = ({ featured }) =>
   <FlatList
     horizontal
     contentContainerStyle={{
       left: 4,
     }}
     showsHorizontalScrollIndicator={false}
-    data={[1, 2, 3]}
+    data={featured ? [1] : [1, 2, 3]}
     ListHeaderComponent={() => <ListSeparator />}
     keyExtractor={item => item}
     renderItem={() =>
-      <Card>
+      <Card large={featured}>
         <Image>
-          <Placeholder.Media size={175} animate="shine" />
+          <Placeholder.Media
+            size={featured ? CARD_WIDTH * 2 : CARD_WIDTH}
+            animate="shine"
+          />
         </Image>
         <MetaContainer>
           <Placeholder.Paragraph
             lineNumber={2}
-            textSize={12}
-            lineSpacing={6}
+            textSize={featured ? 14 : 11}
+            lineSpacing={featured ? 9 : 6}
             animate="shine"
             width="100%"
-            lastLineWidth="70%"
-            firstLineWidth="80%"
+            lastLineWidth={featured ? '30%' : '70%'}
+            firstLineWidth={featured ? '35%' : '80%'}
           />
         </MetaContainer>
       </Card>}

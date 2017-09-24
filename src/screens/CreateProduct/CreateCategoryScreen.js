@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
-import { graphql, compose } from 'react-apollo';
 
 import { icons, colors } from '../../utils/constants';
 import { getInput } from '../../actions/product';
-import CATEGORIES_QUERY from '../../graphql/queries/categories';
 
 import CircleButton from '../../components/CircleButton';
 import CategoryList from '../../components/CategoryList';
@@ -50,7 +48,6 @@ class CreateCategoryScreen extends Component {
         <Wrapper>
           <Title>Select type of product you want to sell:</Title>
           <CategoryList
-            data={this.props.data}
             containerStyle={{
               top: 20,
             }}
@@ -70,7 +67,6 @@ class CreateCategoryScreen extends Component {
   }
 }
 
-export default compose(
-  connect(state => ({ input: state.product.form }), { getInput }),
-  graphql(CATEGORIES_QUERY),
-)(CreateCategoryScreen);
+export default connect(state => ({ input: state.product.form }), { getInput })(
+  CreateCategoryScreen,
+);

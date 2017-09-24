@@ -22,9 +22,9 @@ const Category = styled(Touchable).attrs({
   width: 100%;
   height: 100%;
   backgroundColor: ${props => props.theme.WHITE};
-  shadowOffset: 0px 0px;
+  shadowOffset: 0px 1px;
   shadowRadius: 2px;
-  shadowOpacity: 0.3;
+  shadowOpacity: 0.2;
   shadowColor: ${props => props.theme.BLACK};
   borderRadius: 2px;
 `;

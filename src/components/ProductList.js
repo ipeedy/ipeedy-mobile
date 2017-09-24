@@ -3,6 +3,7 @@ import { Animated, FlatList, LayoutAnimation, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 
 import ProductCard, { CARD_WIDTH } from './ProductCard';
+import ProductListPlaceholder from './ProductListPlaceholder';
 
 const { width } = Dimensions.get('window');
 
@@ -44,7 +45,15 @@ class ProductList extends Component {
   };
 
   render() {
-    const { products, productPressed } = this.props;
+    const {
+      data: { loading, products },
+      productPressed,
+      showCategory,
+      showSelected,
+      featured,
+    } = this.props;
+
+    if (loading) return <ProductListPlaceholder featured={featured} />;
 
     return (
       <List
@@ -52,14 +61,14 @@ class ProductList extends Component {
         contentContainerStyle={{
           left: 4,
         }}
-        snapToInterval={CARD_WIDTH}
+        snapToInterval={featured ? CARD_WIDTH * 2 : CARD_WIDTH}
         showsHorizontalScrollIndicator={false}
         scrollEventThrottle={1}
         data={products}
         ref={c => {
           this._flatlist = c;
         }} // eslint-disable-line
-        keyExtractor={item => item.obj._id}
+        keyExtractor={item => (item.obj ? item.obj._id : item._id)}
         extraData={this.state.selectedProduct}
         onScroll={Animated.event(
           [
@@ -78,9 +87,12 @@ class ProductList extends Component {
         )}
         renderItem={({ item, index }) =>
           <ProductCard
-            product={{ ...item.obj, dis: item.dis }}
+            product={item.obj ? { ...item.obj, dis: item.dis } : { ...item }}
             selected={this.state.selectedProduct === index}
             onPress={productPressed}
+            showCategory={showCategory}
+            showSelected={showSelected}
+            featured={featured}
           />}
         ListFooterComponent={() => <ListFooter />}
         ListHeaderComponent={() => <ListSeparator />}
