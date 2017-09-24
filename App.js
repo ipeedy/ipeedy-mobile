@@ -22,6 +22,7 @@ export default class App extends React.Component {
   };
 
   async componentWillMount() {
+    // AsyncStorage.removeItem('@ipeedy');
     await this._checkIfToken();
     await this._loadAssetsAsync();
   }

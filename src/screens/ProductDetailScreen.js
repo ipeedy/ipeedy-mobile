@@ -202,8 +202,10 @@ class ProductDetailScreen extends Component {
     this.setState({ product: getProduct });
   };
 
-  _handleCheckout = async () => {
-    this.props.navigation.navigate('Checkout', { product: this.state.product });
+  _handleCheckout = () => {
+    this.props.navigation.navigate('Checkout', {
+      product: this.state.product,
+    });
   };
 
   _renderActionButton = () => {

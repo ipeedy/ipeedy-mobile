@@ -3,34 +3,33 @@ import { Animated, Easing } from 'react-native';
 import styled from 'styled-components/native';
 
 const Root = styled.View`
-  width: 100;
-  height: 100;
+  width: 260;
+  height: 260;
   justifyContent: center;
   alignItems: center;
 `;
 
 const Circle = styled.View`
-  width: 10;
-  height: 10;
+  width: 50;
+  height: 50;
   backgroundColor: ${props => props.theme.PRIMARY};
-  borderRadius: 5;
+  borderRadius: 25;
   alignSelf: center;
   justifyContent: center;
   alignItems: center;
-  elevation: 3;
 `;
 
 const Marker = styled(Animated.View)`
   backgroundColor: transparent;
-  width: 10;
-  height: 10;
-  borderRadius: 5;
-  borderWidth: 1;
+  width: 50;
+  height: 50;
+  borderRadius: 25;
+  borderWidth: 2;
   alignSelf: center;
   borderColor: ${props => props.theme.PRIMARY};
 `;
 
-class UserMarker extends Component {
+class Connecting extends Component {
   componentWillMount() {
     this.animated = new Animated.Value(0);
   }
@@ -59,7 +58,7 @@ class UserMarker extends Component {
   render() {
     const sizeInterpolate = this.animated.interpolate({
       inputRange: [0, 1],
-      outputRange: [10, 70],
+      outputRange: [50, 260],
     });
 
     const opacityInterpolate = this.animated.interpolate({
@@ -76,7 +75,7 @@ class UserMarker extends Component {
 
     return (
       <Root>
-        <Circle>
+        <Circle source={{ uri: this.props.avatar }}>
           <Marker style={animatedStyle} />
         </Circle>
       </Root>
@@ -84,4 +83,4 @@ class UserMarker extends Component {
   }
 }
 
-export default UserMarker;
+export default Connecting;

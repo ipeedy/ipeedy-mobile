@@ -80,7 +80,7 @@ class ActionButton extends Component {
   };
 
   render() {
-    const { icon, actionIcons, iconSize } = this.props;
+    const { icon, actionIcons, iconSize, actionIconSize = [] } = this.props;
 
     const animatedButtonStyle = {
       backgroundColor: this.state.animate.interpolate({
@@ -102,7 +102,7 @@ class ActionButton extends Component {
             >
               <Ionicons
                 name={actionIcons[i] || icons.CLOSE}
-                size={iconSize || 22}
+                size={actionIconSize[i] || 22}
                 color={colors.WHITE}
               />
             </AnimatedFloatingButtonContent>

@@ -8,6 +8,9 @@ export default gql`
       name
       email
       avatar
+      geometry {
+        coordinates
+      }
     }
   }
 `;

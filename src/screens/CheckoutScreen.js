@@ -71,7 +71,12 @@ class CheckoutScreen extends Component {
     amount: this.props.navigation.state.params.product.orderRange[0],
   };
 
-  _handleNext = () => {};
+  _handleNext = () => {
+    this.props.navigation.navigate('Connecting', {
+      product: this.props.navigation.state.params.product,
+      amount: this.state.amount,
+    });
+  };
 
   render() {
     const { product } = this.props.navigation.state.params;

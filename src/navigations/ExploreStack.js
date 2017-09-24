@@ -1,5 +1,5 @@
 import React from 'react';
-import { StackNavigator } from 'react-navigation';
+import { StackNavigator, TabNavigator } from 'react-navigation';
 import { Ionicons, EvilIcons } from '@expo/vector-icons';
 import styled from 'styled-components/native';
 
@@ -8,16 +8,76 @@ import { colors, icons } from '../utils/constants';
 import ButtonHeader from '../components/ButtonHeader';
 
 import ExploreScreen from '../screens/ExploreScreen';
+import SearchScreen from '../screens/SearchScreen';
+import ExploreProductsScreen from '../screens/ExploreProductsScreen';
+import ExploreCategoriesScreen from '../screens/ExploreCategoriesScreen';
 import CreateProductStack from './CreateProductStack';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
+import ConnectingScreen from '../screens/ConnectingScreen';
 
 const View = styled.View`flexDirection: row;`;
+
+const ExploreTab = TabNavigator(
+  {
+    Explore: {
+      screen: ExploreScreen,
+      navigationOptions: {
+        tabBarLabel: 'Explore',
+        tabBarIcon: ({ tintColor }) =>
+          <Ionicons color={tintColor} name={icons.EXPLORE} size={22} />,
+      },
+    },
+    Search: {
+      screen: SearchScreen,
+      navigationOptions: {
+        tabBarLabel: 'Search',
+        tabBarIcon: ({ tintColor }) =>
+          <Ionicons color={tintColor} name={icons.SEARCH} size={22} />,
+      },
+    },
+    ExploreProducts: {
+      screen: ExploreProductsScreen,
+      navigationOptions: {
+        tabBarLabel: 'Products',
+        tabBarIcon: ({ tintColor }) =>
+          <Ionicons color={tintColor} name={icons.LIST} size={28} />,
+      },
+    },
+    ExploreCategories: {
+      screen: ExploreCategoriesScreen,
+      navigationOptions: {
+        tabBarLabel: 'Categories',
+        tabBarIcon: ({ tintColor }) =>
+          <Ionicons color={tintColor} name={icons.CATEGORY} size={26} />,
+      },
+    },
+  },
+  {
+    tabBarPosition: 'top',
+    animationEnabled: false,
+    lazy: true,
+    swipeEnabled: false,
+    tabBarOptions: {
+      activeTintColor: colors.PRIMARY,
+      inactiveTintColor: colors.SILVER,
+      activeBackgroundColor: colors.WHITE,
+      inactiveBackgroundColor: colors.WHITE,
+      showLabel: false,
+      showIcon: true,
+      style: {
+        height: 40,
+        borderBottomColor: colors.LIGHT,
+        borderBottomWidth: 1,
+      },
+    },
+  },
+);
 
 export default StackNavigator(
   {
     Explore: {
-      screen: ExploreScreen,
+      screen: ExploreTab,
       navigationOptions: ({ navigation, screenProps }) => ({
         title: 'Explore',
         headerLeft: (
@@ -79,6 +139,17 @@ export default StackNavigator(
               <EvilIcons size={28} name={icons.HEART} color={colors.WHITE} />
             </ButtonHeader>
           </View>
+        ),
+      }),
+    },
+    Connecting: {
+      screen: ConnectingScreen,
+      navigationOptions: ({ navigation }) => ({
+        title: 'Connecting',
+        headerLeft: (
+          <ButtonHeader side="left" onPress={() => navigation.goBack()}>
+            <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
+          </ButtonHeader>
         ),
       }),
     },

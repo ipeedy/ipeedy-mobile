@@ -18,6 +18,9 @@ export default gql`
         slug
         description
         images
+        geometry {
+          coordinates
+        }
         price
         orderRange
         category {
@@ -36,9 +39,6 @@ export default gql`
           rating
           createdAt
           updatedAt
-        }
-        geometry {
-          coordinates
         }
         availableCount
         favoriteCount
