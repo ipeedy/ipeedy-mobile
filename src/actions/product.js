@@ -13,10 +13,3 @@ export function clearInput() {
     type: 'CLEAR_INPUT',
   };
 }
-
-export function fetchProducts(payload) {
-  return {
-    type: 'FETCH_PRODUCTS',
-    payload,
-  };
-}

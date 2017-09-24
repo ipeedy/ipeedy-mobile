@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Animated, FlatList, LayoutAnimation, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
-import { connect } from 'react-redux';
 
 import ProductCard, { CARD_WIDTH } from './ProductCard';
 
@@ -90,6 +89,4 @@ class ProductList extends Component {
   }
 }
 
-export default connect(state => ({ products: state.product.products }))(
-  ProductList,
-);
+export default ProductList;

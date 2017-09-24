@@ -1,5 +1,4 @@
 const initialState = {
-  products: [],
   form: {
     name: '',
     description: '',
@@ -13,11 +12,6 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case 'FETCH_PRODUCTS':
-      return {
-        ...state,
-        products: action.payload.getNearbyProducts,
-      };
     case 'GET_INPUT':
       return {
         ...state,

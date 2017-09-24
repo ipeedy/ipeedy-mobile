@@ -31,6 +31,7 @@ const Image = styled.Image`
   flex: 7.5;
   alignSelf: stretch;
   width: 100%;
+  borderRadius: 3px;
   backgroundColor: ${props => props.theme.LIGHT};
 `;
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Animated } from 'react-native';
 import styled from 'styled-components/native';
 import { MapView } from 'expo';
-import { withApollo } from 'react-apollo';
+import { compose, graphql } from 'react-apollo';
 import { connect } from 'react-redux';
 
 import { fetchProducts } from '../actions/product';
@@ -10,12 +10,11 @@ import { clearCart } from '../actions/cart';
 import GET_NEARBY_PRODUCTS_QUERY from '../graphql/queries/nearbyProducts';
 
 import MapStyle from '../utils/mapstyle';
-import { colors } from '../utils/constants';
 
 import UserMarker from '../components/UserMarker';
+import Loading from '../components/Loading';
 import ProductList from '../components/ProductList';
 import ProductListPlaceholder from '../components/ProductListPlaceholder';
-import Loading from '../components/Loading';
 import Snackbar from '../components/Snackbar';
 import FuncButton from '../components/FuncButton';
 import { CARD_WIDTH } from '../components/ProductCard';
@@ -25,7 +24,7 @@ const DEFAULT_DELTA = {
   longitudeDelta: 0.008,
 };
 
-const DISTANCE = 10000;
+const DISTANCE = 2000;
 
 const Root = styled.View`
   flex: 1;
@@ -79,8 +78,8 @@ class ExploreScreen extends Component {
   state = {
     error: null,
     region: null,
+    regionInited: false,
     userRegion: this.props.user.location,
-    productFetched: false,
     selectedProduct: 0,
     showRefreshButton: false,
   };
@@ -96,11 +95,19 @@ class ExploreScreen extends Component {
     }
   }
 
-  componentDidMount() {
-    const {
-      user: { info: { location: { longitude, latitude } } },
-    } = this.props;
-    this._getNearbyProduct(latitude, longitude, DISTANCE);
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.data.loading) {
+      this._addMapViewEventListener(nextProps.data);
+    }
+    if (!nextProps.user.fetchingLocation && !this.state.regionInited) {
+      this.setState({
+        region: {
+          ...nextProps.user.info.location,
+          ...DEFAULT_DELTA,
+        },
+        regionInited: true,
+      });
+    }
   }
 
   _handleRegionChange = region =>
@@ -108,21 +115,6 @@ class ExploreScreen extends Component {
 
   _handleProductPressed = product => {
     this.props.navigation.navigate('ProductDetail', { product });
-  };
-
-  _getNearbyProduct = async (latitude, longitude, distance) => {
-    this.setState({ productFetched: false });
-    const { data } = await this.props.client.query({
-      query: GET_NEARBY_PRODUCTS_QUERY,
-      variables: {
-        latitude,
-        longitude,
-        distance,
-      },
-    });
-    this.props.fetchProducts(data);
-    this.setState({ productFetched: true });
-    this._addMapViewEventListener(data);
   };
 
   _addMapViewEventListener = ({ getNearbyProducts: products }) => {
@@ -167,7 +159,7 @@ class ExploreScreen extends Component {
   };
 
   _renderProductsList = () => {
-    if (!this.state.productFetched) {
+    if (this.props.data.loading) {
       return <ProductListPlaceholder />;
     }
     return (
@@ -178,6 +170,7 @@ class ExploreScreen extends Component {
         distance={10000000}
         animation={this.animation}
         productPressed={this._handleProductPressed}
+        products={this.props.data.getNearbyProducts}
       />
     );
   };
@@ -197,9 +190,9 @@ class ExploreScreen extends Component {
   };
 
   _renderProductMarkers = () => {
-    if (this.state.productFetched) {
+    if (!this.props.data.loading) {
       const markers = [];
-      this.props.products.map((product, index) => {
+      this.props.data.getNearbyProducts.map((product, index) => {
         const inputRange = [
           (index - 1) * CARD_WIDTH,
           index * CARD_WIDTH,
@@ -248,9 +241,37 @@ class ExploreScreen extends Component {
     }
   };
 
+  _renderMapView = () => {
+    if (this.props.user.fetchingLocation) {
+      return <Loading size="large" />;
+    }
+    return (
+      <MapContainer>
+        <MapView
+          ref={map => (this.map = map)} // eslint-disable-line
+          initialRegion={{ ...this.props.user.info.location, ...DEFAULT_DELTA }}
+          region={this.state.region}
+          onRegionChange={this._handleRegionChange}
+          showsMyLocationButton
+          provider={MapView.PROVIDER_GOOGLE}
+          customMapStyle={MapStyle}
+          style={{ flex: 1 }}
+        >
+          {this._renderProductMarkers()}
+          {this._renderUserMarker()}
+        </MapView>
+
+        <FuncContainer>
+          {this.state.showRefreshButton &&
+            <FuncButton title="Refresh" onPress={this._handleRefreshProduct} />}
+        </FuncContainer>
+      </MapContainer>
+    );
+  };
+
   _handleRefreshProduct = () => {
     const { longitude, latitude } = this.state.region;
-    this._getNearbyProduct(latitude, longitude, DISTANCE);
+    this.props.data.refetch({ latitude, longitude, DISTANCE });
     this.setState({ showRefreshButton: false });
   };
 
@@ -260,29 +281,7 @@ class ExploreScreen extends Component {
     return (
       <Root>
         {user.error && <Snackbar message={user.error} secondary />}
-        <MapContainer>
-          <MapView
-            ref={map => (this.map = map)} // eslint-disable-line
-            initialRegion={{ ...user.info.location, ...DEFAULT_DELTA }}
-            region={this.state.region}
-            onRegionChange={this._handleRegionChange}
-            showsMyLocationButton
-            provider={MapView.PROVIDER_GOOGLE}
-            customMapStyle={MapStyle}
-            style={{ flex: 1 }}
-          >
-            {this._renderProductMarkers()}
-            {this._renderUserMarker()}
-          </MapView>
-
-          <FuncContainer>
-            {this.state.showRefreshButton &&
-              <FuncButton
-                title="Refresh"
-                onPress={this._handleRefreshProduct}
-              />}
-          </FuncContainer>
-        </MapContainer>
+        {this._renderMapView()}
         <ProductsContainer>
           {this._renderProductsList()}
         </ProductsContainer>
@@ -291,7 +290,7 @@ class ExploreScreen extends Component {
   }
 }
 
-export default withApollo(
+export default compose(
   connect(
     state => ({
       user: state.user,
@@ -302,5 +301,14 @@ export default withApollo(
       fetchProducts,
       clearCart,
     },
-  )(ExploreScreen),
-);
+  ),
+  graphql(GET_NEARBY_PRODUCTS_QUERY, {
+    options: ({ user: { info: { location: { longitude, latitude } } } }) => ({
+      variables: {
+        longitude,
+        latitude,
+        distance: DISTANCE,
+      },
+    }),
+  }),
+)(ExploreScreen);
