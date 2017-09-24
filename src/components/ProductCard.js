@@ -80,7 +80,7 @@ const SeletedBar = styled.View`
 const PriceContainer = styled.View`
   position: absolute;
   height: 25;
-  width: 28%;
+  paddingHorizontal: 7px;
   left: 0;
   justifyContent: center;
   alignItems: center;
@@ -127,6 +127,8 @@ class ProductCard extends Component {
       width,
       onPress,
       height,
+      amount,
+      hideReviews,
     } = this.props;
     let totalRating = 0;
 
@@ -148,7 +150,7 @@ class ProductCard extends Component {
           {!featured &&
             <PriceContainer>
               <Price>
-                {getPrice(price)}
+                {amount ? `${getPrice(price)} x ${amount}` : getPrice(price)}
               </Price>
             </PriceContainer>}
           <MetaContainer>
@@ -159,17 +161,18 @@ class ProductCard extends Component {
             <MetaText large={featured} bold={showCategory}>
               {name}
             </MetaText>
-            <FooterMetaContainer>
-              <StarRating
-                disabled
-                rating={totalRating / reviews.length || 0}
-                starSize={featured ? 15 : 11}
-                starColor={colors.SECONDARY_A}
-              />
-              <Review large={featured}>
-                {reviews.length} Reviews
-              </Review>
-            </FooterMetaContainer>
+            {!hideReviews &&
+              <FooterMetaContainer>
+                <StarRating
+                  disabled
+                  rating={totalRating / reviews.length || 0}
+                  starSize={featured ? 15 : 11}
+                  starColor={colors.SECONDARY_A}
+                />
+                <Review large={featured}>
+                  {reviews.length} Reviews
+                </Review>
+              </FooterMetaContainer>}
           </MetaContainer>
           {showSelected && selected && <SeletedBar />}
         </ProductTouchable>

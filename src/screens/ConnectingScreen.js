@@ -6,6 +6,7 @@ import { icons } from '../utils/constants';
 
 import Connecting from '../components/Connecting';
 import ActionButton from '../components/ActionButton';
+import ProductCard from '../components/ProductCard';
 
 const Root = styled.View`
   flex: 1;
@@ -27,6 +28,14 @@ const UserContainer = styled.View`
   alignItems: center;
   overflow: visible;
   flexDirection: row;
+`;
+
+const ProductContainer = styled.View`
+  height: 150;
+  width: 100%;
+  marginTop: 110px;
+  marginLeft: 70px;
+  position: absolute;
 `;
 
 const AvatarWrapper = styled.View`
@@ -68,19 +77,41 @@ const ActionButtonContainer = styled.View`
 `;
 
 class ConnectingScreen extends Component {
-  state = {};
+  _handleProductPressed = product => {
+    this.props.navigation.navigate('ProductDetail', { product });
+  };
+
   render() {
+    const { product, amount } = this.props.navigation.state.params;
+
     return (
       <Root>
         <Wrapper>
           <Title>Connecting to seller...</Title>
+          <ProductContainer>
+            <ProductCard
+              product={product}
+              onPress={this._handleProductPressed}
+              showCategory
+              amount={amount}
+              hideReviews
+              width={170}
+              height={150}
+            />
+          </ProductContainer>
           <UserContainer>
             <AvatarWrapper>
-              <Connecting />
+              <Connecting avatar={product.user.avatar} />
             </AvatarWrapper>
             <UserInfoContainer>
-              <Username>Alexandra User</Username>
-              <Phone>0917 679 524</Phone>
+              <Username>
+                {product.user.name}
+              </Username>
+              <Phone>
+                {PhoneNumber(product.user.phone, 'VN').getNumber(
+                  'international',
+                )}
+              </Phone>
             </UserInfoContainer>
           </UserContainer>
         </Wrapper>
