@@ -10,8 +10,14 @@ import { colors, icons } from '../utils/constants';
 export const CARD_WIDTH = 175;
 
 const Container = styled.View`
-  width: ${props => (props.big ? CARD_WIDTH * 2 : CARD_WIDTH)};
-  height: 100%;
+  width: ${props => {
+    const width = props.width || CARD_WIDTH;
+    if (props.big) {
+      return width * 2;
+    }
+    return width;
+  }};
+  height: ${props => (props.height ? props.height : '100%')};
   paddingHorizontal: 4px;
   paddingVertical: 8px;
   alignItems: center;
@@ -23,7 +29,7 @@ const ProductTouchable = styled(Touchable).attrs({
 })`
   width: 100%;
   position: relative;
-  height: 100%;
+  height: ${props => (props.height ? props.height : '100%')};
   backgroundColor: ${props => props.theme.WHITE};
 `;
 
@@ -118,16 +124,17 @@ class ProductCard extends Component {
       showSelected,
       showCategory,
       featured,
+      width,
+      onPress,
+      height,
     } = this.props;
     let totalRating = 0;
 
     reviews.map(review => (totalRating += review.rating)); // eslint-disable-line
 
     return (
-      <Container big={featured}>
-        <ProductTouchable
-          onPress={() => this.props.onPress(this.props.product)}
-        >
+      <Container big={featured} width={width} height={height}>
+        <ProductTouchable onPress={() => onPress(this.props.product)}>
           {images.length > 0
             ? <Image source={{ uri: images[0] }} />
             : <Image source={require('../../assets/images/no-image.png')} />}
