@@ -39,7 +39,7 @@ class ProductSearchList extends Component {
         showsVerticalScrollIndicator={false}
         data={products}
         contentContainerStyle={{
-          paddingHorizontal: 4,
+          paddingHorizontal: 8,
         }}
         numColumns={2}
         keyExtractor={item => (item.obj ? item.obj._id : item._id)}
@@ -48,7 +48,7 @@ class ProductSearchList extends Component {
             product={item.obj ? { ...item.obj, dis: item.dis } : { ...item }}
             onPress={productPressed}
             showCategory
-            width={CARD_WIDTH - 4}
+            width={CARD_WIDTH - 8}
             height={CARD_WIDTH}
           />}
         ListFooterComponent={() => <ListFooterPadding />}

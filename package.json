@@ -22,6 +22,7 @@
     "react-apollo": "^1.4.15",
     "react-native": "https://github.com/expo/react-native/archive/sdk-21.0.2.tar.gz",
     "react-native-aws3": "0.0.8",
+    "react-native-google-maps-directions": "^1.1.2",
     "react-native-star-rating": "^1.0.8",
     "react-native-swiper": "^1.5.10",
     "react-navigation": "^1.0.0-beta.11",

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import styled from 'styled-components/native';
 import Touchable from '@appandflow/touchable';
 
-const Root = styled.View`
+const Root = styled.Image`
   flex: 1;
   backgroundColor: ${props => props.theme.PRIMARY};
 `;
@@ -20,10 +20,10 @@ const LogoContainer = styled.View`
   backgroundColor: ${props => props.theme.WHITE};
   justifyContent: center;
   alignItems: center;
-  shadowColor: ${props => props.theme.BLACK};
-  shadowOpacity: 0.3;
-  shadowRadius: 10;
-  shadowOffset: 0px 3px;
+  shadowColor: ${props => props.theme.WHITE};
+  shadowOpacity: 0.4;
+  shadowRadius: 15;
+  shadowOffset: 0px 5px;
   elevation: 4;
 `;
 
@@ -40,7 +40,10 @@ const ContentContainer = styled.View`
   paddingVertical: 5%;
 `;
 
-const SloganContainer = styled.View`alignItems: center;`;
+const SloganContainer = styled.View`
+  backgroundColor: transparent;
+  alignItems: center;
+`;
 
 const Slogan = styled.Text`
   fontFamily: 'quicksand-medium';
@@ -79,7 +82,12 @@ const SocialButton = styled(PhoneButton)`
 class AuthenticationScreen extends Component {
   render() {
     return (
-      <Root>
+      <Root
+        source={{
+          uri:
+            'https://s3-ap-southeast-1.amazonaws.com/ipeedy/uploads/bgauth.jpg',
+        }}
+      >
         <HeaderContainer>
           <LogoContainer>
             <Logo source={require('../../assets/images/ipeedy-mark.png')} />

@@ -12,10 +12,13 @@ import SearchScreen from '../screens/SearchScreen';
 import ExploreProductsScreen from '../screens/ExploreProductsScreen';
 import CreateProductStack from './CreateProductStack';
 import ProductDetailScreen from '../screens/ProductDetailScreen';
+import CategoryScreen from '../screens/CategoryScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
 import ConnectingScreen from '../screens/ConnectingScreen';
+import DeliveryScreen from '../screens/DeliveryScreen';
+import NewOrderScreen from '../screens/NewOrderScreen';
 
-const View = styled.View`flexDirection: row;`;
+const RowView = styled.View`flexDirection: row;`;
 
 const ExploreTab = TabNavigator(
   {
@@ -80,7 +83,7 @@ export default StackNavigator(
           </ButtonHeader>
         ),
         headerRight: (
-          <View>
+          <RowView>
             {screenProps.cart &&
               screenProps.cart.product &&
               <ButtonHeader
@@ -92,11 +95,21 @@ export default StackNavigator(
               </ButtonHeader>}
             <ButtonHeader
               side="right"
+              onPress={() => navigation.navigate('NewOrder')}
+            >
+              <Ionicons
+                size={24}
+                name={icons.NOTIFICATION}
+                color={colors.WHITE}
+              />
+            </ButtonHeader>
+            <ButtonHeader
+              side="right"
               onPress={() => navigation.navigate('CreateProduct')}
             >
               <Ionicons size={33} name={icons.ADD} color={colors.WHITE} />
             </ButtonHeader>
-          </View>
+          </RowView>
         ),
       }),
     },
@@ -122,14 +135,35 @@ export default StackNavigator(
           </ButtonHeader>
         ),
         headerRight: (
-          <View>
+          <RowView>
             <ButtonHeader side="right" onPress={() => {}}>
               <EvilIcons size={28} name={icons.SHARE} color={colors.WHITE} />
             </ButtonHeader>
             <ButtonHeader side="right" onPress={() => {}}>
               <EvilIcons size={28} name={icons.HEART} color={colors.WHITE} />
             </ButtonHeader>
-          </View>
+          </RowView>
+        ),
+      }),
+    },
+    Category: {
+      screen: CategoryScreen,
+      navigationOptions: ({ navigation }) => ({
+        title: 'Category',
+        headerLeft: (
+          <ButtonHeader side="left" onPress={() => navigation.goBack()}>
+            <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
+          </ButtonHeader>
+        ),
+        headerRight: (
+          <RowView>
+            <ButtonHeader side="right" onPress={() => {}}>
+              <EvilIcons size={28} name={icons.SHARE} color={colors.WHITE} />
+            </ButtonHeader>
+            <ButtonHeader side="right" onPress={() => {}}>
+              <Ionicons size={22} name={icons.SEARCH} color={colors.WHITE} />
+            </ButtonHeader>
+          </RowView>
         ),
       }),
     },
@@ -148,6 +182,28 @@ export default StackNavigator(
       screen: CheckoutScreen,
       navigationOptions: ({ navigation }) => ({
         title: 'Checkout',
+        headerLeft: (
+          <ButtonHeader side="left" onPress={() => navigation.goBack()}>
+            <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
+          </ButtonHeader>
+        ),
+      }),
+    },
+    Delivery: {
+      screen: DeliveryScreen,
+      navigationOptions: ({ navigation }) => ({
+        title: 'Delivery',
+        headerLeft: (
+          <ButtonHeader side="left" onPress={() => navigation.goBack()}>
+            <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />
+          </ButtonHeader>
+        ),
+      }),
+    },
+    NewOrder: {
+      screen: NewOrderScreen,
+      navigationOptions: ({ navigation }) => ({
+        title: 'NewOrder',
         headerLeft: (
           <ButtonHeader side="left" onPress={() => navigation.goBack()}>
             <Ionicons size={32} name={icons.BACK} color={colors.WHITE} />

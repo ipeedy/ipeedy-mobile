@@ -3841,6 +3841,10 @@ react-native-gesture-handler@1.0.0-alpha.22:
   dependencies:
     prop-types "^15.5.10"
 
+react-native-google-maps-directions@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-google-maps-directions/-/react-native-google-maps-directions-1.1.2.tgz#a362a9c3c266d9c7e853696e2ffe99193f67d64d"
+
 react-native-maps@0.15.3:
   version "0.15.3"
   resolved "https://registry.yarnpkg.com/react-native-maps/-/react-native-maps-0.15.3.tgz#5d9e0a8e30ecc51dc755b7a3b9d6b6ed5e2dd08c"

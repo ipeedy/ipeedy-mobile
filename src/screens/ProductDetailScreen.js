@@ -9,6 +9,9 @@ import { withApollo } from 'react-apollo';
 import { connect } from 'react-redux';
 
 import GET_PRODUCT_QUERY from '../graphql/queries/product';
+import GET_NEARBY_PRODUCT_QUERY from '../graphql/queries/nearbyProducts';
+import DELETE_PRODUCT_MUTATION from '../graphql/mutations/deleteProduct';
+import { createNotification } from '../actions/notification';
 import { colors, icons } from '../utils/constants';
 import { getPrice } from '../utils/helpers';
 
@@ -208,6 +211,44 @@ class ProductDetailScreen extends Component {
     });
   };
 
+  _handleDeleteProduct = () => {
+    this.props.client.mutate({
+      mutation: DELETE_PRODUCT_MUTATION,
+      variables: {
+        _id: this.state.product._id,
+      },
+      update: (store, { data: { deleteProduct } }) => {
+        const variables = {
+          latitude: this.props.user.location.latitude,
+          longitude: this.props.user.location.longitude,
+          distance: 2000,
+        };
+        const data = store.readQuery({
+          query: GET_NEARBY_PRODUCT_QUERY,
+          variables,
+        });
+        data.getNearbyProducts = data.getNearbyProducts.filter(
+          product => product.obj._id !== deleteProduct._id,
+        );
+        store.writeQuery({ query: GET_NEARBY_PRODUCT_QUERY, variables, data });
+      },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        deleteProduct: {
+          __typename: 'DeleteStatus',
+          message: 'Product removed!',
+          error: false,
+          _id: this.state.product._id,
+        },
+      },
+    });
+    this.props.createNotification({
+      error: false,
+      message: 'Product removed!',
+    });
+    this.props.navigation.navigate('Explore');
+  };
+
   _renderActionButton = () => {
     if (this.state.product.user._id !== this.props.user._id) {
       return (
@@ -220,7 +261,10 @@ class ProductDetailScreen extends Component {
     }
     return (
       <CircleButtonContainer>
-        <ActionButton actionIcons={[icons.TRASH, icons.PAUSE, icons.EDIT]} />
+        <ActionButton
+          actionIcons={[icons.TRASH, icons.PAUSE, icons.EDIT]}
+          pressAction={i => i === 0 && this._handleDeleteProduct()}
+        />
       </CircleButtonContainer>
     );
   };
@@ -384,5 +428,7 @@ class ProductDetailScreen extends Component {
 }
 
 export default withApollo(
-  connect(state => ({ user: state.user.info }))(ProductDetailScreen),
+  connect(state => ({ user: state.user.info }), { createNotification })(
+    ProductDetailScreen,
+  ),
 );

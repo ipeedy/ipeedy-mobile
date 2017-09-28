@@ -3,7 +3,9 @@ import { KeyboardAvoidingView, Keyboard } from 'react-native';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
 import { connect } from 'react-redux';
-import { graphql, compose } from 'react-apollo';
+import { withApollo, graphql, compose } from 'react-apollo';
+import slug from 'slug';
+import shortid from 'shortid';
 
 import { icons, colors } from '../../utils/constants';
 import { getInput, clearInput } from '../../actions/product';
@@ -11,6 +13,8 @@ import { getInput, clearInput } from '../../actions/product';
 import Snackbar from '../../components/Snackbar';
 import CircleButton from '../../components/CircleButton';
 
+import GET_PRODUCTS_QUERY from '../../graphql/queries/products';
+import GET_CATEGORY_QUERY from '../../graphql/queries/category';
 import CREATE_PRODUCT_MUTATION from '../../graphql/mutations/createProduct';
 
 const Root = styled(KeyboardAvoidingView).attrs({
@@ -84,6 +88,14 @@ class CreatePriceScreen extends Component {
       },
       user,
     } = this.props;
+
+    const { data: { getCategory } } = await this.props.client.query({
+      query: GET_CATEGORY_QUERY,
+      variables: {
+        _id: category,
+      },
+    });
+
     await this.props.mutate({
       variables: {
         name,
@@ -96,6 +108,54 @@ class CreatePriceScreen extends Component {
         geometry: {
           coordinates: [user.location.longitude, user.location.latitude],
         },
+      },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        createProduct: {
+          __typename: 'Product',
+          _id: Math.round(Math.random() * -1000000),
+          name,
+          slug: slug(`${name.toLowerCase()}${shortid.generate()}`),
+          description,
+          images,
+          soldCount: 0,
+          reviews: [],
+          category: {
+            __typename: 'Category',
+            _id: category,
+            image: getCategory.image,
+            name: getCategory.name,
+            icon: getCategory.icon,
+          },
+          price,
+          availableCount,
+          orderRange,
+          geometry: {
+            __typename: 'Geometry',
+            coordinates: [user.location.longitude, user.location.latitude],
+          },
+          favoriteCount: 0,
+          createdAt: new Date(),
+          user: {
+            __typename: 'User',
+            _id: user._id,
+            email: user.email,
+            name: user.name,
+            phone: user.phone,
+            avatar: user.avatar,
+          },
+        },
+      },
+      update: (store, { data: { createProduct } }) => {
+        const data = store.readQuery({ query: GET_PRODUCTS_QUERY });
+        if (!data.getProducts.find(p => p._id === createProduct._id)) {
+          store.writeQuery({
+            query: GET_PRODUCTS_QUERY,
+            data: {
+              getProducts: [{ ...createProduct }, ...data.getProducts],
+            },
+          });
+        }
       },
     });
     this.props.clearInput();
@@ -133,13 +193,15 @@ class CreatePriceScreen extends Component {
   }
 }
 
-export default compose(
-  connect(
-    state => ({
-      input: state.product.form,
-      user: state.user.info,
-    }),
-    { getInput, clearInput },
-  ),
-  graphql(CREATE_PRODUCT_MUTATION),
-)(CreatePriceScreen);
+export default withApollo(
+  compose(
+    connect(
+      state => ({
+        input: state.product.form,
+        user: state.user.info,
+      }),
+      { getInput, clearInput },
+    ),
+    graphql(CREATE_PRODUCT_MUTATION),
+  )(CreatePriceScreen),
+);

@@ -10,6 +10,7 @@ import GET_MOST_FAV_PRODUCTS_QUERY from '../graphql/queries/mostFavProducts';
 
 import CategoryList from '../components/CategoryList';
 import ProductList from '../components/ProductList';
+import Snackbar from '../components/Snackbar';
 import { CARD_WIDTH as CATEGORY_CARD_WIDTH } from '../components/CategoryCard';
 import { CARD_WIDTH as PRODUCT_CARD_WIDTH } from '../components/ProductCard';
 
@@ -67,14 +68,28 @@ class ExploreProductsScreen extends Component {
     this.props.navigation.navigate('ProductDetail', { product });
   };
 
+  _handleCategoryPressed = _id => {
+    this.props.navigation.navigate('Category', { _id });
+  };
+
+  _renderNotification = () => {
+    if (this.props.noti.message) {
+      if (this.props.noti.error) {
+        return <Snackbar message={this.props.noti.message} secondary />;
+      }
+      return <Snackbar message={this.props.noti.message} />;
+    }
+  }
+
   render() {
     return (
       <Root>
+        {this._renderNotification()}
         <CategoriesContainer>
           <Header>
             <Title>Explore Ipeedy</Title>
           </Header>
-          <CategoryList />
+          <CategoryList onSelect={this._handleCategoryPressed} />
         </CategoriesContainer>
         <ProductsContainer>
           <Header>
@@ -137,6 +152,7 @@ class ExploreProductsScreen extends Component {
 export default compose(
   connect(state => ({
     user: state.user,
+    noti: state.notification,
   })),
   graphql(GET_NEARBY_PRODUCTS_QUERY, {
     options: ({ user: { info: { location: { longitude, latitude } } } }) => ({

@@ -4,6 +4,7 @@ import nav from './navigation';
 import user from './user';
 import map from './map';
 import product from './product';
+import notification from './notification';
 import cart from './cart';
 
 export default client =>
@@ -14,4 +15,5 @@ export default client =>
     map,
     product,
     cart,
+    notification,
   });

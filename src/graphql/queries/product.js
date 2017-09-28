@@ -10,10 +10,10 @@ export default gql`
       images
       price
       category {
+        _id
         name
         image
         icon
-        _id
       }
       soldCount
       orderRange
