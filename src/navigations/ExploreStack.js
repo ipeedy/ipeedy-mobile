@@ -95,13 +95,9 @@ export default StackNavigator(
               </ButtonHeader>}
             <ButtonHeader
               side="right"
-              onPress={() => navigation.navigate('NewOrder')}
+              onPress={() => navigation.navigate('Delivery')}
             >
-              <Ionicons
-                size={24}
-                name={icons.NOTIFICATION}
-                color={colors.WHITE}
-              />
+              <Ionicons size={28} name={icons.NAVIGATE} color={colors.WHITE} />
             </ButtonHeader>
             <ButtonHeader
               side="right"

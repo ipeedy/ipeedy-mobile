@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/native';
-import { graphql, compose } from 'react-apollo';
+import { withApollo, graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import Touchable from '@appandflow/touchable';
 
+import { icons } from '../utils/constants';
 import GET_PRODUCTS_QUERY from '../graphql/queries/products';
 import GET_NEARBY_PRODUCTS_QUERY from '../graphql/queries/nearbyProducts';
 import GET_MOST_FAV_PRODUCTS_QUERY from '../graphql/queries/mostFavProducts';
+import ORDER_CREATED_SUBSCRIPTION from '../graphql/subscriptions/orderCreated';
 
 import CategoryList from '../components/CategoryList';
 import ProductList from '../components/ProductList';
@@ -64,6 +66,32 @@ const More = styled.Text`
 class ExploreProductsScreen extends Component {
   state = {};
 
+  componentDidMount() {
+    this.props.client
+      .subscribe({
+        query: ORDER_CREATED_SUBSCRIPTION,
+      })
+      .subscribe({
+        next: data => {
+          if (data.orderCreated.seller._id === this.props.user.info._id) {
+            const { product, user, amount } = data.orderCreated;
+            this.props.navigation.navigate('Connecting', {
+              product,
+              user,
+              amount,
+              title: `You got new order...`,
+              actionIcons: [icons.CLOSE, icons.CALL, icons.DONE],
+              actionIconSize: [33, 25, 33],
+            });
+          }
+        },
+      });
+  }
+
+  _handleAcceptOrder = () => {
+    this.props.navigation.navigate('Delivery');
+  };
+
   _handleProductPressed = product => {
     this.props.navigation.navigate('ProductDetail', { product });
   };
@@ -79,7 +107,7 @@ class ExploreProductsScreen extends Component {
       }
       return <Snackbar message={this.props.noti.message} />;
     }
-  }
+  };
 
   render() {
     return (
@@ -149,25 +177,27 @@ class ExploreProductsScreen extends Component {
   }
 }
 
-export default compose(
-  connect(state => ({
-    user: state.user,
-    noti: state.notification,
-  })),
-  graphql(GET_NEARBY_PRODUCTS_QUERY, {
-    options: ({ user: { info: { location: { longitude, latitude } } } }) => ({
-      variables: {
-        longitude,
-        latitude,
-        distance: DISTANCE,
-      },
+export default withApollo(
+  compose(
+    connect(state => ({
+      user: state.user,
+      noti: state.notification,
+    })),
+    graphql(GET_NEARBY_PRODUCTS_QUERY, {
+      options: ({ user: { info: { location: { longitude, latitude } } } }) => ({
+        variables: {
+          longitude,
+          latitude,
+          distance: DISTANCE,
+        },
+      }),
+      name: 'nearByProducts',
     }),
-    name: 'nearByProducts',
-  }),
-  graphql(GET_PRODUCTS_QUERY, {
-    name: 'newestProducts',
-  }),
-  graphql(GET_MOST_FAV_PRODUCTS_QUERY, {
-    name: 'mostFavProducts',
-  }),
-)(ExploreProductsScreen);
+    graphql(GET_PRODUCTS_QUERY, {
+      name: 'newestProducts',
+    }),
+    graphql(GET_MOST_FAV_PRODUCTS_QUERY, {
+      name: 'mostFavProducts',
+    }),
+  )(ExploreProductsScreen),
+);

@@ -82,12 +82,22 @@ class ConnectingScreen extends Component {
   };
 
   render() {
-    const { product, amount } = this.props.navigation.state.params;
+    const {
+      product,
+      amount,
+      user,
+      title,
+      actionIcons,
+      actionIconSize,
+      pressAction,
+    } = this.props.navigation.state.params;
 
     return (
       <Root>
         <Wrapper>
-          <Title>Connecting to seller...</Title>
+          <Title>
+            {title}
+          </Title>
           <ProductContainer>
             <ProductCard
               product={product}
@@ -101,24 +111,23 @@ class ConnectingScreen extends Component {
           </ProductContainer>
           <UserContainer>
             <AvatarWrapper>
-              <Connecting avatar={product.user.avatar} />
+              <Connecting avatar={user.avatar} />
             </AvatarWrapper>
             <UserInfoContainer>
               <Username>
-                {product.user.name}
+                {user.name}
               </Username>
               <Phone>
-                {PhoneNumber(product.user.phone, 'VN').getNumber(
-                  'international',
-                )}
+                {PhoneNumber(user.phone, 'VN').getNumber('international')}
               </Phone>
             </UserInfoContainer>
           </UserContainer>
         </Wrapper>
         <ActionButtonContainer>
           <ActionButton
-            actionIcons={[icons.CLOSE, icons.MESSAGE, icons.CALL]}
-            actionIconSize={[33, 24, 25]}
+            actionIcons={actionIcons}
+            actionIconSize={actionIconSize}
+            pressAction={pressAction}
           />
         </ActionButtonContainer>
       </Root>

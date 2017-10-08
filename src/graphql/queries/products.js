@@ -19,6 +19,7 @@ export default gql`
       orderRange
       reviews {
         user {
+          _id
           name
           avatar
         }

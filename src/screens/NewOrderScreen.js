@@ -15,11 +15,15 @@ const Title = styled.Text`
 `;
 
 class NewOrderScreen extends Component {
-  state = {};
+  state = {
+    order: this.props.navigation.state.params.order,
+  };
   render() {
     return (
       <Root>
-        <Title>New order screen</Title>
+        <Title>
+          New order from {this.state.order.user.name}
+        </Title>
       </Root>
     );
   }

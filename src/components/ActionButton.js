@@ -76,7 +76,7 @@ class ActionButton extends Component {
 
   _handlePressAction = i => {
     this._toggleMenu();
-    this.props.pressAction(i);
+    this.props.pressAction[i];
   };
 
   render() {

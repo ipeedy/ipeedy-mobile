@@ -4,6 +4,10 @@ import { createStore, applyMiddleware } from 'redux';
 import { AsyncStorage } from 'react-native';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { ApolloClient, createNetworkInterface } from 'react-apollo';
+import {
+  SubscriptionClient,
+  addGraphQLSubscriptions,
+} from 'subscriptions-transport-ws';
 import thunk from 'redux-thunk';
 
 import reducers from './reducers';
@@ -11,6 +15,11 @@ import { constants } from './utils/constants';
 
 const networkInterface = createNetworkInterface({
   uri: constants.GRAPHQL_URL,
+});
+
+const wsClient = new SubscriptionClient('ws://localhost:3000/subscriptions', {
+  reconnect: true,
+  connectionParams: {},
 });
 
 networkInterface.use([
@@ -32,8 +41,13 @@ networkInterface.use([
   },
 ]);
 
-export const client = new ApolloClient({
+const networkInterfaceWithSubs = addGraphQLSubscriptions(
   networkInterface,
+  wsClient,
+);
+
+export const client = new ApolloClient({
+  networkInterface: networkInterfaceWithSubs,
 });
 
 const middlewares = [client.middleware(), thunk];

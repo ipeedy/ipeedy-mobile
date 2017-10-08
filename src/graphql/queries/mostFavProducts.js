@@ -20,6 +20,7 @@ export default gql`
       reviews {
         user {
           name
+          _id
           avatar
         }
         text

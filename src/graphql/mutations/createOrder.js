@@ -1,35 +1,47 @@
 import { gql } from 'react-apollo';
 
 export default gql`
-  query getNearbyProducts(
-    $longitude: Float!
-    $latitude: Float!
-    $distance: Float
-  ) {
-    getNearbyProducts(
-      longitude: $longitude
-      latitude: $latitude
-      distance: $distance
-    ) {
-      dis
-      obj {
+  mutation createOrder($product: ID!, $seller: ID!, $amount: Int) {
+    createOrder(product: $product, seller: $seller, amount: $amount) {
+      _id
+      user {
+        _id
+        name
+        avatar
+        email
+        phone
+        geometry {
+          coordinates
+        }
+      }
+      seller {
+        _id
+        name
+        avatar
+        email
+        phone
+        geometry {
+          coordinates
+        }
+      }
+      product {
         _id
         name
         slug
         description
         images
-        geometry {
-          coordinates
-        }
         price
-        orderRange
         category {
+          _id
           name
           image
           icon
-          _id
         }
         soldCount
+        orderRange
+        geometry {
+          coordinates
+        }
         reviews {
           user {
             _id
@@ -51,6 +63,9 @@ export default gql`
           email
         }
       }
+      amount
+      status
+      createdAt
     }
   }
 `;

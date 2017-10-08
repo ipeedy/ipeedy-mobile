@@ -3,7 +3,9 @@ import { Slider } from 'react-native';
 import styled from 'styled-components/native';
 import { connect } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
+import { compose, graphql } from 'react-apollo';
 
+import CREATE_ORDER_MUTATION from '../graphql/mutations/createOrder';
 import { createCart } from '../actions/cart';
 import { colors, icons } from '../utils/constants';
 
@@ -71,10 +73,24 @@ class CheckoutScreen extends Component {
     amount: this.props.navigation.state.params.product.orderRange[0],
   };
 
-  _handleNext = () => {
+  _handleNext = async () => {
+    const { product } = this.props.navigation.state.params;
+    await this.props.mutate({
+      variables: {
+        product: product._id,
+        seller: product.user._id,
+        user: this.props.user._id,
+        amount: this.state.amount,
+      },
+    });
     this.props.navigation.navigate('Connecting', {
-      product: this.props.navigation.state.params.product,
+      product,
       amount: this.state.amount,
+      user: product.user,
+      actionIcons: [icons.CLOSE, icons.MESSAGE, icons.CALL],
+      actionIconSize: [33, 24, 25],
+      pressAction: [],
+      title: 'Connecting to seller...',
     });
   };
 
@@ -122,6 +138,9 @@ class CheckoutScreen extends Component {
   }
 }
 
-export default connect(state => ({ user: state.user.info }), {
-  createCart,
-})(CheckoutScreen);
+export default compose(
+  connect(state => ({ user: state.user.info }), {
+    createCart,
+  }),
+  graphql(CREATE_ORDER_MUTATION),
+)(CheckoutScreen);

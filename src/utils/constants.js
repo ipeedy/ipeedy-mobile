@@ -27,7 +27,7 @@ export const images = [
 ];
 
 export const constants = {
-  GRAPHQL_URL: `http://localhost:3001/graphql`,
+  GRAPHQL_URL: `http://localhost:3000/graphql`,
   DIRECTION_API_URL: 'https://maps.googleapis.com/maps/api/directions/json?',
   DIRECTION_API_KEY: 'AIzaSyDnZjKlct29gM6xqgYqH-ITNw2CpsIOyig',
 };
