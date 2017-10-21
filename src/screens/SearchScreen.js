@@ -9,6 +9,7 @@ import GET_PRODUCTS_QUERY from '../graphql/queries/products';
 import { colors, icons } from '../utils/constants';
 
 import ProductSearchList from '../components/ProductSearchList';
+import { Subtitle } from '../components/typography';
 
 const Root = styled.View`
   flex: 1;
@@ -55,13 +56,6 @@ const SuggestionIcon = styled.View`
   alignItems: center;
 `;
 
-const Text = styled.Text`
-  fontFamily: 'quicksand-medium';
-  fontSize: 15;
-  left: 10px;
-  color: ${props => props.theme.DARK};
-`;
-
 class SearchScreen extends Component {
   state = {
     value: '',
@@ -101,7 +95,9 @@ class SearchScreen extends Component {
                 <SuggestionIcon>
                   <Ionicons name={icons.PIN} color={colors.DARK} size={16} />
                 </SuggestionIcon>
-                <Text>Nearby</Text>
+                <Subtitle medium style={{ left: 10 }}>
+                  Nearby
+                </Subtitle>
               </SuggestionButton>
             </Suggestion>
             <Suggestion>
@@ -113,7 +109,9 @@ class SearchScreen extends Component {
                     size={16}
                   />
                 </SuggestionIcon>
-                <Text>Featured</Text>
+                <Subtitle medium style={{ left: 10 }}>
+                  Featured
+                </Subtitle>
               </SuggestionButton>
             </Suggestion>
           </SuggestionWrapper>

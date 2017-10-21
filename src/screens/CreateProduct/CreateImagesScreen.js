@@ -13,6 +13,7 @@ import { getInput } from '../../actions/product';
 
 import Snackbar from '../../components/Snackbar';
 import CircleButton from '../../components/CircleButton';
+import { Title } from '../../components/typography';
 
 const Root = styled.View`
   flex: 1;
@@ -25,12 +26,6 @@ const Wrapper = styled.View`
   height: 70%;
   width: 80%;
   position: relative;
-`;
-
-const Title = styled.Text`
-  fontSize: 20;
-  color: ${props => props.theme.BLACK};
-  fontFamily: 'quicksand-regular';
 `;
 
 const InputWrapper = styled(Touchable).attrs({
@@ -163,7 +158,9 @@ class CreateImagesScreen extends Component {
       <Root>
         {this.state.error && <Snackbar message={this.state.error} secondary />}
         <Wrapper>
-          <Title>Upload picture of your product:</Title>
+          <Title large numberOfLines={2}>
+            Upload picture of your product:
+          </Title>
           <InputWrapper onPress={this._handleOpenActionSheet}>
             <Input source={{ uri: input.images[0] }}>
               {!this.props.input.images.length &&

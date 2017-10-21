@@ -18,6 +18,7 @@ import { getPrice } from '../utils/helpers';
 import CircleButton from '../components/CircleButton';
 import ActionButton from '../components/ActionButton';
 import DirectionMap from '../components/DirectionMap';
+import { Header, Text, Subtitle } from '../components/typography';
 
 const Root = styled.View`
   flex: 1;
@@ -53,12 +54,6 @@ const ContentWrapper = styled.View`
   paddingVertical: 20;
 `;
 
-const Name = styled.Text`
-  fontFamily: 'quicksand-bold';
-  fontSize: 25;
-  color: ${props => props.theme.DARK};
-`;
-
 const MetaContainer = styled.View`
   flexDirection: row;
   width: 100%;
@@ -70,23 +65,10 @@ const MetaContainer = styled.View`
 
 const ReviewMetaContainer = styled(MetaContainer)`
   justifyContent: flex-start;
+  top: 5;
 `;
 
 const OwnerInfoContainer = styled.View`justifyContent: flex-start;`;
-
-const MetaText = styled.Text`
-  fontFamily: 'quicksand-regular';
-  fontSize: 16;
-  color: ${props => props.theme.DARK};
-`;
-
-const MetaTitle = styled(MetaText)`
-  fontFamily: 'quicksand-medium';
-`;
-
-const MetaButtonText = styled(MetaText)`
-  color: ${props => props.theme.PRIMARY};
-`;
 
 const OwnerAvatar = styled.Image`
   width: 54;
@@ -100,12 +82,6 @@ const MetaItem = styled.View`
   justifyContent: center;
   alignItems: center;
   height: 100%;
-`;
-
-const MetaItemText = styled.Text`
-  fontFamily: 'quicksand-regular';
-  fontSize: 14;
-  color: ${props => props.theme.DARK};
 `;
 
 const DescriptionContainer = styled.View`
@@ -127,19 +103,6 @@ const MapContainer = styled.View`
   height: 180;
   top: 10;
   marginBottom: 10;
-`;
-
-const Description = styled(MetaItemText)`
-  top: 10;
-  paddingBottom: 20;
-`;
-
-const Distance = styled(Description)`
-  position: absolute;
-  top: 85%;
-  color: ${props => props.theme.PRIMARY};
-  backgroundColor: transparent;
-  fontFamily: 'quicksand-medium';
 `;
 
 const CircleButtonContainer = styled.View`
@@ -181,17 +144,15 @@ class ProductDetailScreen extends Component {
           <ReviewMetaContainer>
             <OwnerAvatar source={{ uri: reviews[0].user.avatar }} />
             <OwnerInfoContainer style={{ left: 20 }}>
-              <MetaTitle>
+              <Subtitle medium>
                 {reviews[0].user.name}
-              </MetaTitle>
-              <MetaItemText>{`${distanceInWordsToNow(
-                reviews[0].createdAt,
-              )} ago`}</MetaItemText>
+              </Subtitle>
+              <Text>{`${distanceInWordsToNow(reviews[0].createdAt)} ago`}</Text>
             </OwnerInfoContainer>
           </ReviewMetaContainer>
-          <Description>
+          <Text numberOfLines={3} style={{ top: 5 }}>
             {reviews[0].text}
-          </Description>
+          </Text>
         </View>
       );
     return <View />;
@@ -293,21 +254,21 @@ class ProductDetailScreen extends Component {
           </Swiper>
 
           <ContentWrapper>
-            <Name>
+            <Header bold>
               {product.name}
-            </Name>
+            </Header>
 
             <MetaContainer>
               <OwnerInfoContainer>
-                <MetaTitle>
+                <Subtitle medium>
                   {product.category.name || 'Undefined'}
-                </MetaTitle>
-                <MetaText>
+                </Subtitle>
+                <Subtitle>
                   by
-                  <MetaButtonText>
+                  <Subtitle primary>
                     {' '}{product.user.name || 'Alexandra Seller'}
-                  </MetaButtonText>
-                </MetaText>
+                  </Subtitle>
+                </Subtitle>
               </OwnerInfoContainer>
               <OwnerAvatar
                 source={{
@@ -321,9 +282,9 @@ class ProductDetailScreen extends Component {
             <MetaContainer>
               <MetaItem>
                 <Ionicons size={28} color={colors.DARK} name={icons.PRICE} />
-                <MetaItemText>
+                <Text>
                   {getPrice(product.price)}
-                </MetaItemText>
+                </Text>
               </MetaItem>
               <MetaItem>
                 <Ionicons
@@ -331,30 +292,30 @@ class ProductDetailScreen extends Component {
                   color={colors.DARK}
                   name={icons.FAVORITES}
                 />
-                <MetaItemText>
+                <Text>
                   {product.favoriteCount
                     ? `${product.favoriteCount} love`
                     : 'no love'}
-                </MetaItemText>
+                </Text>
               </MetaItem>
               <MetaItem>
                 <Ionicons size={30} color={colors.DARK} name={icons.CART} />
-                <MetaItemText>
+                <Text>
                   {`${product.orderRange[0]} - ${product.orderRange[1]}/order`}
-                </MetaItemText>
+                </Text>
               </MetaItem>
             </MetaContainer>
 
             <MetaContainer>
               <MetaItem>
                 <Ionicons size={30} color={colors.DARK} name={icons.TIME} />
-                <MetaItemText>8h - 19h</MetaItemText>
+                <Text>8h - 19h</Text>
               </MetaItem>
               <MetaItem>
                 <Ionicons size={30} color={colors.DARK} name={icons.BASKET} />
-                <MetaItemText>
+                <Text>
                   {product.availableCount} left
-                </MetaItemText>
+                </Text>
               </MetaItem>
               <MetaItem>
                 <Ionicons
@@ -362,30 +323,30 @@ class ProductDetailScreen extends Component {
                   color={colors.DARK}
                   name={icons.CHECKMARK}
                 />
-                <MetaItemText>
+                <Text>
                   {product.soldCount} done
-                </MetaItemText>
+                </Text>
               </MetaItem>
             </MetaContainer>
 
             <Divider />
 
             <DescriptionContainer>
-              <MetaTitle>Description</MetaTitle>
-              <Description>
+              <Subtitle medium>Description</Subtitle>
+              <Text numberOfLines={3} style={{ top: 5 }}>
                 {product.description}
-              </Description>
+              </Text>
             </DescriptionContainer>
 
             <Divider />
 
             <ReviewContainer>
-              <MetaTitle>Reviews</MetaTitle>
+              <Subtitle medium>Reviews</Subtitle>
               {this._renderReview(product.reviews)}
               <ReviewFooterContainer>
-                <MetaButtonText>
+                <Subtitle primary>
                   Read all {product.reviews.length} reviews
-                </MetaButtonText>
+                </Subtitle>
                 <StarRating
                   disabled
                   rating={totalRating / product.reviews.length}
@@ -399,7 +360,7 @@ class ProductDetailScreen extends Component {
             <Divider />
 
             <LocationContainer>
-              <MetaTitle>Location</MetaTitle>
+              <Subtitle medium>Location</Subtitle>
               <MapContainer>
                 <DirectionMap
                   startLoc={this.props.user.location}
@@ -411,9 +372,9 @@ class ProductDetailScreen extends Component {
                     alignItems: 'center',
                   }}
                 >
-                  <Distance>
+                  <Text medium primary>
                     {parseInt(product.dis, 10)}m from here
-                  </Distance>
+                  </Text>
                 </DirectionMap>
               </MapContainer>
             </LocationContainer>

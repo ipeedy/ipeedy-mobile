@@ -16,6 +16,7 @@ import { icons, colors, aws3Options } from '../../utils/constants';
 
 import Snackbar from '../../components/Snackbar';
 import CircleButton from '../../components/CircleButton';
+import { Title, Subtitle } from '../../components/typography';
 
 const Root = styled(KeyboardAvoidingView).attrs({
   behavior: 'padding',
@@ -30,12 +31,6 @@ const Wrapper = styled.View`
   height: 70%;
   width: 80%;
   position: relative;
-`;
-
-const Title = styled.Text`
-  fontSize: 20;
-  color: ${props => props.theme.BLACK};
-  fontFamily: 'quicksand-regular';
 `;
 
 const AvatarWrapper = styled.View`
@@ -66,12 +61,6 @@ const ChangeWrapper = styled(Touchable).attrs({
   bottom: 0;
 `;
 
-const ChangeText = styled.Text`
-  fontSize: 16;
-  color: ${props => props.theme.WHITE};
-  fontFamily: 'quicksand-medium';
-`;
-
 const BottomButton = styled(Touchable).attrs({
   feedback: 'opacity',
   native: false,
@@ -80,12 +69,6 @@ const BottomButton = styled(Touchable).attrs({
   position: absolute;
   bottom: 25;
   left: 0;
-`;
-
-const BottomText = styled.Text`
-  fontFamily: 'quicksand-medium';
-  fontSize: 16;
-  color: ${props => props.theme.PRIMARY};
 `;
 
 class UpdateAvatarScreen extends Component {
@@ -195,17 +178,23 @@ class UpdateAvatarScreen extends Component {
       <Root>
         {this.state.error && <Snackbar message={this.state.error} secondary />}
         <Wrapper>
-          <Title>Upload your profile picture</Title>
+          <Title large numberOfLines={2}>
+            Upload your profile picture
+          </Title>
           <AvatarWrapper>
             {this.state.value
               ? <Avatar source={{ uri: this.state.value }}>
                   <ChangeWrapper onPress={this._handleOpenActionSheet}>
-                    <ChangeText>Change</ChangeText>
+                    <Subtitle bright medium>
+                      Change
+                    </Subtitle>
                   </ChangeWrapper>
                 </Avatar>
               : <Avatar source={require('../../../assets/images/no-image.png')}>
                   <ChangeWrapper onPress={this._handleOpenActionSheet}>
-                    <ChangeText>Change</ChangeText>
+                    <Subtitle bright medium>
+                      Change
+                    </Subtitle>
                   </ChangeWrapper>
                 </Avatar>}
           </AvatarWrapper>
@@ -217,7 +206,7 @@ class UpdateAvatarScreen extends Component {
             <Ionicons name={icons.NEXT} color={colors.WHITE} size={35} />
           </CircleButton>
           <BottomButton onPress={this._handleSkip}>
-            <BottomText>Skip</BottomText>
+            <Subtitle primary>Skip</Subtitle>
           </BottomButton>
         </Wrapper>
       </Root>

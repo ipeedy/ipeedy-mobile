@@ -7,6 +7,7 @@ import { graphql } from 'react-apollo';
 
 import CircleButton from '../components/CircleButton';
 import Snackbar from '../components/Snackbar';
+import { Title } from '../components/typography';
 
 import { icons, colors } from '../utils/constants';
 import GENERATEOTP_MUTATION from '../graphql/mutations/generateOTP';
@@ -25,24 +26,11 @@ const Wrapper = styled.View`
   position: relative;
 `;
 
-const Title = styled.Text`
-  fontFamily: 'quicksand-regular';
-  fontSize: 20;
-  color: ${props => props.theme.BLACK};
-`;
-
 const InputContainer = styled.View`
   flexDirection: row;
   height: 50;
   width: 80%;
   alignItems: flex-end;
-`;
-
-const DialCode = styled.Text`
-  fontSize: 20;
-  bottom: 4;
-  fontFamily: 'quicksand-medium';
-  color: ${props => props.theme.BLACK};
 `;
 
 const InputWrapper = styled.View`
@@ -116,9 +104,11 @@ class PhoneAuthScreen extends Component {
       <Root>
         {this.state.error && <Snackbar message={this.state.error} secondary />}
         <Wrapper>
-          <Title>Enter your mobile number</Title>
+          <Title large>Enter your mobile number</Title>
           <InputContainer>
-            <DialCode>+84</DialCode>
+            <Title large medium style={{ bottom: 4 }}>
+              +84
+            </Title>
             <InputWrapper>
               <Input
                 placeholder="091 234 56 78"

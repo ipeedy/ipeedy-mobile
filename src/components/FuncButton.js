@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components/native';
 import Touchable from '@appandflow/touchable';
 
+import { Caption } from './typography';
+
 const Button = styled(Touchable).attrs({
   feedback: 'opacity',
 })`
@@ -17,16 +19,11 @@ const Button = styled(Touchable).attrs({
   shadowOffset: 0px 0px;
 `;
 
-const Title = styled.Text`
-  fontFamily: 'quicksand-medium';
-  fontSize: 12;
-`;
-
 const FuncButton = ({ title, onPress }) =>
   <Button onPress={onPress}>
-    <Title>
+    <Caption large medium>
       {title}
-    </Title>
+    </Caption>
   </Button>;
 
 export default FuncButton;

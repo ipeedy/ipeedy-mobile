@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import styled from 'styled-components/native';
 import PhoneNumber from 'awesome-phonenumber';
 
-import { icons } from '../utils/constants';
-
 import Connecting from '../components/Connecting';
 import ActionButton from '../components/ActionButton';
 import ProductCard from '../components/ProductCard';
+import { Title, Subtitle } from '../components/typography';
 
 const Root = styled.View`
   flex: 1;
@@ -51,24 +50,6 @@ const UserInfoContainer = styled.View`
   paddingLeft: 20px;
 `;
 
-const Username = styled.Text`
-  color: ${props => props.theme.PRIMARY};
-  fontFamily: 'quicksand-medium';
-  fontSize: 18;
-`;
-
-const Phone = styled.Text`
-  color: ${props => props.theme.DARK};
-  fontFamily: 'quicksand-regular';
-  fontSize: 14;
-`;
-
-const Title = styled.Text`
-  fontSize: 20;
-  color: ${props => props.theme.BLACK};
-  fontFamily: 'quicksand-regular';
-`;
-
 const ActionButtonContainer = styled.View`
   position: absolute;
   overflow: visible;
@@ -95,7 +76,7 @@ class ConnectingScreen extends Component {
     return (
       <Root>
         <Wrapper>
-          <Title>
+          <Title large numberOfLines={2}>
             {title}
           </Title>
           <ProductContainer>
@@ -114,12 +95,12 @@ class ConnectingScreen extends Component {
               <Connecting avatar={user.avatar} />
             </AvatarWrapper>
             <UserInfoContainer>
-              <Username>
+              <Title primary medium>
                 {user.name}
-              </Username>
-              <Phone>
+              </Title>
+              <Subtitle>
                 {PhoneNumber(user.phone, 'VN').getNumber('international')}
-              </Phone>
+              </Subtitle>
             </UserInfoContainer>
           </UserContainer>
         </Wrapper>

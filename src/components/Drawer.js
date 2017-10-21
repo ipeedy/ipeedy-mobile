@@ -6,6 +6,7 @@ import PhoneNumber from 'awesome-phonenumber';
 import Touchable from '@appandflow/touchable';
 
 import Loading from '../components/Loading';
+import { Title, Subtitle } from './typography';
 
 const AVATAR_SIZE = 60;
 const AVATAR_RADIUS = AVATAR_SIZE / 2;
@@ -40,20 +41,6 @@ const MetaContainer = styled.View`
   paddingVertical: 10;
 `;
 
-const Name = styled.Text`
-  fontFamily: 'quicksand-medium';
-  fontSize: 18;
-  color: ${props => props.theme.WHITE};
-  backgroundColor: transparent;
-`;
-
-const Phone = styled.Text`
-  fontFamily: 'quicksand-regular';
-  fontSize: 15;
-  color: ${props => props.theme.LIGHT};
-  backgroundColor: transparent;
-`;
-
 const MenuContainer = styled.View`
   flex: 8;
   backgroundColor: ${props => props.theme.WHITE};
@@ -74,14 +61,14 @@ class Drawer extends Component {
           }}
         />
         <MetaContainer>
-          <Name>
+          <Title medium bright>
             {this.props.info.name || 'Alexandra User'}
-          </Name>
-          <Phone>
+          </Title>
+          <Subtitle bright>
             {this.props.info.phone
               ? this._formattedPhoneNumber(this.props.info.phone)
               : '0912 345 678'}
-          </Phone>
+          </Subtitle>
         </MetaContainer>
       </InfoContainer>
     );

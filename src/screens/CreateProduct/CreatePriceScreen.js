@@ -12,6 +12,7 @@ import { getInput, clearInput } from '../../actions/product';
 
 import Snackbar from '../../components/Snackbar';
 import CircleButton from '../../components/CircleButton';
+import { Title } from '../../components/typography';
 
 import GET_PRODUCTS_QUERY from '../../graphql/queries/products';
 import GET_CATEGORY_QUERY from '../../graphql/queries/category';
@@ -30,12 +31,6 @@ const Wrapper = styled.View`
   height: 70%;
   width: 80%;
   position: relative;
-`;
-
-const Title = styled.Text`
-  fontSize: 20;
-  color: ${props => props.theme.BLACK};
-  fontFamily: 'quicksand-regular';
 `;
 
 const InputWrapper = styled.View`
@@ -58,13 +53,6 @@ const Input = styled.TextInput.attrs({
   fontFamily: 'quicksand-medium';
   fontSize: 20;
   flex: 8;
-`;
-
-const CurrencyUnit = styled.Text`
-  color: ${props => props.theme.BLACK};
-  fontFamily: 'quicksand-medium';
-  fontSize: 20;
-  flex: 2;
 `;
 
 class CreatePriceScreen extends Component {
@@ -168,7 +156,9 @@ class CreatePriceScreen extends Component {
       <Root>
         {this.state.error && <Snackbar message={this.state.error} secondary />}
         <Wrapper>
-          <Title>How much money do you sell it?</Title>
+          <Title large numberOfLines={3}>
+            How much money do you sell it?
+          </Title>
           <InputWrapper>
             <Input
               placeholder="20000"
@@ -178,7 +168,9 @@ class CreatePriceScreen extends Component {
               value={this.props.input.price}
               onChangeText={value => this.props.getInput('price', value)}
             />
-            <CurrencyUnit>VNĐ</CurrencyUnit>
+            <Title large numberOfLines={3} style={{ flex: 2 }}>
+              VNĐ
+            </Title>
           </InputWrapper>
           <CircleButton
             disabled={this.props.input.price.replace(/\s/g, '').length < 3}

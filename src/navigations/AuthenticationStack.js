@@ -110,5 +110,6 @@ export default StackNavigator(
     cardStyle: {
       backgroundColor: colors.WHITE,
     },
+    mode: 'modal',
   },
 );

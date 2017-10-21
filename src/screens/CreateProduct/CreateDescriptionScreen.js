@@ -9,6 +9,7 @@ import { getInput } from '../../actions/product';
 
 import Snackbar from '../../components/Snackbar';
 import CircleButton from '../../components/CircleButton';
+import { Title } from '../../components/typography';
 
 const Root = styled(KeyboardAvoidingView).attrs({
   behavior: 'padding',
@@ -23,12 +24,6 @@ const Wrapper = styled.View`
   height: 70%;
   width: 80%;
   position: relative;
-`;
-
-const Title = styled.Text`
-  fontSize: 20;
-  color: ${props => props.theme.BLACK};
-  fontFamily: 'quicksand-regular';
 `;
 
 const InputWrapper = styled.View`
@@ -71,7 +66,9 @@ class CreateDescriptionScreen extends Component {
       <Root>
         {this.state.error && <Snackbar message={this.state.error} secondary />}
         <Wrapper>
-          <Title>Let's describe your product:</Title>
+          <Title large numberOfLines={2}>
+            Let's describe your product:
+          </Title>
           <InputWrapper>
             <Input
               placeholder="Say something about your product!"

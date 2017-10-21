@@ -7,6 +7,8 @@ import StarRating from 'react-native-star-rating';
 import { getPrice } from '../utils/helpers';
 import { colors, icons } from '../utils/constants';
 
+import { Text, Caption } from './typography';
+
 export const CARD_WIDTH = 175;
 
 const Container = styled.View`
@@ -88,34 +90,6 @@ const PriceContainer = styled.View`
   bottom: 35%;
 `;
 
-const MetaText = styled.Text.attrs({
-  numberOfLines: 1,
-})`
-  color: ${props => props.theme.BLACK};
-  fontFamily: ${props =>
-    props.bold ? 'quicksand-medium' : 'quicksand-regular'};
-  fontSize: ${props => (props.large ? 16 : 13)};
-`;
-
-const Category = styled(MetaText)`
-  fontSize: ${props => (props.large ? 12 : 10)};
-  fontFamily: 'quicksand-medium';
-  color: ${props => props.theme.PRIMARY};
-`;
-
-const Review = styled.Text`
-  fontSize: ${props => (props.large ? 13 : 10)};
-  fontFamily: 'quicksand-medium';
-  paddingLeft: 8;
-  color: ${props => props.theme.DARK};
-`;
-
-const Price = styled(MetaText)`
-  fontFamily: 'quicksand-medium';
-  color: ${props => props.theme.WHITE};
-  fontSize: 13;
-`;
-
 class ProductCard extends Component {
   render() {
     const {
@@ -149,18 +123,18 @@ class ProductCard extends Component {
           </HeartButton>
           {!featured &&
             <PriceContainer>
-              <Price>
+              <Text medium bright large={featured}>
                 {amount ? `${getPrice(price)} x ${amount}` : getPrice(price)}
-              </Price>
+              </Text>
             </PriceContainer>}
           <MetaContainer>
             {showCategory &&
-              <Category large={featured}>
+              <Caption primary medium large={featured}>
                 {category.name.toUpperCase()}
-              </Category>}
-            <MetaText large={featured} bold={showCategory}>
+              </Caption>}
+            <Text medium large={featured}>
               {name}
-            </MetaText>
+            </Text>
             {!hideReviews &&
               <FooterMetaContainer>
                 <StarRating
@@ -169,9 +143,9 @@ class ProductCard extends Component {
                   starSize={featured ? 15 : 11}
                   starColor={colors.SECONDARY_A}
                 />
-                <Review large={featured}>
+                <Caption medium style={{ left: 8 }} large={featured}>
                   {reviews.length} Reviews
-                </Review>
+                </Caption>
               </FooterMetaContainer>}
           </MetaContainer>
           {showSelected && selected && <SeletedBar />}

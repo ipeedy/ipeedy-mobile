@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
-import styled from 'styled-components/native';
 
-const Clock = styled.Text`
-  fontFamily: 'quicksand-medium';
-  fontSize: 16;
-  color: ${props => props.theme.DARK};
-`;
+import { Subtitle } from './typography';
 
 class CountDown extends Component {
   state = {
@@ -35,9 +30,9 @@ class CountDown extends Component {
 
   render() {
     return (
-      <Clock>
+      <Subtitle medium>
         00:{this.state.count > 9 ? this.state.count : `0${this.state.count}`}
-      </Clock>
+      </Subtitle>
     );
   }
 }

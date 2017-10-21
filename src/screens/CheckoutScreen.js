@@ -8,6 +8,7 @@ import { compose, graphql } from 'react-apollo';
 import CREATE_ORDER_MUTATION from '../graphql/mutations/createOrder';
 import { createCart } from '../actions/cart';
 import { colors, icons } from '../utils/constants';
+import { Title } from '../components/typography';
 
 import CircleButton from '../components/CircleButton';
 
@@ -22,12 +23,6 @@ const Wrapper = styled.View`
   height: 70%;
   width: 80%;
   position: relative;
-`;
-
-const Title = styled.Text`
-  fontSize: 20;
-  color: ${props => props.theme.BLACK};
-  fontFamily: 'quicksand-regular';
 `;
 
 const InputWrapper = styled.View`
@@ -100,7 +95,9 @@ class CheckoutScreen extends Component {
     return (
       <Root>
         <Wrapper>
-          <Title>How many products do you want?</Title>
+          <Title large numberOfLines={2}>
+            How many products do you want?
+          </Title>
           <InputWrapper>
             <Slider
               maximumValue={product.orderRange[1]}

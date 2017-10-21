@@ -8,6 +8,7 @@ import { icons, colors } from '../../utils/constants';
 import { getInput } from '../../actions/product';
 
 import CircleButton from '../../components/CircleButton';
+import { Title } from '../../components/typography';
 
 const Root = styled.View`
   flex: 1;
@@ -20,12 +21,6 @@ const Wrapper = styled.View`
   height: 70%;
   width: 80%;
   position: relative;
-`;
-
-const Title = styled.Text`
-  fontSize: 20;
-  color: ${props => props.theme.BLACK};
-  fontFamily: 'quicksand-regular';
 `;
 
 const InputWrapper = styled.View`
@@ -44,11 +39,6 @@ const AmountWrapper = styled.View`
   right: 0;
 `;
 
-const Amount = styled(Title)`
-  fontFamily: 'quicksand-medium';
-  fontSize: 25;
-`;
-
 class CreateOrderRangeScreen extends Component {
   state = {
     loading: false,
@@ -65,7 +55,9 @@ class CreateOrderRangeScreen extends Component {
     return (
       <Root>
         <Wrapper>
-          <Title>How many products do your customer can buy each time?</Title>
+          <Title large numberOfLines={3}>
+            How many products do your customer can buy each time?
+          </Title>
           <InputWrapper>
             <MultiSlider
               max={input.availableCount}
@@ -83,9 +75,9 @@ class CreateOrderRangeScreen extends Component {
               onValuesChange={value => this.props.getInput('orderRange', value)}
             />
             <AmountWrapper>
-              <Amount>
+              <Title medium large>
                 {`${input.orderRange[0]} - ${input.orderRange[1]}/order`}
-              </Amount>
+              </Title>
             </AmountWrapper>
           </InputWrapper>
           <CircleButton loading={this.state.loading} onPress={this._handleNext}>

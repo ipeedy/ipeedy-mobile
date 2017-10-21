@@ -5,6 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { colors, icons } from '../utils/constants';
 
+import { Text } from './typography';
+
 export const CARD_WIDTH = 150;
 
 const Wrapper = styled.View`
@@ -52,12 +54,6 @@ const MetaContainer = styled.View`
   paddingHorizontal: 8px;
 `;
 
-const CategoryName = styled.Text`
-  fontFamily: 'quicksand-medium';
-  color: ${props => props.theme.DARK};
-  fontSize: 14;
-`;
-
 class CategoryCard extends Component {
   render() {
     const { category: { name, _id, image }, selected, onSelect } = this.props;
@@ -67,9 +63,9 @@ class CategoryCard extends Component {
         <Category selected={selected} onPress={() => onSelect(_id)}>
           <Image source={{ uri: image }} />
           <MetaContainer>
-            <CategoryName>
+            <Text medium>
               {name}
-            </CategoryName>
+            </Text>
           </MetaContainer>
         </Category>
         {selected &&

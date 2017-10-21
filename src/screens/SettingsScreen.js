@@ -8,6 +8,7 @@ import PhoneNumber from 'awesome-phonenumber';
 import { logout } from '../actions/user';
 
 import Loading from '../components/Loading';
+import { Subtitle } from '../components/typography';
 
 const AVATAR_SIZE = 55;
 const AVATAR_RADIUS = AVATAR_SIZE / 2;
@@ -49,20 +50,6 @@ const MetaContainer = styled.View`
   justifyContent: center;
 `;
 
-const Name = styled.Text`
-  fontFamily: 'quicksand-regular';
-  fontSize: 15;
-  color: ${props => props.theme.BLACK};
-  backgroundColor: transparent;
-`;
-
-const Phone = styled.Text`
-  fontFamily: 'quicksand-regular';
-  fontSize: 14;
-  color: ${props => props.theme.DARK};
-  backgroundColor: transparent;
-`;
-
 const ListItem = styled.View`
   height: 44;
   width: 100%;
@@ -77,12 +64,6 @@ const ListItemButton = styled(Touchable).attrs({
   flex: 1;
   justifyContent: center;
   paddingHorizontal: 5%;
-`;
-
-const ListItemText = styled.Text`
-  fontFamily: 'quicksand-regular';
-  fontSize: 15;
-  color: ${props => props.theme.BLACK};
 `;
 
 class SettingsScreen extends Component {
@@ -111,14 +92,14 @@ class SettingsScreen extends Component {
           }}
         />
         <MetaContainer>
-          <Name>
+          <Subtitle medium>
             {this.props.info.name || 'Alexandra User'}
-          </Name>
-          <Phone>
+          </Subtitle>
+          <Subtitle>
             {PhoneNumber(this.props.info.phone, 'VN').getNumber(
               'international',
             )}
-          </Phone>
+          </Subtitle>
         </MetaContainer>
       </InfoContainer>
     );
@@ -131,12 +112,12 @@ class SettingsScreen extends Component {
           {this._renderInfo()}
           <ListItem>
             <ListItemButton>
-              <ListItemText>Privacy Settings</ListItemText>
+              <Subtitle>Privacy Settings</Subtitle>
             </ListItemButton>
           </ListItem>
           <ListItem>
             <ListItemButton onPress={this._handleLogout}>
-              <ListItemText>Sign Out</ListItemText>
+              <Subtitle>Sign Out</Subtitle>
             </ListItemButton>
           </ListItem>
         </List>

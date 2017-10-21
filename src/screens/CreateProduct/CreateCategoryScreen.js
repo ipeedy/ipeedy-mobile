@@ -8,6 +8,7 @@ import { getInput } from '../../actions/product';
 
 import CircleButton from '../../components/CircleButton';
 import CategoryList from '../../components/CategoryList';
+import { Title } from '../../components/typography';
 
 const Root = styled.View`
   flex: 1;
@@ -20,12 +21,6 @@ const Wrapper = styled.View`
   height: 70%;
   width: 80%;
   position: relative;
-`;
-
-const Title = styled.Text`
-  fontSize: 20;
-  color: ${props => props.theme.BLACK};
-  fontFamily: 'quicksand-regular';
 `;
 
 class CreateCategoryScreen extends Component {
@@ -46,7 +41,9 @@ class CreateCategoryScreen extends Component {
     return (
       <Root>
         <Wrapper>
-          <Title>Select type of product you want to sell:</Title>
+          <Title large numberOfLines={3}>
+            Select type of product you want to sell:
+          </Title>
           <CategoryList
             containerStyle={{
               top: 20,

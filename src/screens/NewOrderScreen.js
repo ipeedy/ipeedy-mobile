@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/native';
 
+import { Title } from '../components/typography';
+
 const Root = styled.View`
   flex: 1;
   justifyContent: center;
   alignItems: center;
   backgroundColor: ${props => props.theme.WHITE};
-`;
-
-const Title = styled.Text`
-  fontSize: 20;
-  color: ${props => props.theme.PRIMARY};
-  fontFamily: 'quicksand-medium';
 `;
 
 class NewOrderScreen extends Component {
@@ -21,7 +17,7 @@ class NewOrderScreen extends Component {
   render() {
     return (
       <Root>
-        <Title>
+        <Title large medium>
           New order from {this.state.order.user.name}
         </Title>
       </Root>

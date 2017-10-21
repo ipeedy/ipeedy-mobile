@@ -16,6 +16,7 @@ import ProductList from '../components/ProductList';
 import Snackbar from '../components/Snackbar';
 import { CARD_WIDTH as CATEGORY_CARD_WIDTH } from '../components/CategoryCard';
 import { CARD_WIDTH as PRODUCT_CARD_WIDTH } from '../components/ProductCard';
+import { Title, Text } from '../components/typography';
 
 const DISTANCE = 2000;
 
@@ -50,18 +51,6 @@ const FeaturedContainer = styled(CategoriesContainer)`
 
 const BottomContainer = styled(CategoriesContainer)`
   height: ${PRODUCT_CARD_WIDTH / 5};
-`;
-
-const Title = styled.Text`
-  fontFamily: 'quicksand-medium';
-  fontSize: 18;
-  color: ${props => props.theme.DARK};
-`;
-
-const More = styled.Text`
-  fontFamily: 'quicksand-regular';
-  fontSize: 14;
-  color: ${props => props.theme.DARK};
 `;
 
 class ExploreProductsScreen extends Component {
@@ -142,14 +131,14 @@ class ExploreProductsScreen extends Component {
         {this._renderNotification()}
         <CategoriesContainer>
           <Header>
-            <Title>Explore Ipeedy</Title>
+            <Title medium>Explore Ipeedy</Title>
           </Header>
           <CategoryList onSelect={this._handleCategoryPressed} />
         </CategoriesContainer>
         <ProductsContainer>
           <Header>
-            <Title>Near you</Title>
-            <More>See all ></More>
+            <Title medium>Near you</Title>
+            <Text>See more</Text>
           </Header>
           <ProductList
             _ref={c => {
@@ -166,8 +155,8 @@ class ExploreProductsScreen extends Component {
         </ProductsContainer>
         <FeaturedContainer>
           <Header>
-            <Title>Featured</Title>
-            <More>See all ></More>
+            <Title medium>Featured</Title>
+            <Text>See all</Text>
           </Header>
           <ProductList
             _ref={c => {
@@ -185,8 +174,8 @@ class ExploreProductsScreen extends Component {
         </FeaturedContainer>
         <ProductsContainer>
           <Header>
-            <Title>Recently</Title>
-            <More>See all ></More>
+            <Title medium>Recently</Title>
+            <Text>See more</Text>
           </Header>
           <ProductList
             _ref={c => {

@@ -8,6 +8,7 @@ import { icons, colors } from '../../utils/constants';
 import { getInput } from '../../actions/product';
 
 import CircleButton from '../../components/CircleButton';
+import { Title } from '../../components/typography';
 
 const Root = styled.View`
   flex: 1;
@@ -20,12 +21,6 @@ const Wrapper = styled.View`
   height: 70%;
   width: 80%;
   position: relative;
-`;
-
-const Title = styled.Text`
-  fontSize: 20;
-  color: ${props => props.theme.BLACK};
-  fontFamily: 'quicksand-regular';
 `;
 
 const InputWrapper = styled.View`
@@ -45,11 +40,6 @@ const AmountWrapper = styled.View`
   right: 0;
 `;
 
-const Amount = styled(Title)`
-  fontFamily: 'quicksand-medium';
-  fontSize: 25;
-`;
-
 class CreateAmountScreen extends Component {
   state = {
     loading: false,
@@ -64,7 +54,9 @@ class CreateAmountScreen extends Component {
     return (
       <Root>
         <Wrapper>
-          <Title>How many products do you currently have?</Title>
+          <Title large numberOfLines={3}>
+            How many products do you currently have?
+          </Title>
           <InputWrapper>
             <Slider
               maximumValue={200}
@@ -77,9 +69,9 @@ class CreateAmountScreen extends Component {
                 this.props.getInput('availableCount', value)}
             />
             <AmountWrapper>
-              <Amount>
+              <Title medium large>
                 {this.props.input.availableCount}
-              </Amount>
+              </Title>
             </AmountWrapper>
           </InputWrapper>
           <CircleButton loading={this.state.loading} onPress={this._handleNext}>

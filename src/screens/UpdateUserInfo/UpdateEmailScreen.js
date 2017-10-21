@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import UPDATE_INFO_MUTATION from '../../graphql/mutations/updateInfo';
 import { getUserInfo } from '../../actions/user';
 import { icons, colors } from '../../utils/constants';
+import { Title } from '../../components/typography';
 
 import Snackbar from '../../components/Snackbar';
 import CircleButton from '../../components/CircleButton';
@@ -25,12 +26,6 @@ const Wrapper = styled.View`
   height: 70%;
   width: 80%;
   position: relative;
-`;
-
-const Title = styled.Text`
-  fontSize: 20;
-  color: ${props => props.theme.BLACK};
-  fontFamily: 'quicksand-regular';
 `;
 
 const InputWrapper = styled.View`
@@ -86,7 +81,9 @@ class UpdateEmailScreen extends Component {
       <Root>
         {this.state.error && <Snackbar message={this.state.error} secondary />}
         <Wrapper>
-          <Title>What's your email?</Title>
+          <Title large numberOfLines={2}>
+            What's your email?
+          </Title>
           <InputWrapper>
             <Input
               placeholder="alexandra@user.com"

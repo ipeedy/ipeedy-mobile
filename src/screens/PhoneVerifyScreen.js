@@ -12,6 +12,7 @@ import { graphql, compose } from 'react-apollo';
 import CircleButton from '../components/CircleButton';
 import Snackbar from '../components/Snackbar';
 import CountDown from '../components/CountDown';
+import { Title, Subtitle } from '../components/typography';
 
 import { icons, colors } from '../utils/constants';
 import { login } from '../actions/user';
@@ -30,17 +31,6 @@ const Wrapper = styled.View`
   height: 70%;
   width: 80%;
   position: relative;
-`;
-
-const Title = styled.Text`
-  fontFamily: 'quicksand-regular';
-  fontSize: 20;
-  color: ${props => props.theme.BLACK};
-  ${props =>
-    props.bold &&
-    `
-    fontFamily: 'quicksand-medium';
-  `};
 `;
 
 const InputContainer = styled.View`
@@ -74,15 +64,6 @@ const Input = styled.TextInput.attrs({
   fontSize: 20;
 `;
 
-const BottomText = styled.Text`
-  position: absolute;
-  bottom: 25;
-  left: 0;
-  fontFamily: 'quicksand-medium';
-  fontSize: 16;
-  color: ${props => props.theme.DARK};
-`;
-
 const BottomButton = styled(Touchable).attrs({
   feedback: 'opacity',
   native: false,
@@ -91,11 +72,6 @@ const BottomButton = styled(Touchable).attrs({
   position: absolute;
   bottom: 25;
   left: 0;
-`;
-
-const BottomButtonText = styled(BottomText)`
-  bottom: 0;
-  color: ${props => props.theme.PRIMARY};
 `;
 
 class PhoneVerifyScreen extends Component {
@@ -213,18 +189,20 @@ class PhoneVerifyScreen extends Component {
     if (!this.state.diffTime) {
       return (
         <BottomButton onPress={this._handleResendCode}>
-          <BottomButtonText>Resend code</BottomButtonText>
+          <Subtitle primary>Resend code</Subtitle>
         </BottomButton>
       );
     }
     return (
-      <BottomText>
-        Resend code in{' '}
-        <CountDown
-          time={this.state.diffTime}
-          onFinish={this._handleCountDownFinish}
-        />
-      </BottomText>
+      <BottomButton disabled>
+        <Subtitle>
+          Resend code in{' '}
+          <CountDown
+            time={this.state.diffTime}
+            onFinish={this._handleCountDownFinish}
+          />
+        </Subtitle>
+      </BottomButton>
     );
   }
 
@@ -240,9 +218,11 @@ class PhoneVerifyScreen extends Component {
         {this.renderError()}
         {this.renderMessage()}
         <Wrapper>
-          <Title>
+          <Title large numberOfLines={3}>
             Enter the 4-digit code sent you at{' '}
-            <Title bold>{this.props.navigation.state.params.phone}</Title>
+            <Title medium large>
+              {this.props.navigation.state.params.phone}
+            </Title>
           </Title>
           <InputContainer>
             <InputWrapper>

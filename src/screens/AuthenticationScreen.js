@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import styled from 'styled-components/native';
 import Touchable from '@appandflow/touchable';
 
+import { Header, Subtitle } from '../components/typography';
+
 const Root = styled.Image`
   flex: 1;
   backgroundColor: ${props => props.theme.PRIMARY};
@@ -45,12 +47,6 @@ const SloganContainer = styled.View`
   alignItems: center;
 `;
 
-const Slogan = styled.Text`
-  fontFamily: 'quicksand-medium';
-  fontSize: 23;
-  color: ${props => props.theme.WHITE};
-`;
-
 const PhoneButton = styled(Touchable).attrs({
   feedback: 'opacity',
 })`
@@ -66,12 +62,6 @@ const PhoneButton = styled(Touchable).attrs({
   shadowRadius: 5;
   shadowOffset: 0px 2px;
   elevation: 2;
-`;
-
-const ButtonText = styled.Text`
-  color: ${props => props.theme.WHITE};
-  fontSize: 15;
-  fontFamily: 'quicksand-medium';
 `;
 
 const SocialButton = styled(PhoneButton)`
@@ -95,18 +85,26 @@ class AuthenticationScreen extends Component {
         </HeaderContainer>
         <ContentContainer>
           <SloganContainer>
-            <Slogan>Market for the people,</Slogan>
-            <Slogan>by the people</Slogan>
+            <Header medium bright>
+              Market for the people,
+            </Header>
+            <Header medium bright>
+              by the people
+            </Header>
           </SloganContainer>
           <PhoneButton
             onPress={() => this.props.navigation.navigate('PhoneAuth')}
           >
-            <ButtonText>ENTER YOUR MOBILE NUMBER</ButtonText>
+            <Subtitle medium bright>
+              ENTER YOUR MOBILE NUMBER
+            </Subtitle>
           </PhoneButton>
           <SocialButton
             onPress={() => this.props.navigation.navigate('SocialAuth')}
           >
-            <ButtonText>CONNECT USING SOCIAL ACCOUNT</ButtonText>
+            <Subtitle medium bright>
+              CONNECT USING SOCIAL ACCOUNT
+            </Subtitle>
           </SocialButton>
         </ContentContainer>
       </Root>
