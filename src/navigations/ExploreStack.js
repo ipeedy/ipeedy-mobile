@@ -93,12 +93,12 @@ export default StackNavigator(
               >
                 <Ionicons size={33} name={icons.CART} color={colors.WHITE} />
               </ButtonHeader>}
-            <ButtonHeader
+            {/* <ButtonHeader
               side="right"
               onPress={() => navigation.navigate('Delivery')}
             >
               <Ionicons size={28} name={icons.NAVIGATE} color={colors.WHITE} />
-            </ButtonHeader>
+            </ButtonHeader> */}
             <ButtonHeader
               side="right"
               onPress={() => navigation.navigate('CreateProduct')}

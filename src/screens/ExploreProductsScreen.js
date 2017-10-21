@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/native';
+import { RefreshControl } from 'react-native';
 import { withApollo, graphql, compose } from 'react-apollo';
 import { connect } from 'react-redux';
 import Touchable from '@appandflow/touchable';
@@ -64,7 +65,9 @@ const More = styled.Text`
 `;
 
 class ExploreProductsScreen extends Component {
-  state = {};
+  state = {
+    refreshing: false,
+  };
 
   componentDidMount() {
     this.props.client
@@ -109,9 +112,33 @@ class ExploreProductsScreen extends Component {
     }
   };
 
+  _onRefresh = async () => {
+    this.setState({ refreshing: true });
+    const {
+      user: { info: { location: { longitude, latitude } } },
+    } = this.props;
+    await Promise.all([
+      this.props.nearByProducts.refetch({
+        longitude,
+        latitude,
+        distance: DISTANCE,
+      }),
+      this.props.newestProducts.refetch(),
+      this.props.mostFavProducts.refetch(),
+    ]);
+    this.setState({ refreshing: false });
+  };
+
   render() {
     return (
-      <Root>
+      <Root
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh}
+          />
+        }
+      >
         {this._renderNotification()}
         <CategoriesContainer>
           <Header>
@@ -132,7 +159,8 @@ class ExploreProductsScreen extends Component {
             showCategory
             data={{
               products: this.props.nearByProducts.getNearbyProducts,
-              loading: this.props.nearByProducts.loading,
+              loading:
+                this.props.nearByProducts.loading || this.state.refreshing,
             }}
           />
         </ProductsContainer>
@@ -150,7 +178,8 @@ class ExploreProductsScreen extends Component {
             featured
             data={{
               products: this.props.mostFavProducts.getMostFavProducts,
-              loading: this.props.mostFavProducts.loading,
+              loading:
+                this.props.mostFavProducts.loading || this.state.refreshing,
             }}
           />
         </FeaturedContainer>
@@ -167,7 +196,8 @@ class ExploreProductsScreen extends Component {
             showCategory
             data={{
               products: this.props.newestProducts.getProducts,
-              loading: this.props.newestProducts.loading,
+              loading:
+                this.props.newestProducts.loading || this.state.refreshing,
             }}
           />
         </ProductsContainer>
