@@ -4,6 +4,9 @@ import { DrawerItems } from 'react-navigation';
 import { connect } from 'react-redux';
 import PhoneNumber from 'awesome-phonenumber';
 import Touchable from '@appandflow/touchable';
+import { LinearGradient } from 'expo';
+
+import { colors } from '../utils/constants';
 
 import Loading from '../components/Loading';
 import { Title, Subtitle } from './typography';
@@ -17,7 +20,7 @@ const HeaderContainer = styled(Touchable).attrs({
   feedback: 'none',
 })`
   flex: 2;
-  backgroundColor: ${props => props.theme.PRIMARY};
+  background-color: ${props => props.theme.SECONDARY_A};
   justifyContent: flex-end;
 `;
 
@@ -81,7 +84,9 @@ class Drawer extends Component {
           onPress={() =>
             this.props.screenProps.rootNavigation.navigate('Profile')}
         >
-          {this._renderInfo()}
+          <LinearGradient colors={[colors.SECONDARY_A, colors.PRIMARY]}>
+            {this._renderInfo()}
+          </LinearGradient>
         </HeaderContainer>
         <MenuContainer>
           <DrawerItems {...this.props} />

@@ -146,6 +146,7 @@ class ExploreProductsScreen extends Component {
             }}
             productPressed={this._handleProductPressed}
             showCategory
+            navigation={this.props.navigation}
             data={{
               products: this.props.nearByProducts.getNearbyProducts,
               loading:

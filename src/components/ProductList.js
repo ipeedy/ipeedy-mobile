@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import { Animated, FlatList, LayoutAnimation, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
+import Touchable from '@appandflow/touchable';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo';
+
+import { icons, colors } from '../utils/constants';
 
 import ProductCard, { CARD_WIDTH } from './ProductCard';
 import ProductListPlaceholder from './ProductListPlaceholder';
+import { Subtitle } from './typography';
 
 const { width } = Dimensions.get('window');
 
@@ -17,6 +23,16 @@ const ListSeparator = styled.View`
 const ListFooter = styled.View`
   width: ${width - CARD_WIDTH};
   height: 100%;
+`;
+
+const ProductEmpty = styled(LinearGradient).attrs({
+  colors: [colors.PRIMARY, colors.SECONDARY_A],
+})`
+  width: ${CARD_WIDTH * 2};
+  height: 100%;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 3;
 `;
 
 class ProductList extends Component {
@@ -96,6 +112,30 @@ class ProductList extends Component {
           />}
         ListFooterComponent={() => <ListFooter />}
         ListHeaderComponent={() => <ListSeparator />}
+        ListEmptyComponent={() =>
+          <Touchable
+            feedback="none"
+            style={{
+              borderRadius: 3,
+              paddingVertical: 8,
+            }}
+            onPress={() => this.props.navigation.navigate('CreateProduct')}
+          >
+            <ProductEmpty>
+              <Subtitle numberOfLines={2} bright>
+                No product here
+              </Subtitle>
+              <Ionicons
+                name={icons.CART}
+                size={40}
+                color={colors.WHITE}
+                style={{ backgroundColor: 'transparent' }}
+              />
+              <Subtitle numberOfLines={2} bright>
+                Start selling
+              </Subtitle>
+            </ProductEmpty>
+          </Touchable>}
       />
     );
   }

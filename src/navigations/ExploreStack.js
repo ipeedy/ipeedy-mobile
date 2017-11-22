@@ -49,7 +49,7 @@ const ExploreTab = TabNavigator(
   },
   {
     tabBarPosition: 'top',
-    animationEnabled: false,
+    animationEnabled: true,
     lazy: true,
     swipeEnabled: false,
     tabBarOptions: {
