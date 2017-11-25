@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import { ImageBackground } from 'react-native';
 import styled from 'styled-components/native';
 import Touchable from '@appandflow/touchable';
 
 import { Header, Subtitle } from '../components/typography';
 
-const Root = styled.Image`
+const Root = styled.ImageBackground`
   flex: 1;
   backgroundColor: ${props => props.theme.PRIMARY};
 `;
